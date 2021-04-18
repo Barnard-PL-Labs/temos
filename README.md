@@ -1,2 +1,3 @@
-# tsl_modulo_theories
-TSL Modulo Theories Synthesis
+# TSL Modulo Theories Synthesis
+
+Repository for synthesis of Temporal Stream Logic Modulo Theories.
