@@ -1,0 +1,12 @@
+initially assume {
+	eq c c0();
+}
+
+always guarantee {
+	[c <- sub c c1()] -> [c <- sub c c1()] U (eq c c0());
+	[c <- add c c1()] -> [c <- add c c1()] U (eq c c100());
+	eq c c100() -> [c <- sub c c1()];
+	eq c c0()   -> [c <- add c c1()];
+	eq c0() c   || lt c0() c;
+	eq c c100() || ltc c100();
+}
