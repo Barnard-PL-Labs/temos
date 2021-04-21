@@ -10,10 +10,10 @@ file_header=${file_name:0:-4}
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
-start=$(date +%s%N | cut -b1-13)
+BIN_PATH="../bin"
 
 # Build TLSF
-bin/tsl2tlsf $file_name | cat > $tlsf
+$BIN_PATH/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
 sudo docker run --rm -v $(pwd):/files -it wonhyukchoi/tsltools /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
@@ -34,7 +34,7 @@ fi
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
 # Synthesize the resulting code
-bin/cfm2code $aag --webaudio > $js
+$BIN_PATH/cfm2code $aag --webaudio > $js
 
 end=$(date +%s%N | cut -b1-13)
 elapsed=$[ end - start ]
