@@ -6,12 +6,14 @@ initially assume {
 }
 
 always assume {		
-	EQUAL -> BTWN;
+	!(EQUAL && !BTWN);
 	!(eq c c100() && eq c c0());
 	eq c c0()    && [c <- add c c1()] -> X (BTWN && !EQUAL);
 	eq c c100()  && [c <- sub c c1()] -> X (BTWN && !EQUAL);
 	!(eq c c0())   && BTWN && [c <- sub c c1()] -> X BTWN;
 	!(eq c c100()) && BTWN && [c <- add c c1()] -> X BTWN;
+	!(eq c c0())   && BTWN && ([c <- add c c1()] W (eq c c100())) -> F (eq c c100());
+	!(eq c c100()) && BTWN && ([c <- sub c c1()] W (eq c c0())) -> F (eq c c0());
 }
 
 always guarantee {
