@@ -1,5 +1,6 @@
-# prototyping
-local_testing/
+# local files
+tags
+_tags
 
 # External binaries
 bin/

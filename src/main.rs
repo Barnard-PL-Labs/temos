@@ -1,14 +1,15 @@
 mod types; 
 mod assumption;
+mod predicate;
 pub use crate::types::*;
 
 fn test_sygus() {
-    let updates = vec![Add(Var("x".to_string()), Const(1)),
-                       Sub(Var("x".to_string()), Const(1)),
+    let updates = vec![Function(Add, Var("x".to_string()), Const(1)),
+                       Function(Sub, Var("x".to_string()), Const(1)),
                        Signal(Var("x".to_string()))];
     let hoare = SygusHoareTriple {
-        precond  : EQ(Var("x".to_string()), Const(0)),
-        postcond : EQ(Var("x".to_string()), Const(1)),
+        precond  : Bool(EQ, Var("x".to_string()), Const(0)),
+        postcond : Bool(EQ, Var("x".to_string()), Const(1)),
         var_name: "x".to_string(),
         temporal: Next(1),
         updates: updates
@@ -18,6 +19,7 @@ fn test_sygus() {
 }
 
 fn main() {
-    //test_sygus();
+    test_sygus();
     assumption::test_assumption();
+    predicate::test_predicates();
 }
