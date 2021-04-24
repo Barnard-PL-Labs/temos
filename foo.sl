@@ -3,11 +3,12 @@
 	((I Int))(
 		(I Int (
 				(+ x 1)
-				(- x 1)
-				x
+				(+ x 2)
+				(+ I 1)
+				(+ I 2)
 			)
 		)
 	)
 )
-(constraint (= (function 0) 1))
+(constraint (= (function 0) 3))
 (check-synth)
