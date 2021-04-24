@@ -1,35 +1,23 @@
-// Horrible, horrible function
-fn get_ast(fxn: String, keyword: &str) -> String {
-    let kw_indices: Vec<_> = fxn.match_indices(keyword).collect();
-    let paren_indices: Vec<_> = fxn.match_indices("(").collect();
-    let last_kw = kw_indices.last()
-                          .expect(&format!("bad sygus result: {}.\n
-                                           no instance of {}", fxn, keyword))
-                          .0;
-    let mut paren_idx = 0;
-    for (idx, _) in paren_indices {
-        if last_kw < idx {
-            paren_idx = idx;
-            break;
-        }
-    }
-    if paren_idx == 0 {
-        panic!("Can't find parentheses!");
-    }
-    String::from(&fxn[paren_idx..fxn.chars().count()-1])
-}
+mod types; 
+mod assumption;
+pub use crate::types::*;
 
-fn parse_sygus_result(fxn: String, keyword: &str) -> String {
-    let ast = get_ast(fxn, keyword);
-    ast
+fn test_sygus() {
+    let updates = vec![Add(Var("x".to_string()), Const(1)),
+                       Sub(Var("x".to_string()), Const(1)),
+                       Signal(Var("x".to_string()))];
+    let hoare = SygusHoareTriple {
+        precond  : EQ(Var("x".to_string()), Const(0)),
+        postcond : EQ(Var("x".to_string()), Const(1)),
+        var_name: "x".to_string(),
+        temporal: Next(1),
+        updates: updates
+    };
+    println!("{}", hoare.to_sygus());
+    println!("{}", hoare.cmd_options());
 }
-
-fn parse_syguslia_result(fxn: String) -> String {
-    parse_sygus_result(fxn, "Int")
-}
-
 
 fn main() {
-    let result = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
-    println!("{}", parse_syguslia_result(result));
+    //test_sygus();
+    assumption::test_assumption();
 }
