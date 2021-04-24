@@ -1,0 +1,35 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/media/mnt/wonhyuk/미국학교/columbia/2021_SP/research/reactive-program-synthesis/tsl_modulo_theories/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210110.0/
+Const	src/main.rs	/^    Const(i32),$/;"	e	enum:Literal
+EQ	src/main.rs	/^    EQ(Literal, Literal)$/;"	e	enum:Predicate
+LT	src/main.rs	/^    LT(Literal, Literal),$/;"	e	enum:Predicate
+Literal	src/main.rs	/^enum Literal {$/;"	g
+Literal	src/main.rs	/^impl Literal {$/;"	c
+Liveness	src/main.rs	/^    Liveness \/\/TODO$/;"	e	enum:Temporal
+Next	src/main.rs	/^    Next(i32),$/;"	e	enum:Temporal
+Predicate	src/main.rs	/^enum Predicate {$/;"	g
+Predicate	src/main.rs	/^impl Predicate {$/;"	c
+SygusHoareTriple	src/main.rs	/^impl SygusHoareTriple {$/;"	c
+SygusHoareTriple	src/main.rs	/^struct SygusHoareTriple {$/;"	s
+Temporal	src/main.rs	/^enum Temporal {$/;"	g
+Var	src/main.rs	/^    Var(String),$/;"	e	enum:Literal
+cmd_options	src/main.rs	/^    fn cmd_options(&self) -> String {$/;"	P	implementation:SygusHoareTriple
+main	src/main.rs	/^fn main() {$/;"	f
+postcond	src/main.rs	/^    postcond: Predicate,$/;"	m	struct:SygusHoareTriple
+precond	src/main.rs	/^    precond: Predicate,$/;"	m	struct:SygusHoareTriple
+temporal	src/main.rs	/^    temporal: Temporal,$/;"	m	struct:SygusHoareTriple
+to_constraint	src/main.rs	/^    fn to_constraint(self, precond: &Predicate) -> String {$/;"	P	implementation:Predicate
+to_precond	src/main.rs	/^    fn to_precond(self) -> String {$/;"	P	implementation:Predicate
+to_string	src/main.rs	/^    fn to_string(self) -> String {$/;"	P	implementation:Literal
+to_sygus	src/main.rs	/^    fn to_sygus(&self) -> String {$/;"	P	implementation:SygusHoareTriple
+updates	src/main.rs	/^    updates: Vec<String>,$/;"	m	struct:SygusHoareTriple
+var_name	src/main.rs	/^    var_name: String,$/;"	m	struct:SygusHoareTriple

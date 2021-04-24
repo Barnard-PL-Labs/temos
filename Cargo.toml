@@ -4,14 +4,6 @@ version = "0.1.0"
 authors = ["Wonhyuk Choi <wonhyuk.choi@columbia.edu>"]
 edition = "2018"
 
-[[bin]]
-name = "sygus_queries"
-path = "src/sygus/main.rs"
-
-[[bin]]
-name = "hoare_assumptions"
-path = "src/assumptions/main.rs"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
