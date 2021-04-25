@@ -1,5 +1,5 @@
 use crate::types::*;
-use crate::tests::regress::util;
+use crate::utils;
 
 #[test]
 fn test_sygus() {
@@ -21,7 +21,7 @@ fn test_sygus() {
 
     let query = hoare.to_sygus();
 
-    result = util::run_cvc4(query, "sygus");
+    result = utils::run_cvc4(query, "sygus");
 
     assert_eq!(expected, result);
 }

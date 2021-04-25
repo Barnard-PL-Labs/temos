@@ -4,12 +4,15 @@ pub use Update::*;
 pub use Predicate::*;
 pub use LogicOp::*;
 pub use LiaOp::*;
+use std::rc::Rc;
+use std::collections::HashSet;
 
 pub enum Temporal {
     Next(i32),
     Liveness
 }
 
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum Literal {
     Var(String),
     Const(i32),
@@ -56,6 +59,7 @@ impl Update {
     }
 }
 
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum LogicOp {
     LT,
     EQ
@@ -70,10 +74,10 @@ impl LogicOp {
     }
 }
 
-// TODO: Probably need to be references, and be lifetimed...
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum Predicate {
-    And(Box<Predicate>, Box<Predicate>),
-    Neg(Box<Predicate>),
+    And(Rc<Predicate>, Rc<Predicate>),
+    Neg(Rc<Predicate>),
     Bool(LogicOp, Literal, Literal)
 }
 
@@ -106,52 +110,71 @@ impl Predicate {
         sygus_str 
     }
 
-    fn to_assert(&self) -> String {
-        let mut smt_str = String::from("(assert ");
-        let assertion = match self {
+    fn to_smtlib(&self) -> String {
+        let mut smt_str = String::from("");
+        let pred_str = match self {
             Bool(op, lhs, rhs) => 
                 format!("({} {} {})",
                 op.to_string(),
                 lhs.to_string(),
                 rhs.to_string()),
-            _ => panic!("Not Implemented Error")
-
+            And(lhs, rhs) =>
+                format!("(and {} {})",
+                &*lhs.to_smtlib(),
+                &*rhs.to_smtlib()),
+            Neg(pred) => 
+                format!("(not {})",
+                &*pred.to_smtlib())
         };
-        smt_str.push_str(&assertion);
-        smt_str.push_str(")\n");
+        smt_str.push_str(&pred_str);
         smt_str 
+    }
+
+    fn to_assert(&self) -> String {
+        format!("(assert {})\n", self.to_smtlib())
+    }
+
+    fn get_vars(&self) -> HashSet<&str> {
+        let mut vars : HashSet<&str> = HashSet::new();
+        match self {
+            Bool(_, lhs, rhs) => {
+                match lhs {
+                    Var(var) => {vars.insert(&var); ()}
+                    _ => ()
+                };
+                match rhs {
+                    Var(var) => {vars.insert(&var); ()}
+                    _ => ()
+                }
+            },
+            And(lhs, rhs) => {
+                vars = vars.union(&lhs.get_vars()).cloned().collect();
+                vars = vars.union(&rhs.get_vars()).cloned().collect();
+            },
+            Neg(pred) => {vars = vars.union(&pred.get_vars()).cloned().collect();}
+        };
+        vars
     }
 
     pub fn to_smt2(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
-        let mut vars : Vec<&str> = Vec::new();
-        match self {
-            Bool(_, lhs, rhs) => {
-                match lhs {
-                    Var(var) => vars.push(&var),
-                    _ => ()
-                };
-                match rhs {
-                    Var(var) => vars.push(&var),
-                    _ => ()
-                }
-            },
-            _ => panic!("Not Implemented Error")
-        };
+        let vars = self.get_vars();
+
         for variable in &vars {
             query.push_str(&format!("(declare-const {} Int)\n", variable));
         }
+
         query.push_str("\n");
         query.push_str(&self.to_assert());
         query.push_str("(check-sat)\n");
         query
     }
 
-    pub fn and(self, pred: Predicate) -> Predicate {
-        And(Box::new(self), Box::new(pred))
+    pub fn and(&self, pred: &Predicate) -> Predicate {
+        And(Rc::new(self.clone()), Rc::new(pred.clone()))
     }
-    pub fn neg(self) -> Predicate {
-        Neg(Box::new(self))
+    pub fn neg(&self) -> Predicate {
+        Neg(Rc::new(self.clone()))
     }
 }
 
