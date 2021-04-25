@@ -3,7 +3,8 @@ mod assumption;
 mod predicate;
 mod tests;
 mod utils;
+mod examples;
 
 fn main() {
-    println!("{}", 0x2f);
+    examples::examples();
 }

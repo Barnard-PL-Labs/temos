@@ -16,6 +16,17 @@ fn enumerate_preds(preds: Vec<Predicate>) -> HashSet<Predicate> {
     powerset
 }
 
+pub fn gen_assumptions(preds: Vec<Predicate>) -> Vec<String> {
+    let mut assumptions = Vec::new();
+    for predicate in enumerate_preds(preds) {
+        if predicate.is_unsat() {
+            assumptions.push(predicate.to_assumption());
+        }
+    }
+    assumptions
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;

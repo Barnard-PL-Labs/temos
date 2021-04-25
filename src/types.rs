@@ -6,6 +6,7 @@ pub use LogicOp::*;
 pub use LiaOp::*;
 use std::rc::Rc;
 use std::collections::HashSet;
+use crate::utils;
 
 pub enum Temporal {
     Next(i32),
@@ -82,8 +83,8 @@ pub enum Predicate {
 }
 
 
-// TODO: need standardization, i.e. var always on LHS
 impl Predicate {
+    // TODO: need standardization, i.e. var always on LHS
     fn to_precond(&self) -> String {
         match self {
             Bool(op, _, rhs) =>
@@ -95,6 +96,7 @@ impl Predicate {
         }
     }
 
+    // TODO: need standardization, i.e. var always on LHS
     fn to_constraint(&self, precond: &Predicate) -> String {
         let mut sygus_str = String::from("(constraint ");
         let constraint = match self {
@@ -120,11 +122,11 @@ impl Predicate {
                 rhs.to_string()),
             And(lhs, rhs) =>
                 format!("(and {} {})",
-                &*lhs.to_smtlib(),
-                &*rhs.to_smtlib()),
+                lhs.to_smtlib(),
+                rhs.to_smtlib()),
             Neg(pred) => 
                 format!("(not {})",
-                &*pred.to_smtlib())
+                pred.to_smtlib())
         };
         smt_str.push_str(&pred_str);
         smt_str 
@@ -168,6 +170,37 @@ impl Predicate {
         query.push_str(&self.to_assert());
         query.push_str("(check-sat)\n");
         query
+    }
+
+    pub fn is_unsat(&self) -> bool {
+        let smt2 = self.to_smt2();
+        let result = utils::run_cvc4(smt2, "smt");
+        if result == "sat\n" {
+            return false
+        } else if result == "unsat\n" {
+            return true
+        } else {
+            panic!("not sat or unsat??\n")
+        }
+    }
+
+    fn to_tsl(&self) -> String {
+        match self {
+            Bool(op, lhs, rhs) => 
+                format!("({} {} {})",
+                op.to_string(),
+                lhs.to_string(),
+                rhs.to_string()),
+            And(lhs, rhs) =>
+                format!("({} && {})",
+                lhs.to_tsl(),
+                rhs.to_tsl()),
+            Neg(pred) => format!("!{}", pred.to_tsl())
+        }
+    }
+
+    pub fn to_assumption(&self) -> String {
+        format!("!{}", self.to_tsl())
     }
 
     pub fn and(&self, pred: &Predicate) -> Predicate {

@@ -19,7 +19,7 @@ fn get_ast(fxn: String, keyword: &str) -> String {
     String::from(&fxn[paren_idx..fxn.chars().count()-1])
 }
 
-fn parse_syguslia_result(fxn: String) -> String {
+pub fn parse_syguslia_result(fxn: String) -> String {
     get_ast(fxn, "Int")
 }
 
