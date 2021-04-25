@@ -70,6 +70,7 @@ impl LogicOp {
     }
 }
 
+// TODO: Probably need to be references, and be lifetimed...
 pub enum Predicate {
     And(Box<Predicate>, Box<Predicate>),
     Neg(Box<Predicate>),
@@ -142,16 +143,16 @@ impl Predicate {
         }
         query.push_str("\n");
         query.push_str(&self.to_assert());
-        query.push_str("(check-sat)");
+        query.push_str("(check-sat)\n");
         query
     }
 
-    //pub fn and(&self, pred: &Predicate) -> Predicate {
-    //    AND(Box::new(self), Box::new(pred))
-    //}
-    //pub fn neg(&self) -> Predicate {
-    //    NEG(Box::new(self)
-    //}
+    pub fn and(self, pred: Predicate) -> Predicate {
+        And(Box::new(self), Box::new(pred))
+    }
+    pub fn neg(self) -> Predicate {
+        Neg(Box::new(self))
+    }
 }
 
 pub struct SygusHoareTriple {
@@ -178,7 +179,7 @@ impl SygusHoareTriple {
         query.push_str("\t)\n");
         query.push_str(")\n");
         query.push_str(&self.postcond.to_constraint(&self.precond));
-        query.push_str("(check-synth)");
+        query.push_str("(check-synth)\n");
         query
     }
 

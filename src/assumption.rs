@@ -23,8 +23,13 @@ fn parse_syguslia_result(fxn: String) -> String {
     get_ast(fxn, "Int")
 }
 
-
-pub fn test_assumption() {
-    let result = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
-    println!("{}", parse_syguslia_result(result));
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_assumption() {
+        let function = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
+        let result = parse_syguslia_result(function);
+        assert_eq!(&result, "(+ (+ x 1) 2)");
+    }
 }
