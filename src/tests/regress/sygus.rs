@@ -1,13 +1,11 @@
 use crate::types::*;
-use std::fs;
+use crate::tests::regress::util;
 
 #[test]
 fn test_sygus() {
-    let result;
-    let expected;
     let updates;
-
-    expected = fs::read_to_string("src/tests/regress/sygus.sl").unwrap();
+    let result;
+    let expected = "unsat\n(define-fun function ((x Int)) Int (+ x 1))\n";
 
     updates = vec![Function(Add, Var("x".to_string()), Const(1)),
         Function(Sub, Var("x".to_string()), Const(1)),
@@ -21,7 +19,9 @@ fn test_sygus() {
         updates: updates
     };
 
-    result = hoare.to_sygus();
+    let query = hoare.to_sygus();
+
+    result = util::run_cvc4(query, "sygus");
 
     assert_eq!(expected, result);
 }

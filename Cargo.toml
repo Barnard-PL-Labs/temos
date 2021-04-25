@@ -5,3 +5,4 @@ authors = ["Wonhyuk Choi <wonhyuk.choi@columbia.edu>"]
 edition = "2018"
 
 [dependencies]
+rand = "0.6.0"
