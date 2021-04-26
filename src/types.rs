@@ -79,7 +79,8 @@ impl UpdateTerm {
 pub enum LogicOp {
     LT,
     EQ,
-    LTE
+    LTE,
+    GT
 }
 
 impl LogicOp {
@@ -87,7 +88,8 @@ impl LogicOp {
         match self {
             LT  => String::from("<"),
             EQ  => String::from("="),
-            LTE => String::from("<=")
+            LTE => String::from("<="),
+            GT => String::from(">=")
         }
     }
 }
@@ -100,6 +102,17 @@ pub enum Predicate {
 }
 
 impl Predicate {
+    pub fn is_eq(&self) -> bool {
+        match self {
+            Bool(op, _, _) => match op {
+                EQ => true,
+                _  => false
+            }
+            // Assuming that we have elided UNSAT preds.
+            And(lpred, _) => false,
+            Neg(pred) => pred.is_eq()
+        }
+    }
     // XXX: no real support for two-element predicates yet.
     pub fn get_var_name(&self) -> String {
         match self {
@@ -264,7 +277,18 @@ pub struct SygusHoareTriple {
     pub updates: Rc<HashSet<UpdateTerm>>,
 }
 
+// TODO: support multiple variables as inputs
 impl SygusHoareTriple {
+    fn quantified_constraint(&self) -> String {
+        let var_name = self.precond.get_var_name();
+        let mut constraint = format!("(constraint (forall (({} Int))\n", var_name);
+        let postcond = (*self.postcond).clone().
+            var_to_function(&var_name);
+        constraint.push_str(&format!("\t(=> {}\n", self.precond.to_smtlib()));
+        constraint.push_str(&format!("\t{}\n", postcond.to_smtlib()));
+        constraint.push_str(")))\n");
+        constraint
+    }
     pub fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
         let var_name = self.precond.get_var_name();
@@ -272,9 +296,12 @@ impl SygusHoareTriple {
         let variables = self.postcond.get_vars();
         let postcond = (*self.postcond).clone().
             var_to_function(&var_name);
+        let quantifier_free = self.precond.is_eq();
 
-        for var in &variables {
-            query.push_str(&format!("(declare-const {} Int)\n", var));
+        if quantifier_free {
+            for var in &variables {
+                query.push_str(&format!("(declare-const {} Int)\n", var));
+            }
         }
 
         query.push_str(&header);
@@ -290,8 +317,12 @@ impl SygusHoareTriple {
         query.push_str("\t)\n");
         query.push_str(")\n");
 
-        query.push_str(&self.precond.to_assert());
-        query.push_str(&postcond.to_constraint());
+        if quantifier_free {
+            query.push_str(&self.precond.to_assert());
+            query.push_str(&postcond.to_constraint());
+        } else {
+            query.push_str(&self.quantified_constraint());
+        }
         query.push_str("(check-synth)\n");
         query
     }

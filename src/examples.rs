@@ -90,6 +90,24 @@ fn simple_bouncing_counter() {
     }
 }
 
+fn forall_tester() {
+    let pred_vec = vec![SpecPredicate{
+        pred: Bool(GT, Var(String::from("y")), Const(0)),
+        temporal: vec![Next(0)]
+    }];
+    let update_vec = vec![Update {
+        update_term: Signal(Const(1)),
+        var_name: String::from("y"),
+        depends: Vec::new()
+    }];
+    let hoare_vec = hoare::enumerate_hoare(pred_vec, update_vec);
+    for hoare in &hoare_vec {
+        let sygus = hoare.to_sygus();
+        println!("SyGuS:\n{}\n----------------\n", &sygus);
+        println!("Result:\n{}\n---------------\n", utils::run_cvc4(sygus, "sygus"));
+    }
+}
+
 pub fn examples() {
     //to_smt2();
     //println!("---------------------------------------");
@@ -98,5 +116,6 @@ pub fn examples() {
     //parse_sygus();
     //println!("---------------------------------------");
     //gen_hoare();
-    simple_bouncing_counter();
+    // simple_bouncing_counter();
+    forall_tester();
 }
