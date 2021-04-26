@@ -1,6 +1,6 @@
 pub use Temporal::*;
 pub use Literal::*;
-pub use Update::*;
+pub use UpdateTerm::*;
 pub use Predicate::*;
 pub use LogicOp::*;
 pub use LiaOp::*;
@@ -8,8 +8,9 @@ use std::rc::Rc;
 use std::collections::HashSet;
 use crate::utils;
 
+#[derive(Clone)]
 pub enum Temporal {
-    Next(i32),
+    Next(u32),
     Liveness
 }
 
@@ -28,6 +29,7 @@ impl Literal {
     }
 }
 
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum LiaOp {
     Add,
     Sub
@@ -42,12 +44,13 @@ impl LiaOp {
     }
 }
 
-pub enum Update {
+#[derive(Hash, Eq, PartialEq, Clone)]
+pub enum UpdateTerm {
     Function(LiaOp, Literal, Literal),
     Signal(Literal)
 }
 
-impl Update {
+impl UpdateTerm {
     fn to_sygus(&self) -> String {
         match self {
             Function(op, lhs, rhs) => 
@@ -110,6 +113,15 @@ impl Predicate {
         sygus_str.push_str(&constraint);
         sygus_str.push_str(")\n");
         sygus_str 
+    }
+
+    // TODO: need standardization, i.e. var always on LHS
+    pub fn get_main_var(&self) -> String {
+        match self {
+            Bool(_, lhs, _) => lhs.to_string(),
+            And(lhs, rhs) => lhs.get_main_var(),
+            Neg(pred) => pred.get_main_var()
+        }
     }
 
     fn to_smtlib(&self) -> String {
@@ -211,12 +223,24 @@ impl Predicate {
     }
 }
 
-pub struct SygusHoareTriple {
-    pub precond: Predicate,
-    pub postcond: Predicate,
+// Might need var info...
+pub struct SpecPredicate {
+    pub pred: Predicate,
+    pub temporal: Vec<Temporal>
+}
+
+pub struct Update {
+    pub update_term: UpdateTerm,
     pub var_name: String,
-    pub temporal: Temporal,
-    pub updates: Vec<Update>,
+    pub depends: Vec<String>
+}
+
+pub struct SygusHoareTriple {
+    pub precond : Rc<Predicate>,
+    pub postcond: Rc<Predicate>,
+    pub var_name: String,
+    pub temporal: Rc<Temporal>,
+    pub updates: Rc<HashSet<UpdateTerm>>,
 }
 
 impl SygusHoareTriple {
@@ -226,7 +250,7 @@ impl SygusHoareTriple {
         query.push_str(&header);
         query.push_str("\t((I Int))(\n");
         query.push_str("\t\t(I Int (\n");
-        for update_term in &self.updates {
+        for update_term in &*self.updates {
             query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
             // TODO: implement (- I 1)
         }
@@ -240,7 +264,7 @@ impl SygusHoareTriple {
     }
 
     pub fn cmd_options(&self) -> String {
-        match self.temporal {
+        match *self.temporal {
             Next(timesteps) => format!("--sygus-abort-size={}", timesteps),
             Liveness => panic!("Not Implemented Error")
         }

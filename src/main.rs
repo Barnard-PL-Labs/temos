@@ -1,5 +1,6 @@
 mod types; 
-mod assumption;
+mod sygus;
+mod hoare;
 mod predicate;
 mod tests;
 mod utils;
