@@ -27,6 +27,18 @@ impl Literal {
             Const(val)  => format!("{}", val)
         }
     }
+    fn to_function(&self, var_exchange: &str) -> Literal {
+        match self {
+            Var(var_name) => {
+                if var_name == var_exchange {
+                    Var(format!("(function {})", var_name))
+                } else {
+                    Var(var_name.to_string())
+                }
+            },
+            Const(val) => Const(*val)
+        }
+    }
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
@@ -66,14 +78,16 @@ impl UpdateTerm {
 #[derive(Hash, Eq, PartialEq, Clone)]
 pub enum LogicOp {
     LT,
-    EQ
+    EQ,
+    LTE
 }
 
 impl LogicOp {
     fn to_string(&self) -> String {
         match self {
-            LT => String::from("<"),
-            EQ => String::from("=")
+            LT  => String::from("<"),
+            EQ  => String::from("="),
+            LTE => String::from("<=")
         }
     }
 }
@@ -85,47 +99,39 @@ pub enum Predicate {
     Bool(LogicOp, Literal, Literal)
 }
 
-
 impl Predicate {
-    // TODO: need standardization, i.e. var always on LHS
-    fn to_precond(&self) -> String {
+    // XXX: no real support for two-element predicates yet.
+    pub fn get_var_name(&self) -> String {
         match self {
-            Bool(op, _, rhs) =>
-                match op {
-                    EQ => format!("(function {})", rhs.to_string()),
-                    LT => panic!("Not Implemented Error")  // forall
-                }
-            _ => panic!("Not Implemented Error")
+            Bool(_, lhs, _) =>
+                match lhs {
+                    Var(s) => String::from(s),
+                    Const(_) => panic!("Non-rhs argument not supported.")
+                },
+            And(lpred, _) => lpred.get_var_name(),
+            Neg(pred) => pred.get_var_name()
         }
     }
 
-    // TODO: need standardization, i.e. var always on LHS
-    fn to_constraint(&self, precond: &Predicate) -> String {
-        let mut sygus_str = String::from("(constraint ");
-        let constraint = match self {
-            Bool(op, _, rhs) => format!("({} {} {})",
-                    op.to_string(),
-                    precond.to_precond(),
-                    rhs.to_string()),
-            _ => panic!("Not Implemented Error")
-
-        };
-        sygus_str.push_str(&constraint);
-        sygus_str.push_str(")\n");
-        sygus_str 
-    }
-
-    // TODO: need standardization, i.e. var always on LHS
-    pub fn get_main_var(&self) -> String {
+    fn var_to_function(self, var_name: &str) -> Predicate {
         match self {
-            Bool(_, lhs, _) => lhs.to_string(),
-            And(lhs, rhs) => lhs.get_main_var(),
-            Neg(pred) => pred.get_main_var()
+            Bool(op, lhs, rhs) =>
+                Bool(op,
+                     lhs.to_function(var_name),
+                     rhs.to_function(var_name)),
+            And(larg, rarg) =>
+                Predicate::new_and((*larg).clone()
+                                       .var_to_function(var_name),
+                                   (*rarg).clone()
+                                       .var_to_function(var_name)),
+            Neg(pred) =>
+                Predicate::new_neg((*pred).clone()
+                    .var_to_function(var_name))
         }
     }
 
     fn to_smtlib(&self) -> String {
-        let mut smt_str = String::from("");
+        let mut smt_str = String::new();
         let pred_str = match self {
             Bool(op, lhs, rhs) => 
                 format!("({} {} {})",
@@ -148,6 +154,10 @@ impl Predicate {
         format!("(assert {})\n", self.to_smtlib())
     }
 
+    fn to_constraint(&self) -> String {
+        format!("(constraint {})\n", self.to_smtlib())
+    }
+
     fn get_vars(&self) -> HashSet<&str> {
         let mut vars : HashSet<&str> = HashSet::new();
         match self {
@@ -165,7 +175,9 @@ impl Predicate {
                 vars = vars.union(&lhs.get_vars()).cloned().collect();
                 vars = vars.union(&rhs.get_vars()).cloned().collect();
             },
-            Neg(pred) => {vars = vars.union(&pred.get_vars()).cloned().collect();}
+            Neg(pred) => {
+                vars = vars.union(&pred.get_vars()).cloned().collect();
+            }
         };
         vars
     }
@@ -218,12 +230,21 @@ impl Predicate {
     pub fn and(&self, pred: &Predicate) -> Predicate {
         And(Rc::new(self.clone()), Rc::new(pred.clone()))
     }
+
     pub fn neg(&self) -> Predicate {
         Neg(Rc::new(self.clone()))
     }
+
+    pub fn new_and(larg: Predicate, rarg: Predicate) -> Predicate {
+        And(Rc::new(larg.clone()), Rc::new(rarg.clone()))
+    }
+
+    pub fn new_neg(pred: Predicate) -> Predicate {
+        Neg(Rc::new(pred.clone()))
+    }
 }
 
-// Might need var info...
+// TODO: Might need var info...
 pub struct SpecPredicate {
     pub pred: Predicate,
     pub temporal: Vec<Temporal>
@@ -246,19 +267,31 @@ pub struct SygusHoareTriple {
 impl SygusHoareTriple {
     pub fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
+        let var_name = self.precond.get_var_name();
         let header = format!("(synth-fun function (({} Int)) Int\n", self.var_name);
+        let variables = self.postcond.get_vars();
+        let postcond = (*self.postcond).clone().
+            var_to_function(&var_name);
+
+        for var in &variables {
+            query.push_str(&format!("(declare-const {} Int)\n", var));
+        }
+
         query.push_str(&header);
+
         query.push_str("\t((I Int))(\n");
         query.push_str("\t\t(I Int (\n");
+        // TODO: implement (- I 1)
         for update_term in &*self.updates {
             query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
-            // TODO: implement (- I 1)
         }
         query.push_str("\t\t\t)\n");
         query.push_str("\t\t)\n");
         query.push_str("\t)\n");
         query.push_str(")\n");
-        query.push_str(&self.postcond.to_constraint(&self.precond));
+
+        query.push_str(&self.precond.to_assert());
+        query.push_str(&postcond.to_constraint());
         query.push_str("(check-synth)\n");
         query
     }

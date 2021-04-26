@@ -24,9 +24,12 @@ pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
     let var_updates = var_updates(update_vec);
     let mut hoare_vec : Vec<SygusHoareTriple> = Vec::new();
     for precond in &pred_vec {
-        let var_name = &precond.pred.get_main_var();
+        let var_name = &precond.pred.get_var_name();
+        if var_name.parse::<f64>().is_ok() {
+            continue; //TEMP HACK
+        }
         for postcond in &pred_vec {
-            if &postcond.pred.get_main_var() != var_name {
+            if &postcond.pred.get_var_name() != var_name {
                 continue;
             }
             for operator in &postcond.temporal {
