@@ -1,6 +1,6 @@
-# TSL Modulo Theories Synthesis
+# StreaMoS
 
-Repository for synthesis of Temporal Stream Logic Modulo Theories.
+Repository for StreaMoS, Temporal **Strea**m Logic **Mo**dulo Theories **S**ynthesis.
 
 ## Installation
 
