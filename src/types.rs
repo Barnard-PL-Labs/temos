@@ -39,6 +39,12 @@ impl Literal {
             Const(val) => Const(*val)
         }
     }
+    fn change_name(&self, new_name: &str) -> Literal {
+        match self {
+            Var(var_name) => Var(String::from(new_name)),
+            Const(val) => Const(*val)
+        }
+    }
 }
 
 #[derive(Hash, Eq, PartialEq, Clone)]
@@ -71,6 +77,15 @@ impl UpdateTerm {
                         lhs.to_string(),
                         rhs.to_string()),
             Signal(val) => val.to_string()
+        }
+    }
+    fn change_sink_name(&self, new_name: &str) -> UpdateTerm {
+        match self {
+            Function(op, lhs, rhs) =>
+                Function(op.clone(),
+                         lhs.change_name(new_name),
+                         rhs.change_name(new_name)),
+            Signal(var) => Signal(var.clone())
         }
     }
 }
@@ -211,7 +226,7 @@ impl Predicate {
 
     pub fn is_unsat(&self) -> bool {
         let smt2 = self.to_smt2();
-        let result = utils::run_cvc4(smt2, "smt");
+        let result = utils::cvc4_generic(smt2, "smt");
         if result == "sat\n" {
             return false
         } else if result == "unsat\n" {
@@ -219,6 +234,10 @@ impl Predicate {
         } else {
             panic!("not sat or unsat??\n")
         }
+    }
+
+    pub fn is_sat(&self) -> bool {
+        !self.is_unsat()
     }
 
     fn to_tsl(&self) -> String {
@@ -258,6 +277,7 @@ impl Predicate {
 }
 
 // TODO: Might need var info...
+#[derive(Clone)]
 pub struct SpecPredicate {
     pub pred: Predicate,
     pub temporal: Vec<Temporal>
@@ -308,9 +328,11 @@ impl SygusHoareTriple {
 
         query.push_str("\t((I Int))(\n");
         query.push_str("\t\t(I Int (\n");
-        // TODO: implement (- I 1)
         for update_term in &*self.updates {
             query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
+            query.push_str(&format!("\t\t\t\t{}\n",
+                                    update_term.change_sink_name("I")
+                                               .to_sygus()));
         }
         query.push_str("\t\t\t)\n");
         query.push_str("\t\t)\n");

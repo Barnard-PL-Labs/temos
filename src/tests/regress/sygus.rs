@@ -21,7 +21,7 @@ fn test_sygus() {
 
     let query = hoare.to_sygus();
 
-    result = utils::run_cvc4(query, "sygus");
+    result = utils::cvc4_generic(query, "sygus");
 
     assert_eq!(expected, result);
 }

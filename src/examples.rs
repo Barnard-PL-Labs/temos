@@ -29,33 +29,6 @@ fn parse_sygus() {
     println!("{}", result);
 }
 
-fn gen_hoare() {
-    let pred_vec = vec![SpecPredicate{
-        pred: Bool(EQ, Var(String::from("c")), Const(0)),
-        temporal: vec![Next(0)]
-    },
-    SpecPredicate {
-        pred: Bool(EQ, Var(String::from("c")), Const(1)),
-        temporal: vec![Next(0)]
-    }];
-    let update_vec = vec![Update {
-        update_term: Function(Add, Var(String::from("c")), Const(1)),
-        var_name: String::from("c"),
-        depends: Vec::new()
-    },
-    Update {
-        update_term: Function(Sub, Var(String::from("c")), Const(1)),
-        var_name: String::from("c"),
-        depends: Vec::new()
-    }];
-    let hoare_vec = hoare::enumerate_hoare(pred_vec, update_vec);
-    for hoare in &hoare_vec {
-        let sygus = hoare.to_sygus();
-        println!("SyGuS:\n{}\n----------------\n", &sygus);
-        println!("Result:\n{}\n---------------\n", utils::run_cvc4(sygus, "sygus"));
-    }
-}
-
 fn simple_bouncing_counter() {
     let pred_vec = vec![SpecPredicate{
         pred: Bool(EQ, Var(String::from("c")), Const(0)),
@@ -67,8 +40,8 @@ fn simple_bouncing_counter() {
     },
     SpecPredicate {
         pred: Predicate::new_and(
-            Bool(LTE, Var(String::from("c")), Const(100)),                  
-            Bool(LTE, Const(0), Var(String::from("c"))),                  
+            Bool(LTE, Var(String::from("c")), Const(100)),
+            Bool(LTE, Const(0), Var(String::from("c"))),
         ),
         temporal: vec![Next(1)]
     }];
@@ -81,41 +54,32 @@ fn simple_bouncing_counter() {
         update_term: Function(Sub, Var(String::from("c")), Const(1)),
         var_name: String::from("c"),
         depends: Vec::new()
-    }];
-    let hoare_vec = hoare::enumerate_hoare(pred_vec, update_vec);
-    for hoare in &hoare_vec {
-        let sygus = hoare.to_sygus();
-        println!("SyGuS:\n{}\n----------------\n", &sygus);
-        println!("Result:\n{}\n---------------\n", utils::run_cvc4(sygus, "sygus"));
-    }
-}
-
-fn forall_tester() {
-    let pred_vec = vec![SpecPredicate{
-        pred: Bool(GT, Var(String::from("y")), Const(0)),
-        temporal: vec![Next(0)]
-    }];
-    let update_vec = vec![Update {
-        update_term: Signal(Const(1)),
-        var_name: String::from("y"),
+    },
+    Update {
+        update_term: Signal(Var(String::from("c"))),
+        var_name: String::from("c"),
         depends: Vec::new()
     }];
     let hoare_vec = hoare::enumerate_hoare(pred_vec, update_vec);
     for hoare in &hoare_vec {
         let sygus = hoare.to_sygus();
+        let temporal = match *hoare.temporal {
+            Next(i) => i,
+            _ => 0
+        };
+        println!("Command Line Option: --lang sygus --sygus-abort-size={}", temporal);
         println!("SyGuS:\n{}\n----------------\n", &sygus);
-        println!("Result:\n{}\n---------------\n", utils::run_cvc4(sygus, "sygus"));
+        println!("Result:\n{}\n---------------\n",
+                 utils::sygus_cvc4(sygus, "sygus", 1));
     }
 }
 
 pub fn examples() {
-    //to_smt2();
-    //println!("---------------------------------------");
-    //to_assumption();
-    //println!("---------------------------------------");
-    //parse_sygus();
-    //println!("---------------------------------------");
-    //gen_hoare();
-    // simple_bouncing_counter();
-    forall_tester();
+    to_smt2();
+    println!("---------------------------------------");
+    to_assumption();
+    println!("---------------------------------------");
+    simple_bouncing_counter();
+    println!("---------------------------------------");
+    parse_sygus();
 }

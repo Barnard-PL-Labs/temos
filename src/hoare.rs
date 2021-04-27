@@ -1,4 +1,5 @@
 use crate::types::*;
+use crate::predicate;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::rc::Rc;
@@ -20,7 +21,10 @@ fn var_updates(update_vec: Vec<Update>)
 // O(n^3) but it's probably fast enough.
 pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
                        update_vec: Vec<Update>) -> Vec<SygusHoareTriple> {
-
+    let pred_vec = predicate::enumerate_spec_preds(pred_vec);
+    let pred_vec : Vec<&SpecPredicate> = pred_vec.iter()
+                                                 .filter(|x| x.pred.is_sat())
+                                                 .collect();
     let var_updates = var_updates(update_vec);
     let mut hoare_vec : Vec<SygusHoareTriple> = Vec::new();
     for precond in &pred_vec {

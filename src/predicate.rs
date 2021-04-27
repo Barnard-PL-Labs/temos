@@ -16,6 +16,18 @@ fn enumerate_preds(preds: Vec<Predicate>) -> HashSet<Predicate> {
     powerset
 }
 
+pub fn enumerate_spec_preds(preds: Vec<SpecPredicate>) -> Vec<SpecPredicate> {
+    let mut all_preds = preds.clone();
+    for predicate in preds {
+        let negated = SpecPredicate {
+            pred: predicate.pred.neg(),
+            temporal: predicate.temporal.clone()
+        };
+        all_preds.push(negated);
+    }
+    all_preds
+}
+
 pub fn gen_assumptions(preds: Vec<Predicate>) -> Vec<String> {
     let mut assumptions = Vec::new();
     for predicate in enumerate_preds(preds) {
@@ -39,7 +51,7 @@ mod tests {
                          Bool(LT, Var("x".to_string()),
                                   Var("y".to_string()))];
         for predicate in &preds {
-            assert_eq!(utils::run_cvc4(predicate.to_smt2(), "smt"), "sat\n");
+            assert_eq!(utils::cvc4_generic(predicate.to_smt2(), "smt"), "sat\n");
         }
         for predicate in enumerate_preds(preds) {
             println!("\n{}\n", predicate.to_smt2());
