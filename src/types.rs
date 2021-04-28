@@ -32,6 +32,12 @@ impl Literal {
             Const(val)  => format!("{}", val)
         }
     }
+    fn to_tsl(&self) -> String {
+        match self {
+            Var(string) => String::from(string),
+            Const(val)  => format!("c{}()", val)
+        }
+    }
     fn to_function(&self, var_exchange: &str) -> Literal {
         match self {
             Var(var_name) => {
@@ -63,6 +69,12 @@ impl LiaOp {
         match self {
             Add => String::from("+"),
             Sub => String::from("-")
+        }
+    }
+    fn to_tsl(&self) -> String {
+        match self {
+            Add => String::from("add"),
+            Sub => String::from("sub")
         }
     }
 }
@@ -110,6 +122,14 @@ impl LogicOp {
             EQ  => String::from("="),
             LTE => String::from("<="),
             GT => String::from(">=")
+        }
+    }
+    fn to_tsl(&self) -> String {
+        match self {
+            LT  => String::from("lt"),
+            EQ  => String::from("eq"),
+            LTE => String::from("lte"),
+            GT => String::from("gte")
         }
     }
 }
@@ -249,9 +269,9 @@ impl Predicate {
         match self {
             Bool(op, lhs, rhs) =>
                 format!("({} {} {})",
-                op.to_string(),
-                lhs.to_string(),
-                rhs.to_string()),
+                op.to_tsl(),
+                lhs.to_tsl(),
+                rhs.to_tsl()),
                 And(lhs, rhs) =>
                     format!("({} && {})",
                     lhs.to_tsl(),
