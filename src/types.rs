@@ -11,6 +11,7 @@ use crate::utils;
 use crate::predicate;
 use crate::hoare;
 use crate::sygus;
+use std::convert::TryInto;
 
 #[derive(Clone)]
 pub enum Temporal {
@@ -260,7 +261,7 @@ impl Predicate {
     }
 
     pub fn to_assumption(&self) -> String {
-        format!("!{}", self.to_tsl())
+        format!("!{};", self.to_tsl())
     }
 
     pub fn and(&self, pred: &Predicate) -> Predicate {
@@ -362,11 +363,30 @@ impl SygusHoareTriple {
             Liveness => panic!("")  // TODO
         }
     }
+
+    fn to_assumption(&self) -> Option<String> {
+        let sygus_result = sygus::get_sygus_result(&self.run_synthesis());
+        if sygus_result.is_none() {
+            return None;
+        }
+        let timesteps = match *self.temporal {
+            Next(i) => format!(") -> {}",
+                               "X ".repeat(i.try_into()
+                                   .unwrap())),
+            Liveness => format!("W {}) -> F",
+                                self.postcond.to_tsl())
+        };
+        Some(format!("{} && ({} {} {};",
+                     self.precond.to_tsl(),
+                     sygus_result.unwrap(),
+                     timesteps,
+                     self.postcond.to_tsl()))
+    }
 }
 
 pub struct Specification {
-    predicates: Vec<SpecPredicate>,
-    updates: Vec<Update>
+    pub predicates: Vec<SpecPredicate>,
+    pub updates: Vec<Update>
 }
 
 impl Specification {
@@ -388,12 +408,12 @@ impl Specification {
         hoare_vec = hoare::enumerate_hoare(self.predicates.clone(),
                                            self.updates.clone());
         sygus_results = hoare_vec.iter()
-            .filter_map(|x| sygus::get_sygus_result(&x.run_synthesis()))
-            .map(|x| sygus::parse_sygus_fxn(x))
+            .filter_map(|x| x.to_assumption())
             .collect();
         for result in sygus_results {
-            let sygus_ass = sygus::parse_sygus_fxn(result);
+            let sygus_ass = sygus::fxn_to_tsl(result);
             assumptions.push_str(&sygus_ass);
+            assumptions.push('\n');
         }
         assumptions
     }

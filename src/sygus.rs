@@ -20,8 +20,9 @@ fn get_ast(fxn: String, keyword: &str) -> String {
 }
 
 // TODO
-pub fn parse_sygus_fxn(fxn: String) -> String {
-    get_ast(fxn, "Int")
+pub fn fxn_to_tsl(sygus_result: String) -> String {
+    // let fxn = get_ast(sygus_result, "Int");
+    sygus_result
 }
 
 /// Returns None when result is unrealizable.
@@ -40,7 +41,7 @@ mod tests {
     #[test]
     fn test_assumption() {
         let function = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
-        let result = parse_sygus_fxn(function);
+        let result = fxn_to_tsl(function);
         assert_eq!(&result, "(+ (+ x 1) 2)");
     }
 }
