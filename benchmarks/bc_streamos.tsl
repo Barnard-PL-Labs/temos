@@ -1,0 +1,38 @@
+BTWN = (eq c c0()  || lt c0() c) && (eq c c100() || lt c c100());
+
+initially assume {
+	eq c c0();
+}
+
+always assume {		
+	!((eq c c0()) && !(eq c c0()));
+	!((eq c c0()) && (eq c c100()));
+	!((eq c c100()) && !(eq c c100()));
+	!((eq c c100()) && !((lte c c100()) && (lte c0() c)));
+	!(((lte c c100()) && (lte c0() c)) && !((lte c c100()) && (lte c0() c)));
+	!((eq c c0()) && !((lte c c100()) && (lte c0() c)));
+	(eq c c0()) && ([c <- c]) ->  (eq c c0());
+	(eq c c0()) && ([c <- c]) -> X  ((lte c c100()) && (lte c0() c));
+	(eq c c0()) && ([c <- sub c c1()]) ->  !(eq c c0());
+	(eq c c0()) && ([c <- sub c c1()]) ->  !(eq c c100());
+	(eq c c0()) && ([c <- sub c c1()]) -> X  !((lte c c100()) && (lte c0() c));
+	(eq c c100()) && ([c <- c]) ->  (eq c c100());
+	(eq c c100()) && ([c <- sub c c1()]) -> X  ((lte c c100()) && (lte c0() c));
+	(eq c c100()) && ([c <- sub c c1()]) ->  !(eq c c0());
+	(eq c c100()) && ([c <- sub c c1()]) ->  !(eq c c100());
+	(eq c c100()) && ([c <- add c c1()]) -> X  !((lte c c100()) && (lte c0() c));
+	((lte c c100()) && (lte c0() c)) && ([c <- c]) -> X  ((lte c c100()) && (lte c0() c));
+	((lte c c100()) && (lte c0() c)) && ([c <- add c c1()]) ->  !(eq c c0());
+	((lte c c100()) && (lte c0() c)) && ([c <- sub c c1()]) ->  !(eq c c100());
+	!((lte c c100()) && (lte c0() c)) && ([c <- sub c c1()]) ->  !(eq c c0());
+	!((lte c c100()) && (lte c0() c)) && ([c <- c]) ->  !(eq c c100());
+	!((lte c c100()) && (lte c0() c)) && ([c <- c]) -> X  !((lte c c100()) && (lte c0() c));
+}
+
+always guarantee {
+	[c <- sub c c1()] -> [c <- sub c c1()] W (eq c c0());
+	[c <- add c c1()] -> [c <- add c c1()] W (eq c c100());
+	eq c c100() -> [c <- sub c c1()];
+	eq c c0()   -> [c <- add c c1()];
+	BTWN;
+}
