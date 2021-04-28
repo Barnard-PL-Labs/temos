@@ -16,6 +16,7 @@ fn enumerate_preds(preds: Vec<Predicate>) -> HashSet<Predicate> {
     powerset
 }
 
+// FIXME: doesn't do what its name suggests...
 pub fn enumerate_spec_preds(preds: Vec<SpecPredicate>) -> Vec<SpecPredicate> {
     let mut all_preds = preds.clone();
     for predicate in preds {

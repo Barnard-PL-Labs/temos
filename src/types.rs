@@ -78,9 +78,9 @@ impl UpdateTerm {
         match self {
             Function(op, lhs, rhs) =>
                 format!("({} {} {})",
-                        op.to_string(),
-                        lhs.to_string(),
-                        rhs.to_string()),
+                op.to_string(),
+                lhs.to_string(),
+                rhs.to_string()),
             Signal(val) => val.to_string()
         }
     }
@@ -88,8 +88,8 @@ impl UpdateTerm {
         match self {
             Function(op, lhs, rhs) =>
                 Function(op.clone(),
-                         lhs.change_name(new_name),
-                         rhs.change_name(new_name)),
+                lhs.change_name(new_name),
+                rhs.change_name(new_name)),
             Signal(var) => Signal(var.clone())
         }
     }
@@ -141,8 +141,8 @@ impl Predicate {
                     Var(s) => String::from(s),
                     Const(_) => panic!("Non-rhs argument not supported.")
                 },
-            And(lpred, _) => lpred.get_var_name(),
-            Neg(pred) => pred.get_var_name()
+                And(lpred, _) => lpred.get_var_name(),
+                Neg(pred) => pred.get_var_name()
         }
     }
 
@@ -152,14 +152,14 @@ impl Predicate {
                 Bool(op,
                      lhs.to_function(var_name),
                      rhs.to_function(var_name)),
-            And(larg, rarg) =>
-                Predicate::new_and((*larg).clone()
-                                       .var_to_function(var_name),
-                                   (*rarg).clone()
-                                       .var_to_function(var_name)),
-            Neg(pred) =>
-                Predicate::new_neg((*pred).clone()
-                    .var_to_function(var_name))
+                     And(larg, rarg) =>
+                         Predicate::new_and((*larg).clone()
+                                            .var_to_function(var_name),
+                                            (*rarg).clone()
+                                            .var_to_function(var_name)),
+                     Neg(pred) =>
+                         Predicate::new_neg((*pred).clone()
+                                            .var_to_function(var_name))
         }
     }
 
@@ -168,16 +168,16 @@ impl Predicate {
         let pred_str = match self {
             Bool(op, lhs, rhs) =>
                 format!("({} {} {})",
-                        op.to_string(),
-                        lhs.to_string(),
-                        rhs.to_string()),
-            And(lhs, rhs) =>
-                format!("(and {} {})",
-                        lhs.to_smtlib(),
-                        rhs.to_smtlib()),
-            Neg(pred) =>
-                format!("(not {})",
-                        pred.to_smtlib())
+                op.to_string(),
+                lhs.to_string(),
+                rhs.to_string()),
+                And(lhs, rhs) =>
+                    format!("(and {} {})",
+                    lhs.to_smtlib(),
+                    rhs.to_smtlib()),
+                Neg(pred) =>
+                    format!("(not {})",
+                    pred.to_smtlib())
         };
         smt_str.push_str(&pred_str);
         smt_str
@@ -249,14 +249,14 @@ impl Predicate {
         match self {
             Bool(op, lhs, rhs) =>
                 format!("({} {} {})",
-                        op.to_string(),
-                        lhs.to_string(),
-                        rhs.to_string()),
-            And(lhs, rhs) =>
-                format!("({} && {})",
-                        lhs.to_tsl(),
-                        rhs.to_tsl()),
-            Neg(pred) => format!("!{}", pred.to_tsl())
+                op.to_string(),
+                lhs.to_string(),
+                rhs.to_string()),
+                And(lhs, rhs) =>
+                    format!("({} && {})",
+                    lhs.to_tsl(),
+                    rhs.to_tsl()),
+                Neg(pred) => format!("!{}", pred.to_tsl())
         }
     }
 
@@ -338,7 +338,7 @@ impl SygusHoareTriple {
             query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
             query.push_str(&format!("\t\t\t\t{}\n",
                                     update_term.change_sink_name("I")
-                                        .to_sygus()));
+                                    .to_sygus()));
         }
         query.push_str("\t\t\t)\n");
         query.push_str("\t\t)\n");
@@ -369,16 +369,16 @@ impl SygusHoareTriple {
         if sygus_result.is_none() {
             return None;
         }
+        let update_ass = sygus::fxn_to_tsl(sygus_result.unwrap());
         let timesteps = match *self.temporal {
             Next(i) => format!(") -> {}",
-                               "X ".repeat(i.try_into()
-                                   .unwrap())),
+            "X ".repeat(i.try_into()
+                        .unwrap())),
             Liveness => format!("W {}) -> F",
-                                self.postcond.to_tsl())
+            self.postcond.to_tsl())
         };
-        Some(format!("{} && ({} {} {};",
-                     self.precond.to_tsl(),
-                     sygus_result.unwrap(),
+        Some(format!("{} && ({}{} {};", self.precond.to_tsl(),
+                     update_ass,
                      timesteps,
                      self.postcond.to_tsl()))
     }
@@ -406,13 +406,12 @@ impl Specification {
             assumptions.push_str(&format!("{}\n", pred_ass));
         }
         hoare_vec = hoare::enumerate_hoare(self.predicates.clone(),
-                                           self.updates.clone());
+        self.updates.clone());
         sygus_results = hoare_vec.iter()
             .filter_map(|x| x.to_assumption())
             .collect();
         for result in sygus_results {
-            let sygus_ass = sygus::fxn_to_tsl(result);
-            assumptions.push_str(&sygus_ass);
+            assumptions.push_str(&result);
             assumptions.push('\n');
         }
         assumptions

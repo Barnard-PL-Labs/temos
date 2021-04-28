@@ -1,28 +1,21 @@
 // Horrible, horrible function
 fn get_ast(fxn: String, keyword: &str) -> String {
     let kw_indices: Vec<_> = fxn.match_indices(keyword).collect();
-    let paren_indices: Vec<_> = fxn.match_indices("(").collect();
     let last_kw = kw_indices.last()
-                          .expect(&format!("bad sygus result: {}.\n
+        .expect(&format!("bad sygus result: {}.\n
                                            no instance of {}", fxn, keyword))
-                          .0;
-    let mut paren_idx = 0;
-    for (idx, _) in paren_indices {
-        if last_kw < idx {
-            paren_idx = idx;
-            break;
-        }
-    }
-    if paren_idx == 0 {
-        panic!("Can't find parentheses!");
-    }
-    String::from(&fxn[paren_idx..fxn.chars().count()-1])
+        .0;
+    let start = last_kw + keyword.chars().count() + 1;
+    let end = fxn.chars().count()-1;
+    String::from(&fxn[start..end])
 }
 
 // TODO
 pub fn fxn_to_tsl(sygus_result: String) -> String {
     // let fxn = get_ast(sygus_result, "Int");
-    sygus_result
+    // println!("FUNCTION: {}", &fxn);
+    // fxn
+    format!("[{}]", get_ast(sygus_result, "Int"))
 }
 
 /// Returns None when result is unrealizable.
