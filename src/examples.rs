@@ -25,7 +25,7 @@ fn to_assumption() {
 fn parse_sygus() {
     let function = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
     println!("{}", &function);
-    let result = sygus::parse_syguslia_result(function);
+    let result = sygus::parse_sygus_fxn(function);
     println!("{}", result);
 }
 
@@ -67,10 +67,17 @@ fn simple_bouncing_counter() {
             Next(i) => i,
             _ => 0
         };
-        println!("Command Line Option: --lang sygus --sygus-abort-size={}", temporal);
         println!("SyGuS:\n{}\n----------------\n", &sygus);
-        println!("Result:\n{}\n---------------\n",
-                 utils::sygus_cvc4(sygus, "sygus", 1));
+        let result = utils::sygus_cvc4(sygus, "sygus", 1);
+        let is_realizable = sygus::get_sygus_result(&result);
+        println!("Command Line Option: --lang sygus --sygus-abort-size={}", temporal);
+        println!("Result:\n{}\n---------------\n", &result);
+        if is_realizable.is_some() {
+            println!("Parse attempt:\n{}\n---------------\n",
+                     is_realizable.unwrap());
+        } else {
+            println!("UNREALIZABLE\n---------------\n");
+        }
     }
 }
 

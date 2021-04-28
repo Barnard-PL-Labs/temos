@@ -19,8 +19,19 @@ fn get_ast(fxn: String, keyword: &str) -> String {
     String::from(&fxn[paren_idx..fxn.chars().count()-1])
 }
 
-pub fn parse_syguslia_result(fxn: String) -> String {
+// TODO
+pub fn parse_sygus_fxn(fxn: String) -> String {
     get_ast(fxn, "Int")
+}
+
+/// Returns None when result is unrealizable.
+pub fn get_sygus_result(result: &str) -> Option<String> {
+    let mut lines = result.lines();
+    if lines.next().unwrap().eq("unsat") {
+        Some(String::from(lines.next().unwrap()))
+    } else {
+        None
+    }
 }
 
 #[cfg(test)]
@@ -29,7 +40,7 @@ mod tests {
     #[test]
     fn test_assumption() {
         let function = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
-        let result = parse_syguslia_result(function);
+        let result = parse_sygus_fxn(function);
         assert_eq!(&result, "(+ (+ x 1) 2)");
     }
 }

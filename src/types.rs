@@ -4,9 +4,13 @@ pub use UpdateTerm::*;
 pub use Predicate::*;
 pub use LogicOp::*;
 pub use LiaOp::*;
+use std::fs;
 use std::rc::Rc;
 use std::collections::HashSet;
 use crate::utils;
+use crate::predicate;
+use crate::hoare;
+use crate::sygus;
 
 #[derive(Clone)]
 pub enum Temporal {
@@ -71,8 +75,8 @@ pub enum UpdateTerm {
 impl UpdateTerm {
     fn to_sygus(&self) -> String {
         match self {
-            Function(op, lhs, rhs) => 
-                format!("({} {} {})", 
+            Function(op, lhs, rhs) =>
+                format!("({} {} {})",
                         op.to_string(),
                         lhs.to_string(),
                         rhs.to_string()),
@@ -161,21 +165,21 @@ impl Predicate {
     fn to_smtlib(&self) -> String {
         let mut smt_str = String::new();
         let pred_str = match self {
-            Bool(op, lhs, rhs) => 
+            Bool(op, lhs, rhs) =>
                 format!("({} {} {})",
-                op.to_string(),
-                lhs.to_string(),
-                rhs.to_string()),
+                        op.to_string(),
+                        lhs.to_string(),
+                        rhs.to_string()),
             And(lhs, rhs) =>
                 format!("(and {} {})",
-                lhs.to_smtlib(),
-                rhs.to_smtlib()),
-            Neg(pred) => 
+                        lhs.to_smtlib(),
+                        rhs.to_smtlib()),
+            Neg(pred) =>
                 format!("(not {})",
-                pred.to_smtlib())
+                        pred.to_smtlib())
         };
         smt_str.push_str(&pred_str);
-        smt_str 
+        smt_str
     }
 
     fn to_assert(&self) -> String {
@@ -242,15 +246,15 @@ impl Predicate {
 
     fn to_tsl(&self) -> String {
         match self {
-            Bool(op, lhs, rhs) => 
+            Bool(op, lhs, rhs) =>
                 format!("({} {} {})",
-                op.to_string(),
-                lhs.to_string(),
-                rhs.to_string()),
+                        op.to_string(),
+                        lhs.to_string(),
+                        rhs.to_string()),
             And(lhs, rhs) =>
                 format!("({} && {})",
-                lhs.to_tsl(),
-                rhs.to_tsl()),
+                        lhs.to_tsl(),
+                        rhs.to_tsl()),
             Neg(pred) => format!("!{}", pred.to_tsl())
         }
     }
@@ -283,6 +287,7 @@ pub struct SpecPredicate {
     pub temporal: Vec<Temporal>
 }
 
+#[derive (Clone, Eq, PartialEq)]
 pub struct Update {
     pub update_term: UpdateTerm,
     pub var_name: String,
@@ -332,7 +337,7 @@ impl SygusHoareTriple {
             query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
             query.push_str(&format!("\t\t\t\t{}\n",
                                     update_term.change_sink_name("I")
-                                               .to_sygus()));
+                                        .to_sygus()));
         }
         query.push_str("\t\t\t)\n");
         query.push_str("\t\t)\n");
@@ -349,10 +354,47 @@ impl SygusHoareTriple {
         query
     }
 
-    pub fn cmd_options(&self) -> String {
+    fn run_synthesis(&self) -> String {
         match *self.temporal {
-            Next(timesteps) => format!("--sygus-abort-size={}", timesteps),
-            Liveness => panic!("Not Implemented Error")
+            Next(timestep) => {
+                utils::sygus_cvc4(self.to_sygus(),"sygus", timestep)
+            }
+            Liveness => panic!("")  // TODO
         }
+    }
+}
+
+pub struct Specification {
+    predicates: Vec<SpecPredicate>,
+    updates: Vec<Update>
+}
+
+impl Specification {
+    pub fn write_assumption(&self, file_name: &str) {
+        let assumption = self.to_assumption();
+        fs::write(file_name, assumption).unwrap();
+    }
+    pub fn to_assumption(&self) -> String {
+        let mut assumptions = String::new();
+        let predicates = self.predicates.iter()
+            .map(|x| x.pred.clone())
+            .collect();
+        let hoare_vec;
+        let sygus_results: Vec<String>;
+
+        for pred_ass in predicate::gen_assumptions(predicates) {
+            assumptions.push_str(&format!("{}\n", pred_ass));
+        }
+        hoare_vec = hoare::enumerate_hoare(self.predicates.clone(),
+                                           self.updates.clone());
+        sygus_results = hoare_vec.iter()
+            .filter_map(|x| sygus::get_sygus_result(&x.run_synthesis()))
+            .map(|x| sygus::parse_sygus_fxn(x))
+            .collect();
+        for result in sygus_results {
+            let sygus_ass = sygus::parse_sygus_fxn(result);
+            assumptions.push_str(&sygus_ass);
+        }
+        assumptions
     }
 }

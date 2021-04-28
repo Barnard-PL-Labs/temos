@@ -149,7 +149,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tmts"
+name = "streamos"
 version = "0.1.0"
 dependencies = [
  "rand",
