@@ -1,0 +1,17 @@
+initially assume {
+	gte c0() balance;
+}
+
+always assume {
+	gte c0() x;
+	!(deposit x && withdraw y);
+	gte c0() balance && [balance <- add balance x] -> X gte c0() balance;
+	gte c0() balance && [balance <- iteSub balance x] -> X gte c0() balance;
+}
+
+always guarantee {
+	deposit x  -> F [balance <- add balance x];
+	withdraw y -> [balance <- iteSub balance x] && [out <- iteSub balance x];
+	[balance <- balance] || deposit x || withdraw y;
+	gte c0() balance;
+}

@@ -53,7 +53,7 @@ fn simple_bouncing_counter() {
         println!("Result:\n{}\n---------------\n", &result);
         if is_realizable.is_some() {
             println!("Parse attempt:\n{}\n---------------\n",
-                     is_realizable.unwrap());
+                     sygus::fxn_to_tsl(is_realizable.unwrap()));
         } else {
             println!("UNREALIZABLE\n---------------\n");
         }
