@@ -299,9 +299,21 @@ impl Predicate {
     pub fn new_neg(pred: Predicate) -> Predicate {
         Neg(Rc::new(pred.clone()))
     }
+
+    // TODO
+    fn generate_pbe(&self, num_ex: u32) -> Vec<Predicate> {
+        if self.is_eq() {
+            panic!("Generate PBE called with equality\n");
+        }
+        eprintln!("\x1b[31;1;4mGenerate_pbe not implemented\x1b[0m\n");
+        for _ in 0..num_ex {
+            // maybe leverage CVC4 to generate models?
+            ;
+        }
+        Vec::new()
+    }
 }
 
-// TODO: Might need var info...
 #[derive(Clone)]
 pub struct SpecPredicate {
     pub pred: Predicate,
@@ -375,12 +387,47 @@ impl SygusHoareTriple {
         query
     }
 
+    fn verify_loop(&self, loop_body: &str) {
+        match *self.temporal {
+            Next(_) => panic!("This should not be called for safety specs\n"),
+            _ => ()
+        };
+        if (*self.precond).is_eq() {
+            panic!("SHould not be called for equalities\n");
+        }
+        assert_eq!(loop_body, loop_body);
+        // TODO: run dafny
+    }
+
     fn run_synthesis(&self) -> String {
         match *self.temporal {
             Next(timestep) => {
                 utils::sygus_cvc4(self.to_sygus(),"sygus", timestep)
             }
-            Liveness => panic!("")  // TODO
+            Liveness => {
+                if (*self.precond).is_eq() {
+                    utils::cvc4_generic(self.to_sygus(), "sygus")
+                } 
+                // while loops with PBE
+                else {
+                    let pred_pbe_vec = (*self.precond).generate_pbe(3);
+                    let mut sygus_results = Vec::new();
+                    let while_loop : String;
+                    for pred_pbe in pred_pbe_vec {
+                        let hoare_pbe = SygusHoareTriple {
+                            precond: Rc::new(pred_pbe),
+                            postcond: Rc::clone(&self.postcond),
+                            var_name: self.var_name.clone(),
+                            temporal: Rc::clone(&self.temporal),
+                            updates: Rc::clone(&self.updates)
+                        };
+                        sygus_results.push(hoare_pbe.run_synthesis());
+                    }
+                    while_loop = sygus::get_while_loop(sygus_results);
+                    self.verify_loop(&while_loop);
+                    while_loop
+                }
+            }
         }
     }
 

@@ -28,6 +28,22 @@ pub fn get_sygus_result(result: &str) -> Option<String> {
     }
 }
 
+// TODO
+fn get_loop_body(loop_str: &str) -> String {
+    String::from(loop_str)
+}
+
+pub fn get_while_loop(sygus_results: Vec<String>) -> String {
+    let bodies: Vec<String> = sygus_results.iter()
+        .map(|x| get_loop_body(x))
+        .collect();
+    let all_same = bodies.iter().all(|x| x == &bodies[0]);
+    if !all_same {
+        panic!("Obtaining loop body failed.\n");
+    }
+    bodies[0].clone()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
