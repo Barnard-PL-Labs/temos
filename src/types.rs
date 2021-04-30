@@ -112,7 +112,7 @@ pub enum LogicOp {
     LT,
     EQ,
     LTE,
-    GT
+    GTE
 }
 
 impl LogicOp {
@@ -121,7 +121,7 @@ impl LogicOp {
             LT  => String::from("<"),
             EQ  => String::from("="),
             LTE => String::from("<="),
-            GT => String::from(">=")
+            GTE => String::from(">=")
         }
     }
     fn to_tsl(&self) -> String {
@@ -129,7 +129,7 @@ impl LogicOp {
             LT  => String::from("lt"),
             EQ  => String::from("eq"),
             LTE => String::from("lte"),
-            GT => String::from("gte")
+            GTE => String::from("gte")
         }
     }
 }
@@ -335,7 +335,6 @@ pub struct SygusHoareTriple {
     pub updates: Rc<HashSet<UpdateTerm>>,
 }
 
-// TODO: support multiple variables as inputs
 impl SygusHoareTriple {
     fn quantified_constraint(&self) -> String {
         let var_name = self.precond.get_var_name();
@@ -347,6 +346,8 @@ impl SygusHoareTriple {
         constraint.push_str(")))\n");
         constraint
     }
+
+    // TODO: obtain multiple vars, if they exist
     pub fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
         let var_name = self.precond.get_var_name();
@@ -409,6 +410,7 @@ impl SygusHoareTriple {
                     utils::cvc4_generic(self.to_sygus(), "sygus")
                 } 
                 // while loops with PBE
+                // TODO: fix value of 2nd variable, if exists
                 else {
                     let pred_pbe_vec = (*self.precond).generate_pbe(3);
                     let mut sygus_results = Vec::new();
@@ -474,6 +476,10 @@ impl Specification {
         }
         hoare_vec = hoare::enumerate_hoare(self.predicates.clone(),
         self.updates.clone());
+        // DEBUG to print out sygus queries
+        //for h in &hoare_vec {
+        //    println!("{}", h.to_sygus());
+        //}
         sygus_results = hoare_vec.iter()
             .filter_map(|x| x.to_assumption())
             .collect();

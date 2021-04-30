@@ -35,5 +35,6 @@ pub fn sygus_cvc4(arg: String, lang: &str, abort_size: u32) -> String {
         .unwrap();
     fs::remove_file(&hack_file_name).unwrap();
 
+    println!("{}", (String::from_utf8_lossy(&output.stderr)));
     String::from(String::from_utf8_lossy(&output.stdout).to_string())
 }

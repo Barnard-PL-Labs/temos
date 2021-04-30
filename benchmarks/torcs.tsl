@@ -1,0 +1,26 @@
+always assume {
+  !(gt rpm con5500() && lt rpm con3000());
+  !(gt rpm con5500() && lt rpm con3000());
+}
+
+always guarantee {
+  // update steer using the steering function
+  [ steer <- steering angle trackpos ];
+
+  // speed conditions
+  lt speed (sub targetSpeed (multp (abs steer) con1888()))
+    -> [ accel <- con0p8() ];
+
+  !lt speed (sub targetSpeed (multp (abs steer) con1888()))
+    -> [ accel <- con0() ];
+
+  // shifting conditions
+  gt rpm con5500()
+    -> [ gear <- min con6() (add gear con1()) ];
+
+  lt rpm con3000()
+    -> [ gear <- max con1() (sub gear con1()) ];
+
+  !gt rpm con5500() && !lt rpm con3000()
+    -> [ gear <- gear ];
+}

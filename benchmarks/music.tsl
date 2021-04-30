@@ -1,0 +1,11 @@
+always guarantee {
+	G F [fmSynthesis <- True()];
+	G F [fmSynthesis <- False()];
+	G F [lfo <- True()];
+	G F [lfo <- False()];
+	play note 70 -> [lfoFreq <- lfoFreq + 20];
+	play note 71 -> [lfoFreq <- lfoDepth + 20];
+	play note 70 -> [fmFreq <- fmFreq + 20];
+	0 <= lfoFreq <= 20;
+	0 <= lfoDepth <= 100;
+}

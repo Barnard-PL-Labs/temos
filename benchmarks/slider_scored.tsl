@@ -1,0 +1,31 @@
+always assume {
+  // increasing the slider position moves it to the right
+  [ pos <- add pos vel ] -> X !leftMost pos;
+
+  // decreasing the slider position moves it to the left
+  [ pos <- sub pos vel ] -> X !rightMost pos;
+}
+
+always guarantee {
+  // if the slider is at the leftmost position it should move back right
+  leftMost pos -> F [ pos <- add pos vel ];
+
+  // the converse for the rightmost position
+  rightMost pos -> F [ pos <- sub pos vel ];
+
+  // the slider should not stop moving
+  (!leftMost pos && !rightMost pos)
+    -> F ([ pos <- sub pos vel ] || [ pos <- add pos vel ]);
+
+  // change direction until at the other ends
+  leftMost pos  -> (! [ pos <- sub pos vel ] W rightMost pos);
+  rightMost pos -> (! [ pos <- add pos vel ] W leftMost pos);
+
+  // the player scores when clicking the button at the center
+  (center pos && clicked button)
+    <-> ([ score <- add score one() ] && [ vel <- add vel one() ]);
+
+  // otherwise the score is reset
+  (!center pos && clicked button)
+    <-> ([ score <- zero() ] && [ vel <- one() ]);
+}
