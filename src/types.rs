@@ -347,7 +347,6 @@ impl SygusHoareTriple {
         constraint
     }
 
-    // TODO: obtain multiple vars, if they exist
     pub fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
         let var_name = self.precond.get_var_name();
@@ -357,8 +356,16 @@ impl SygusHoareTriple {
             var_to_function(&var_name);
         let quantifier_free = self.precond.is_eq();
 
+        // If the precond-var is not part of a forall clause
         if quantifier_free {
             for var in &variables {
+                query.push_str(&format!("(declare-const {} Int)\n", var));
+            }
+        }
+        // Yes, I know this is repeated
+        // Add all variables that aren't part of the function
+        for var in &variables {
+            if !(var.eq(&var_name)) {
                 query.push_str(&format!("(declare-const {} Int)\n", var));
             }
         }
@@ -397,7 +404,6 @@ impl SygusHoareTriple {
             panic!("SHould not be called for equalities\n");
         }
         assert_eq!(loop_body, loop_body);
-        // TODO: run dafny
     }
 
     fn run_synthesis(&self) -> String {

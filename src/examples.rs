@@ -94,5 +94,5 @@ fn dao() {
 }
 
 pub fn examples() {
-    dao();
+    linux_cfs();
 }
