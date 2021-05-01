@@ -10,7 +10,7 @@ fn get_ast(fxn: String, keyword: &str) -> String {
     String::from(&fxn[start..end])
 }
 
-// TODO
+// TODO: fxn_to_tsl
 pub fn fxn_to_tsl(sygus_result: String) -> String {
     // let fxn = get_ast(sygus_result, "Int");
     // println!("FUNCTION: {}", &fxn);
@@ -28,9 +28,9 @@ pub fn get_sygus_result(result: &str) -> Option<String> {
     }
 }
 
-// TODO
+// TODO: get_loop_body
 fn get_loop_body(loop_str: &str) -> String {
-    String::from(loop_str)
+    panic!("Get Loop Body not implemented\n");
 }
 
 pub fn get_while_loop(sygus_results: Vec<String>) -> String {
@@ -42,6 +42,12 @@ pub fn get_while_loop(sygus_results: Vec<String>) -> String {
         panic!("Obtaining loop body failed.\n");
     }
     bodies[0].clone()
+}
+
+// XXX: shouldn't be in this file, at least with this file name...
+// TODO: parse_model
+pub fn parse_model(cvc4_result: &str) -> String {
+    panic!("Parse model not implemented\n");
 }
 
 #[cfg(test)]

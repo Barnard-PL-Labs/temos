@@ -149,7 +149,7 @@ impl Predicate {
                 _  => false
             }
             // Assuming that we have elided UNSAT preds.
-            And(lpred, _) => false,
+            And(_, _) => false,
             Neg(pred) => pred.is_eq()
         }
     }
@@ -249,6 +249,26 @@ impl Predicate {
         query
     }
 
+    pub fn to_smt2_get_model(&self, ignore_models: &Vec<String>) 
+        -> String {
+        let mut query = String::from("(set-logic LIA)\n");
+        let vars = self.get_vars();
+
+        for variable in &vars {
+            query.push_str(&format!("(declare-const {} Int)\n", variable));
+        }
+
+        query.push_str("\n");
+        for ignore_val in ignore_models {
+            query.push_str(&format!("(assert not (= {} {})",
+                                    self.get_var_name(),
+                                    ignore_val));
+        }
+        query.push_str(&self.to_assert());
+        query.push_str("(check-sat)\n");
+        query
+    }
+
     pub fn is_unsat(&self) -> bool {
         let smt2 = self.to_smt2();
         let result = utils::cvc4_generic(smt2, "smt");
@@ -300,17 +320,29 @@ impl Predicate {
         Neg(Rc::new(pred.clone()))
     }
 
-    // TODO
     fn generate_pbe(&self, num_ex: u32) -> Vec<Predicate> {
+        let mut models : Vec<String> = Vec::new();
+        let mut pbe_preds: Vec<Predicate> = Vec::new();
+
         if self.is_eq() {
             panic!("Generate PBE called with equality\n");
         }
-        eprintln!("\x1b[31;1;4mGenerate_pbe not implemented\x1b[0m\n");
-        for _ in 0..num_ex {
-            // maybe leverage CVC4 to generate models?
-            ;
+
+        for _ in 0..num_ex {     
+            let smt_query = self.to_smt2_get_model(&models);
+            let model = utils::cvc4_generic(smt_query, "smt");
+            let model_val = sygus::parse_model(&model);
+            models.push(model_val);
         }
-        Vec::new()
+        for pbe_model in models {
+            let model_val : i32  = pbe_model.parse()
+                .expect("Parsing of model value failed.\n");
+            let pbe_pred = Bool(EQ,
+                                Var(self.get_var_name()),
+                                Const(model_val));
+            pbe_preds.push(pbe_pred);
+        }
+        pbe_preds
     }
 }
 
