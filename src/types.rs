@@ -29,7 +29,13 @@ impl Literal {
     fn to_string(&self) -> String {
         match self {
             Var(string) => String::from(string),
-            Const(val)  => format!("{}", val)
+            Const(val)  => {
+                if val < &0 {
+                    format!("(- {})", -1 * *val)
+                } else {
+                    format!("{}", *val)
+                }
+            } 
         }
     }
     fn to_tsl(&self) -> String {
@@ -249,9 +255,10 @@ impl Predicate {
         query
     }
 
-    pub fn to_smt2_get_model(&self, ignore_models: &Vec<String>) 
+    pub fn to_smt2_get_model(&self, ignore_models: &Vec<i32>) 
         -> String {
         let mut query = String::from("(set-logic LIA)\n");
+        query.push_str("(set-option :produce-models true)\n");
         let vars = self.get_vars();
 
         for variable in &vars {
@@ -260,12 +267,19 @@ impl Predicate {
 
         query.push_str("\n");
         for ignore_val in ignore_models {
-            query.push_str(&format!("(assert not (= {} {})",
+            let model_val;
+            if ignore_val < &0 {
+                model_val = format!("(- {})", -1 * ignore_val);
+            } else {
+                model_val = format!("{}", ignore_val);
+            }
+            query.push_str(&format!("(assert (not (= {} {})))\n",
                                     self.get_var_name(),
-                                    ignore_val));
+                                    model_val));
         }
         query.push_str(&self.to_assert());
         query.push_str("(check-sat)\n");
+        query.push_str("(get-model)\n");
         query
     }
 
@@ -321,7 +335,7 @@ impl Predicate {
     }
 
     fn generate_pbe(&self, num_ex: u32) -> Vec<Predicate> {
-        let mut models : Vec<String> = Vec::new();
+        let mut models : Vec<i32> = Vec::new();
         let mut pbe_preds: Vec<Predicate> = Vec::new();
 
         if self.is_eq() {
@@ -335,11 +349,9 @@ impl Predicate {
             models.push(model_val);
         }
         for pbe_model in models {
-            let model_val : i32  = pbe_model.parse()
-                .expect("Parsing of model value failed.\n");
             let pbe_pred = Bool(EQ,
                                 Var(self.get_var_name()),
-                                Const(model_val));
+                                Const(pbe_model));
             pbe_preds.push(pbe_pred);
         }
         pbe_preds
@@ -465,7 +477,9 @@ impl SygusHoareTriple {
                     }
                     while_loop = parser::get_while_loop(sygus_results);
                     self.verify_loop(&while_loop);
-                    while_loop
+                    // XXX
+                    format!("unsat\n(define-fun function ((x Int)) Int {})",
+                    while_loop)
                 }
             }
         }
@@ -481,7 +495,7 @@ impl SygusHoareTriple {
             Next(i) => format!(") -> {}",
             "X ".repeat(i.try_into()
                         .unwrap())),
-            Liveness => format!("W {}) -> F",
+            Liveness => format!(" W {}) -> F",
             self.postcond.to_tsl())
         };
         Some(format!("{} && ({}{} {};", self.precond.to_tsl(),

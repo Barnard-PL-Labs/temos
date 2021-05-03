@@ -13,7 +13,17 @@ pub enum Token {
 }
 
 impl Token {
-    pub fn to_tsl(&self) -> String {
+    fn to_str(&self) -> String {
+        match self {
+            Lparen => "(".to_string(),
+            Rparen => ")".to_string(),
+            Plus => "+".to_string(),
+            Minus => "-".to_string(),
+            Number(val) => val.to_string(),
+            Variable(var) => var.to_string()
+        }
+    }
+    fn to_tsl(&self) -> String {
         match self {
             Lparen => "(".to_string(),
             Rparen => ")".to_string(),
@@ -105,16 +115,16 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
         panic!("AST is too short!\n{:?}", stream)
     }
     if stream[0] != Lparen || stream[n-1] != Rparen {
-        panic!("Not a valid AST!\n")
+        panic!("Not a valid AST!\n{:?}\n", stream)
     }
     if stream[1] != Plus && stream[1] != Minus {
         panic!("Invalid function: found {:?} for \n{:?}",
                stream[1], stream)
     }
 
-    operator = stream[1].to_tsl();
+    operator = stream[1].to_str();
     variable = get_lexified_variable(&stream);
-    argument = stream[n-2].to_tsl();
+    argument = stream[n-3].to_str();
 
     format!("({} {} {})",
     operator, variable, argument)
@@ -145,25 +155,38 @@ pub fn get_sygus_result(result: &str) -> Option<String> {
 
 pub fn get_while_loop(sygus_results: Vec<String>) -> String {
     let bodies: Vec<String> = sygus_results.iter()
+        .map(|x| get_ast(x.to_string(), "Int"))
         .map(|x| get_loop_body(scanner(&x)))
         .collect();
-    let all_same = bodies.iter().all(|x| x == &bodies[0]);
-    if !all_same {
-        panic!("Obtaining loop body failed.\n");
-    }
+    // let all_same = bodies.iter().all(|x| x == &bodies[0]);
+    // if !all_same {
+    //     panic!("Obtaining loop body failed.\n,
+    //            {:?}\n",
+    //            bodies);
+    // }
     bodies[0].clone()
 }
 
-pub fn parse_model(cvc4_result: &str) -> String {
+pub fn parse_model(cvc4_result: &str) -> i32 {
     let mut lines = cvc4_result.lines();
+    let num_str;
+    let no_model = &format!("No model?\n{}",  cvc4_result);
     if lines.next().unwrap().eq("sat") {
-        if !lines.next().unwrap().eq("(") {
-            panic!(format!("Invalid Model result!\n{}", cvc4_result))
+        if !lines.next().expect(no_model).eq("(") {
+            panic!("Invalid Model result!\n{}", cvc4_result)
         }
-        get_ast(lines.next().unwrap().to_string(), "Int")
+        num_str = get_ast(lines.next().unwrap().to_string(), "Int")
     } else {
-        panic!("Couldn't get model for forall!\n")
+        panic!("Couldn't get model for forall!\n{}\n", cvc4_result)
     }
+    // if negative
+    if (&num_str)[0..1].eq("(") {
+        let num_str = num_str[2..num_str.len()-1].to_string();
+        let num: i32 = num_str.trim().parse()
+            .expect(&format!("Invalid digit:{}\n", num_str));
+        return -1 * num
+    }
+    num_str.parse::<i32>().unwrap()
 }
 
 #[cfg(test)]

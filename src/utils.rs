@@ -16,6 +16,7 @@ pub fn cvc4_generic(arg: String, lang: &str) -> String {
         .unwrap();
     fs::remove_file(&hack_file_name).unwrap();
 
+    println!("{}", String::from_utf8_lossy(&output.stderr).to_string());
     String::from(String::from_utf8_lossy(&output.stdout).to_string())
 }
 
