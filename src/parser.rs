@@ -19,7 +19,7 @@ impl Token {
             Rparen => ")".to_string(),
             Plus => "add".to_string(),
             Minus => "sub".to_string(),
-            Number(val) => val.to_string(),
+            Number(val) => format!("c{}()", val),
             Variable(var) => var.to_string()
         }
     }
@@ -83,7 +83,7 @@ pub fn scanner(sygus_result: &str) -> Vec<Token> {
     stream_of_tokens
 }
 
-fn get_variable(stream: &Vec<Token>) -> String {
+fn get_lexified_variable(stream: &Vec<Token>) -> String {
     for token in stream {
         match token {
             Variable(var) => {
@@ -113,7 +113,7 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
     }
 
     operator = stream[1].to_tsl();
-    variable = get_variable(&stream);
+    variable = get_lexified_variable(&stream);
     argument = stream[n-2].to_tsl();
 
     format!("({} {} {})",
@@ -123,11 +123,14 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
 pub fn fxn_to_tsl(sygus_result: String) -> String {
     let ast_str = get_ast(sygus_result, "Int");
     let stream_of_tok = scanner(&ast_str);
+    let var_name = get_lexified_variable(&stream_of_tok);
     let str_of_tok: Vec<String> = stream_of_tok
         .iter()
         .map(|x| x.to_tsl())
         .collect();
-    str_of_tok.join(" ")
+    format!("[{} <- {}]",
+            var_name,
+            str_of_tok.join(" "))
 }
 
 /// Returns None when result is unrealizable.

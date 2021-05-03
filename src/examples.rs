@@ -2,7 +2,8 @@
 use crate::types::*;
 use std::fs;
 
-fn simple_bouncing_counter() {
+fn pong() {
+    let test_fs = false;
     let pred_vec = vec![SpecPredicate{
         pred: Bool(EQ, Var(String::from("c")), Const(0)),
         temporal: vec![Next(0)]
@@ -33,11 +34,12 @@ fn simple_bouncing_counter() {
         updates : update_vec
     };
     println!("{}", spec.to_assumption());
-    // If you want to write out to a file
-    // let fname = "assumptions.tsl";
-    // spec.write_assumption(&fname);
-    // println!("{}", fs::read_to_string(fname).unwrap());
-    // fs::remove_file(&fname).unwrap();
+    if test_fs {
+        let fname = "assumptions.tsl";
+        spec.write_assumption(&fname);
+        println!("{}", fs::read_to_string(fname).unwrap());
+        fs::remove_file(&fname).unwrap();
+    }
 }
 
 fn linux_cfs() {
@@ -94,5 +96,5 @@ fn dao() {
 }
 
 pub fn examples() {
-    linux_cfs();
+    pong();
 }
