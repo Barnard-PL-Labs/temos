@@ -10,16 +10,16 @@ use std::collections::HashSet;
 use crate::utils;
 use crate::predicate;
 use crate::hoare;
-use crate::parser;
+use crate::parser::smt_sygus as parser;
 use std::convert::TryInto;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Temporal {
     Next(u32),
     Liveness
 }
 
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Literal {
     Var(String),
     Const(i32),
@@ -64,7 +64,7 @@ impl Literal {
     }
 }
 
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum LiaOp {
     Add,
     Sub
@@ -85,7 +85,7 @@ impl LiaOp {
     }
 }
 
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum UpdateTerm {
     Function(LiaOp, Literal, Literal),
     Signal(Literal)
@@ -113,7 +113,7 @@ impl UpdateTerm {
     }
 }
 
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum LogicOp {
     LT,
     EQ,
@@ -140,7 +140,7 @@ impl LogicOp {
     }
 }
 
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Predicate {
     And(Rc<Predicate>, Rc<Predicate>),
     Neg(Rc<Predicate>),
@@ -291,7 +291,8 @@ impl Predicate {
         } else if result == "unsat\n" {
             return true
         } else {
-            panic!("not sat or unsat??\n")
+            panic!("not sat or unsat??\n
+                   Result:{}\n", result);
         }
     }
 
@@ -358,13 +359,13 @@ impl Predicate {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct SpecPredicate {
     pub pred: Predicate,
     pub temporal: Vec<Temporal>
 }
 
-#[derive (Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Update {
     pub update_term: UpdateTerm,
     pub var_name: String,
@@ -505,7 +506,7 @@ impl SygusHoareTriple {
     }
 }
 
-
+#[derive(Debug)]
 pub struct Specification {
     pub predicates: Vec<SpecPredicate>,
     pub updates: Vec<Update>

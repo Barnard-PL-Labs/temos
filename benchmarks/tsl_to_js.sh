@@ -10,7 +10,7 @@ file_header=${file_name:0:-4}
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
-BIN_PATH="../bin"
+BIN_PATH="../../bin"
 
 # Build TLSF
 $BIN_PATH/tsl2tlsf $file_name | cat > $tlsf

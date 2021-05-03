@@ -34,7 +34,7 @@ impl Token {
         }
     }
 }
-  
+
 // Horrible, horrible function
 fn get_ast(fxn: String, keyword: &str) -> String {
     let kw_indices: Vec<_> = fxn.match_indices(keyword).collect();
@@ -99,7 +99,7 @@ fn get_lexified_variable(stream: &Vec<Token>) -> String {
             Variable(var) => {
                 return var.to_string()
             }
-                _ => continue
+            _ => continue
         }
     };
     panic!("No variable in stream of tokens!\n")
@@ -125,9 +125,10 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
     operator = stream[1].to_str();
     variable = get_lexified_variable(&stream);
     argument = stream[n-3].to_str();
+    println!("arg: {}", argument);
 
     format!("({} {} {})",
-    operator, variable, argument)
+            operator, variable, argument)
 }
 
 pub fn fxn_to_tsl(sygus_result: String) -> String {

@@ -1,5 +1,6 @@
 // This file should probably not be in /src.
 use crate::types::*;
+use crate::parser;
 use std::fs;
 
 fn pong() {
@@ -95,28 +96,12 @@ fn dao() {
     println!("{}", spec.to_assumption());
 }
 
-fn liveness() {
-    let pred_vec = vec![SpecPredicate{
-        pred: Bool(GTE, Var(String::from("balance")), Const(0)),
-        temporal: vec![Liveness]
-    }];
-    let update_vec = vec![Update {
-        update_term: Function(Add, Var(String::from("balance")), Const(1)),
-        var_name: String::from("balance"),
-        depends: Vec::new()
-    },
-    Update {
-        update_term: Function(Sub, Var(String::from("balance")), Const(1)),
-        var_name: String::from("balance"),
-        depends: Vec::new()
-    }];
-    let spec = Specification {
-        predicates : pred_vec,
-        updates : update_vec
-    };
-    println!("{}", spec.to_assumption());
+fn json() {
+    let path = "benchmarks/escalator/counting.json";
+    let ass = parser::json::get_spec_from_json(path);
+    println!("{}", ass.to_assumption());
 }
 
 pub fn examples() {
-    liveness();
+    json();
 }
