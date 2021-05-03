@@ -10,7 +10,7 @@ use std::collections::HashSet;
 use crate::utils;
 use crate::predicate;
 use crate::hoare;
-use crate::sygus;
+use crate::parser;
 use std::convert::TryInto;
 
 #[derive(Clone)]
@@ -331,7 +331,7 @@ impl Predicate {
         for _ in 0..num_ex {     
             let smt_query = self.to_smt2_get_model(&models);
             let model = utils::cvc4_generic(smt_query, "smt");
-            let model_val = sygus::parse_model(&model);
+            let model_val = parser::parse_model(&model);
             models.push(model_val);
         }
         for pbe_model in models {
@@ -448,7 +448,7 @@ impl SygusHoareTriple {
                     utils::cvc4_generic(self.to_sygus(), "sygus")
                 } 
                 // while loops with PBE
-                // TODO: fix value of 2nd variable, if exists
+                // XXX: fix value of 2nd variable, if exists
                 else {
                     let pred_pbe_vec = (*self.precond).generate_pbe(3);
                     let mut sygus_results = Vec::new();
@@ -463,7 +463,7 @@ impl SygusHoareTriple {
                         };
                         sygus_results.push(hoare_pbe.run_synthesis());
                     }
-                    while_loop = sygus::get_while_loop(sygus_results);
+                    while_loop = parser::get_while_loop(sygus_results);
                     self.verify_loop(&while_loop);
                     while_loop
                 }
@@ -472,11 +472,11 @@ impl SygusHoareTriple {
     }
 
     fn to_assumption(&self) -> Option<String> {
-        let sygus_result = sygus::get_sygus_result(&self.run_synthesis());
+        let sygus_result = parser::get_sygus_result(&self.run_synthesis());
         if sygus_result.is_none() {
             return None;
         }
-        let update_ass = sygus::fxn_to_tsl(sygus_result.unwrap());
+        let update_ass = parser::fxn_to_tsl(sygus_result.unwrap());
         let timesteps = match *self.temporal {
             Next(i) => format!(") -> {}",
             "X ".repeat(i.try_into()
@@ -490,6 +490,7 @@ impl SygusHoareTriple {
                      self.postcond.to_tsl()))
     }
 }
+
 
 pub struct Specification {
     pub predicates: Vec<SpecPredicate>,

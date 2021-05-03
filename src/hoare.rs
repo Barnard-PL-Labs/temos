@@ -4,8 +4,6 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::rc::Rc;
 
-// TODO: clean up w.r.t. to references...
-
 fn var_updates(update_vec: Vec<Update>) 
     -> HashMap<String, HashSet<UpdateTerm>>  {
 

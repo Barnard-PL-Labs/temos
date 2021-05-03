@@ -19,7 +19,7 @@ pub fn cvc4_generic(arg: String, lang: &str) -> String {
     String::from(String::from_utf8_lossy(&output.stdout).to_string())
 }
 
-// TODO: combine into one function...
+// XXX: combine into one function...
 pub fn sygus_cvc4(arg: String, lang: &str, abort_size: u32) -> String {
     let rand_int : i32 = rand::thread_rng().gen();
     let hack_file_name = format!("tmp-hack{}", rand_int);
