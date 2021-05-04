@@ -6,8 +6,8 @@ always guarantee {
   [bottom <- bottom] && [top <- sub top c1()] <-> [ users <- sub users c1() ];
 
   // if the last users left the escalator and no new user entered, then stop the steps
-  eq users c0() && [bottom <- bottom] -> [moving <- False()]
+  eq users c0() && [bottom <- bottom] -> [moving <- False()];
 
   // if there are no users on the escalator and somebody enters, start the steps
-  [moving <- False()] && [bottom <- add bottom c1()] -> [moving <- True()]
+  [moving <- False()] && [bottom <- add bottom c1()] -> [moving <- True()];
 }

@@ -1,0 +1,6 @@
+target/release/streamos benchmarks/escalator/counting.json benchmarks/escalator/counting.tsl
+
+EXPECTED:
+REALIZABLE
+27
+2651

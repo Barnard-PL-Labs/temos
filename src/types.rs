@@ -543,4 +543,9 @@ impl Specification {
         }
         assumptions
     }
+    pub fn to_always_assume(&self) -> String {
+        let header = "always assume{";
+        let ass = self.to_assumption();
+        [header, &ass, "}"].join("\n")
+    }
 }
