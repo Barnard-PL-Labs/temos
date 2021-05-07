@@ -13,6 +13,8 @@ use crate::hoare;
 use crate::parser::smt_sygus as parser;
 use std::convert::TryInto;
 
+const TIMEOUT_DEPTH: u32 = 10;
+
 #[derive(Debug, Clone)]
 pub enum Temporal {
     Next(u32),
@@ -116,6 +118,7 @@ impl UpdateTerm {
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum LogicOp {
     LT,
+    GT,
     EQ,
     LTE,
     GTE
@@ -125,6 +128,7 @@ impl LogicOp {
     fn to_string(&self) -> String {
         match self {
             LT  => String::from("<"),
+            GT  => String::from(">"),
             EQ  => String::from("="),
             LTE => String::from("<="),
             GTE => String::from(">=")
@@ -133,6 +137,7 @@ impl LogicOp {
     fn to_tsl(&self) -> String {
         match self {
             LT  => String::from("lt"),
+            GT  => String::from("gt"),
             EQ  => String::from("eq"),
             LTE => String::from("lte"),
             GTE => String::from("gte")
@@ -156,7 +161,7 @@ impl Predicate {
             }
             // Assuming that we have elided UNSAT preds.
             And(_, _) => false,
-            Neg(pred) => pred.is_eq()
+            Neg(pred) => !pred.is_eq()
         }
     }
     // XXX: no real support for two-element predicates yet.
@@ -343,7 +348,7 @@ impl Predicate {
             panic!("Generate PBE called with equality\n");
         }
 
-        for _ in 0..num_ex {     
+        for _ in 0..num_ex {
             let smt_query = self.to_smt2_get_model(&models);
             let model = utils::cvc4_generic(smt_query, "smt");
             let model_val = parser::parse_model(&model);
@@ -446,7 +451,7 @@ impl SygusHoareTriple {
             _ => ()
         };
         if (*self.precond).is_eq() {
-            panic!("SHould not be called for equalities\n");
+            panic!("Should not be called for equalities\n");
         }
         assert_eq!(loop_body, loop_body);
     }
@@ -458,14 +463,15 @@ impl SygusHoareTriple {
             }
             Liveness => {
                 if (*self.precond).is_eq() {
-                    utils::cvc4_generic(self.to_sygus(), "sygus")
+                    utils::sygus_cvc4(self.to_sygus(), "sygus",
+                                      TIMEOUT_DEPTH)
                 } 
                 // while loops with PBE
                 // XXX: fix value of 2nd variable, if exists
                 else {
                     let pred_pbe_vec = (*self.precond).generate_pbe(3);
                     let mut sygus_results = Vec::new();
-                    let while_loop : String;
+                    let while_loop : Option<String>;
                     for pred_pbe in pred_pbe_vec {
                         let hoare_pbe = SygusHoareTriple {
                             precond: Rc::new(pred_pbe),
@@ -477,10 +483,15 @@ impl SygusHoareTriple {
                         sygus_results.push(hoare_pbe.run_synthesis());
                     }
                     while_loop = parser::get_while_loop(sygus_results);
-                    self.verify_loop(&while_loop);
-                    // XXX
-                    format!("unsat\n(define-fun function ((x Int)) Int {})",
-                    while_loop)
+                    match while_loop {
+                        None => "".to_string(),
+                        Some(body) => {
+                            self.verify_loop(&body);
+                            // XXX
+                            format!("unsat\n(define-fun function ((x Int)) Int {})",
+                                    body)
+                        }
+                    }
                 }
             }
         }
@@ -488,6 +499,14 @@ impl SygusHoareTriple {
 
     fn to_assumption(&self) -> Option<String> {
         let sygus_result = parser::get_sygus_result(&self.run_synthesis());
+        // match *self.temporal {
+        //     Liveness => {
+        //         println!("\nProduced Assumption for \n{} and {}",
+        //             self.precond.to_smtlib(), self.postcond.to_smtlib()
+        //         );
+        //     }
+        //     _ => ()
+        // }
         if sygus_result.is_none() {
             return None;
         }
@@ -499,10 +518,17 @@ impl SygusHoareTriple {
             Liveness => format!(" W {}) -> F",
             self.postcond.to_tsl())
         };
-        Some(format!("{} && ({}{} {};", self.precond.to_tsl(),
+        let foo = format!("{} && ({}{} {};", self.precond.to_tsl(),
                      update_ass,
                      timesteps,
-                     self.postcond.to_tsl()))
+                     self.postcond.to_tsl());
+        // match *self.temporal {
+        //     Liveness => {
+        //         println!("{}\n", &foo);
+        //     }
+        //     _ => ()
+        // }
+        Some(foo)
     }
 }
 
@@ -541,6 +567,7 @@ impl Specification {
             assumptions.push_str(&result);
             assumptions.push('\n');
         }
+        println!("Generated assumption from Specification.");
         assumptions
     }
     pub fn to_always_assume(&self) -> String {

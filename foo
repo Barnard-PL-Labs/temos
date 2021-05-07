@@ -1,0 +1,51 @@
+Produced Assumption for 
+(= loc 0) and (= loc 5)
+(eq loc c0()) && ([loc <- ( add ( add ( add ( add ( add loc c1() ) c1() ) c1() ) c1() ) c1() )] W (eq loc c5())) -> F (eq loc c5());
+
+Produced Assumption for 
+(= loc 5) and (= loc 0)
+(eq loc c5()) && ([loc <- ( sub ( sub ( sub ( sub ( sub loc c1() ) c1() ) c1() ) c1() ) c1() )] W (eq loc c0())) -> F (eq loc c0());
+
+
+Produced Assumption for 
+(= loc 5) and (= loc 5)
+(eq loc c5()) && ([loc <- ( add ( sub loc c1() ) c1() )] W (eq loc c5())) -> F (eq loc c5());
+
+
+Produced Assumption for 
+(and (<= loc 5) (<= 0 loc)) and (= loc 0)
+((lte loc c5()) && (lte c0() loc)) && ([loc <- ( add loc c1() )] W (eq loc c0())) -> F (eq loc c0());
+
+
+Produced Assumption for 
+(and (<= loc 5) (<= 0 loc)) and (= loc 5)
+((lte loc c5()) && (lte c0() loc)) && ([loc <- ( add loc c1() )] W (eq loc c5())) -> F (eq loc c5());
+
+
+
+Produced Assumption for 
+(not (= loc 0)) and (= loc 0)
+!(eq loc c0()) && ([loc <- ( add loc c1() )] W (eq loc c0())) -> F (eq loc c0());
+
+
+Produced Assumption for 
+(not (= loc 0)) and (= loc 5)
+!(eq loc c0()) && ([loc <- ( add loc c1() )] W (eq loc c5())) -> F (eq loc c5());
+
+
+
+Produced Assumption for 
+(not (= loc 5)) and (= loc 0)
+!(eq loc c5()) && ([loc <- ( add loc c1() )] W (eq loc c0())) -> F (eq loc c0());
+
+
+Produced Assumption for 
+(not (= loc 5)) and (= loc 5)
+!(eq loc c5()) && ([loc <- ( add loc c1() )] W (eq loc c5())) -> F (eq loc c5());
+
+
+Produced Assumption for 
+(not (and (<= loc 5) (<= 0 loc))) and (= loc 0)
+
+Produced Assumption for 
+(not (and (<= loc 5) (<= 0 loc))) and (= loc 5)

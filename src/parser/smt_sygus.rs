@@ -124,7 +124,7 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
 
     operator = stream[1].to_str();
     variable = get_lexified_variable(&stream);
-    argument = stream[n-3].to_str();
+    argument = stream[n-2].to_str();
     format!("({} {} {})",
             operator, variable, argument)
 }
@@ -145,15 +145,19 @@ pub fn fxn_to_tsl(sygus_result: String) -> String {
 /// Returns None when result is unrealizable.
 pub fn get_sygus_result(result: &str) -> Option<String> {
     let mut lines = result.lines();
-    if lines.next().unwrap().eq("unsat") {
+    let fst_line = lines.next();
+    if fst_line.is_none() {
+        None
+    } else if fst_line.unwrap().eq("unsat") {
         Some(String::from(lines.next().unwrap()))
     } else {
         None
     }
 }
 
-pub fn get_while_loop(sygus_results: Vec<String>) -> String {
+pub fn get_while_loop(sygus_results: Vec<String>) -> Option<String> {
     let bodies: Vec<String> = sygus_results.iter()
+        .filter_map(|x| get_sygus_result(x))
         .map(|x| get_ast(x.to_string(), "Int"))
         .map(|x| get_loop_body(scanner(&x)))
         .collect();
@@ -163,7 +167,11 @@ pub fn get_while_loop(sygus_results: Vec<String>) -> String {
     //            {:?}\n",
     //            bodies);
     // }
-    bodies[0].clone()
+    if bodies.len() > 0 {
+        Some(bodies[0].clone())
+    } else {
+        None
+    }
 }
 
 pub fn parse_model(cvc4_result: &str) -> i32 {

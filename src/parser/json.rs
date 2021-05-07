@@ -53,6 +53,7 @@ impl JsonPredicate {
         }
         let operator = match terms[0] { 
             "lt" => LT,
+            "gt" => GT,
             "eq" => EQ,
             "lte" => LTE,
             "gte" => GTE,
