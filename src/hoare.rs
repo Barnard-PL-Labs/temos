@@ -40,7 +40,12 @@ pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
                     postcond: Rc::new(postcond.pred.clone()),
                     var_name: var_name.to_string(),
                     temporal: Rc::new(operator.clone()),
-                    updates : Rc::new(var_updates.get(var_name).unwrap().clone())
+                    updates : Rc::new(var_updates
+                                      .get(var_name)
+                                      .expect(&format!("UpdateHash:{:?}\nVar:{}",
+                                                       var_updates,
+                                                       var_name))
+                                      .clone())
                 };
                 hoare_vec.push(hoare);
             }

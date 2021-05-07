@@ -1,40 +1,15 @@
-BTWN = (eq c c0()  || lt c0() c) && (eq c c100() || lt c c100());
+BTWN = (eq loc c0()  || lt c0() c) && (eq loc c100() || lt loc c100());
 
 initially assume {
-	eq c c0();
-}
-
-always assume {		
-	!((eq c c0()) && !(eq c c0()));
-	!((eq c c0()) && (eq c c100()));
-	!((eq c c100()) && !(eq c c100()));
-	!((eq c c100()) && !((lte c c100()) && (lte c0() c)));
-	!(((lte c c100()) && (lte c0() c)) && !((lte c c100()) && (lte c0() c)));
-	!((eq c c0()) && !((lte c c100()) && (lte c0() c)));
-	(eq c c0()) && ([c <- c]) ->  (eq c c0());
-	(eq c c0()) && ([c <- c]) -> X  ((lte c c100()) && (lte c0() c));
-	(eq c c0()) && ([c <- sub c c1()]) ->  !(eq c c0());
-	(eq c c0()) && ([c <- sub c c1()]) ->  !(eq c c100());
-	(eq c c0()) && ([c <- sub c c1()]) -> X  !((lte c c100()) && (lte c0() c));
-	(eq c c100()) && ([c <- c]) ->  (eq c c100());
-	(eq c c100()) && ([c <- sub c c1()]) -> X  ((lte c c100()) && (lte c0() c));
-	(eq c c100()) && ([c <- sub c c1()]) ->  !(eq c c0());
-	(eq c c100()) && ([c <- sub c c1()]) ->  !(eq c c100());
-	(eq c c100()) && ([c <- add c c1()]) -> X  !((lte c c100()) && (lte c0() c));
-	((lte c c100()) && (lte c0() c)) && ([c <- c]) -> X  ((lte c c100()) && (lte c0() c));
-	((lte c c100()) && (lte c0() c)) && ([c <- add c c1()]) ->  !(eq c c0());
-	((lte c c100()) && (lte c0() c)) && ([c <- sub c c1()]) ->  !(eq c c100());
-	!((lte c c100()) && (lte c0() c)) && ([c <- sub c c1()]) ->  !(eq c c0());
-	!((lte c c100()) && (lte c0() c)) && ([c <- c]) ->  !(eq c c100());
-	!((lte c c100()) && (lte c0() c)) && ([c <- c]) -> X  !((lte c c100()) && (lte c0() c));
+	eq loc c0();
 }
 
 always guarantee {
-	hit paddle1 -> [c <- add c c1()];
-	hit paddle2 -> [c <- sub c c1()];
-	[c <- sub c c1()] -> [c <- sub c c1()] W (eq c c0()) || hit paddle1;
-	[c <- add c c1()] -> [c <- add c c1()] W (eq c c100()) || hit paddle2;
-	eq c c100() -> [c <- sub c c1()];
-	eq c c0()   -> [c <- add c c1()];
+	hit paddle1 -> [loc <- add loc c1()];
+	hit paddle2 -> [loc <- sub loc c1()];
+	[loc <- sub loc c1()] -> [loc <- sub loc c1()] W (eq loc c0()) || hit paddle1;
+	[loc <- add loc c1()] -> [loc <- add loc c1()] W (eq loc c100()) || hit paddle2;
+	eq loc c100() -> [loc <- sub loc c1()];
+	eq loc c0()   -> [loc <- add loc c1()];
 	BTWN;
 }

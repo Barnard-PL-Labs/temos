@@ -9,11 +9,24 @@ mod examples;
 use std::env;
 
 fn main() {
-    let usage = "USAGE: ./streamos <json> <tsl>";
-    let json = env::args().nth(1).expect(&usage);
-    let tsl = env::args().nth(2).expect(&usage);
-    let (lia_dur, tsl_dur) = utils::time_all(&json, &tsl);
+    let usage = "USAGE: ./streamos <mode> <json> <tsl>";
+    let mode = env::args().nth(1).expect(&usage);
+    let json = env::args().nth(2).expect(&usage);
+    let tsl = env::args().nth(3).expect(&usage);
+    match &mode[..] {
+        "--time" => {
+            let (lia_dur, tsl_dur) = utils::time_all(&json, &tsl);
+            println!("{}\n{}",
+                     lia_dur.as_millis(),
+                     tsl_dur.as_millis()); 
+        },
+        "--lia" => {
+            let lia_spec = parser::json::get_spec_from_json(&json);
+    let (ass, lia_dur) = utils::time_tsllia(lia_spec);
     println!("{}\n{}",
-             lia_dur.as_millis(),
-             tsl_dur.as_millis()); 
+            ass,
+            lia_dur.as_millis());
+        }
+        _ => panic!("")
+    }
 }

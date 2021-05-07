@@ -5,6 +5,8 @@ use std::time::{Duration, Instant};
 use crate::types::*;
 use crate::parser;
 
+// TODO: timer interrupt
+
 pub fn cvc4_generic(arg: String, lang: &str) -> String {
     let rand_int : i32 = rand::thread_rng().gen();  // XXX
     let hack_file_name = format!("tmp-hack{}", rand_int);
@@ -78,7 +80,6 @@ pub fn time_final_tsl(assumptions: &str, tsl_path: &str) -> (String, Duration) {
 
     fs::write(&hack_file_name, &final_tsl).unwrap();
     let result = time_tsl_synth(&hack_file_name);
-    fs::remove_file(&hack_file_name).unwrap();
     return result;
 }
 

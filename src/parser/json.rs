@@ -40,8 +40,16 @@ impl JsonPredicate {
         let terms : Vec<&str> = string
             .split_whitespace()
             .collect();
+        if terms.len() == 7 {
+            let op = match terms[0] {
+               "and" => Predicate::new_and,
+               _ => panic!("Unexpected operator")
+            };
+            return op(JsonPredicate::str_to_predicate(&terms[1..4].join(" ")),
+            JsonPredicate::str_to_predicate(&terms[4..].join(" ")));
+        }
         if terms.len() != 3 {
-            panic!("Unexpected predicate json");
+            panic!("Unexpected predicate json, {}", string);
         }
         let operator = match terms[0] { 
             "lt" => LT,

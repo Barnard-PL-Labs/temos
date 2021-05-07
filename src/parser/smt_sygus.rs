@@ -125,8 +125,6 @@ pub fn get_loop_body(stream: Vec<Token>) -> String {
     operator = stream[1].to_str();
     variable = get_lexified_variable(&stream);
     argument = stream[n-3].to_str();
-    println!("arg: {}", argument);
-
     format!("({} {} {})",
             operator, variable, argument)
 }
