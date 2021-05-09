@@ -1,6 +1,6 @@
-# StreaMoS
+# TeMoS
 
-Repository for StreaMoS, Temporal **Strea**m Logic **Mo**dulo Theories **S**ynthesis.
+Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesis.
 
 ## Installation
 

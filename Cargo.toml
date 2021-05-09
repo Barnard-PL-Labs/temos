@@ -1,5 +1,5 @@
 [package]
-name = "streamos"
+name = "temos"
 version = "0.1.0"
 authors = ["Wonhyuk Choi <wonhyuk.choi@columbia.edu>"]
 edition = "2018"

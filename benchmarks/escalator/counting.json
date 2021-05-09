@@ -3,6 +3,10 @@
 		{
 			"pred": "eq users 0",
 			"temporal": []
+		},
+		{
+			"pred": "gte users 0",
+			"temporal": ["X"]
 		}
 	],
 	"updates": [

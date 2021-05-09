@@ -10,4 +10,4 @@ bin_mode=$2
 json="benchmarks/$path_header.json"
 tsl="benchmarks/$path_header.tsl"
 
-target/$bin_mode/streamos "--time" $json $tsl
+target/$bin_mode/temos "--time" $json $tsl
