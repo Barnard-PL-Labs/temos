@@ -1,4 +1,0 @@
-always guarantee {
-	gt bottom top -> [top <- add top c1()] && [bottom <- sub bottom c1()];
-	!(gt bottom top) -> [top <- sub top c1()] && [bottom <- add bottom c1()];
-}

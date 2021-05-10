@@ -1,3 +1,4 @@
+//#LIA#
 always assume {
 	!(hit paddle1 && hit paddle2);
 	(hit paddle1 || hit paddle2) -> !(eq loc c0() || eq loc c100());

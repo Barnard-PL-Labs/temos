@@ -7,7 +7,7 @@ fi
 
 path_header=$1
 bin_mode=$2
-json="benchmarks/$path_header.json"
-tsl="benchmarks/$path_header.tsl"
+json="$path_header.json"
+tsl="$path_header.tsl"
 
 target/$bin_mode/temos "--time" $json $tsl

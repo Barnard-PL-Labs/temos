@@ -1,0 +1,16 @@
+always guarantee {
+	G F [fmSynthesis <- True()];
+	G F [fmSynthesis <- False()];
+	G F [lfo <- True()];
+	G F [lfo <- False()];
+
+	lte lfoFreq c10() -> [fmSynthesis <- False()]  U gt  lfoFreq c10();
+	gt  lfoFreq c10() -> [fmSynthesis <- True()] U lte lfoFreq c10();
+	[fmSynthesis <- False()]   -> [lfoFreq <- add lfoFreq c1()];
+	[fmSynthesis <- True()]  -> [lfoFreq <- sub lfoFreq c1()];
+
+	lte fmFreq c500() -> [lfo <- True()]  U gt  fmFreq c500();
+	gt  fmFreq c500() -> [lfo <- False()] U lte fmFreq c500();
+	[lfo <- True()]   -> [fmFreq <- add fmFreq c100()];
+	[lfo <- False()]  -> [fmFreq <- sub fmFreq c100()];
+}

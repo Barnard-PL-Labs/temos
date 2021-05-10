@@ -1,0 +1,30 @@
+//#LIA#
+// if x happens often enougth and from some point on stops
+// happening, then e will happen eventually.
+leadsWith x y e =
+  G F (x && (! y W e)) -> F e;
+
+always assume {
+  // if a user enters at the bottom and the escalator moves up
+  // often enough, then the user will also eventuall exit.
+  enterEvent bottom
+    -> leadsWith
+        [ steps <- moveUp() ]
+        [ steps <- moveDown() ]
+        (exitEvent top);
+
+  // the same for the other direction
+  enterEvent top
+    -> leadsWith
+        [ steps <- moveDown() ]
+        [ steps <- moveUp() ]
+        (exitEvent bottom);
+}
+
+always guarantee {
+  enterEvent bottom
+    -> F ([ steps <- moveUp() ] U exitEvent top);
+
+  enterEvent top
+    -> F ([ steps <- moveDown() ] U exitEvent bottom);
+}

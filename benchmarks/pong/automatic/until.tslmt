@@ -1,3 +1,4 @@
+//#LIA#
 initially assume {
 	eq loc c0();
 }

@@ -1,4 +1,16 @@
-always guarantee {
+always assume{
+!((eq users c0()) && !(eq users c0()));
+!((eq top c0()) && !(eq top c0()));
+!((gt bottom top) && !(gt bottom top));
+!((eq bottom c0()) && !(eq bottom c0()));
+!((gte users c0()) && !(gte users c0()));
+!((eq users c0()) && !(gte users c0()));
+(eq users c0()) && ([users <- ( add users c1() )]) -> X  (gte users c0());
+(eq users c0()) && ([users <- ( sub users c1() )]) -> X  !(gte users c0());
+(gte users c0()) && ([users <- ( add users c1() )]) -> X  (gte users c0());
+
+}
+always assume {
 	[steps <- bottom()] <-> ![bottom <- add bottom c1()];
 	[steps <- up()] <-> ![top <- add top c1()];
 }

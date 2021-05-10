@@ -1,0 +1,20 @@
+//#LIA#
+always assume {
+	[steps <- bottom()] <-> ![bottom <- add bottom c1()];
+	[steps <- up()] <-> ![top <- add top c1()];
+}
+
+always guarantee {
+  // Bottom movements
+  [bottom <- add bottom c1()] && [top <- top] <-> [ users <- add users c1() ];
+  [bottom <- bottom] && [top <- sub top c1()] <-> [ users <- sub users c1() ];
+
+  // Top movements
+  [bottom <- bottom] && [top <- add top c1()] <-> [ users <- add users c1() ];
+  [bottom <- sub bottom c1()] && [top <- top] <-> [ users <- sub users c1() ];
+
+  // Directional components
+  eq users c0() && eq bottom c0() && eq top c0() -> [steps <- stop()];
+  eq users c0() && gt bottom top -> [steps <- up()];
+  eq users c0() && !(gt bottom top) -> [steps <- down];
+}
