@@ -1,30 +1,22 @@
 //#LIA#
-// if x happens often enougth and from some point on stops
-// happening, then e will happen eventually.
-leadsWith x y e =
-  G F (x && (! y W e)) -> F e;
+
+goDown = [ topQueue <- sub topQueue c1()];
+goUp =   [ botQueue <- sub botQueue c1()];
 
 always assume {
-  // if a user enters at the bottom and the escalator moves up
-  // often enough, then the user will also eventuall exit.
-  enterEvent bottom
-    -> leadsWith
-        [ steps <- moveUp() ]
-        [ steps <- moveDown() ]
-        (exitEvent top);
-
-  // the same for the other direction
-  enterEvent top
-    -> leadsWith
-        [ steps <- moveDown() ]
-        [ steps <- moveUp() ]
-        (exitEvent bottom);
+	gte botQueue c0();
+	gte topQueue c0();
 }
 
 always guarantee {
-  enterEvent bottom
-    -> F ([ steps <- moveUp() ] U exitEvent top);
+  // Fairly send the direction with more people
+  gt botQueue topQueue    -> goUp;
+  !(gt botQueue topQueue) -> goDown;
 
-  enterEvent top
-    -> F ([ steps <- moveDown() ] U exitEvent bottom);
+  // One direction at a time
+  !(goDown && goUp);
+
+  // All users leave
+  F eq botQueue c0();
+  F eq topQueue c0();
 }

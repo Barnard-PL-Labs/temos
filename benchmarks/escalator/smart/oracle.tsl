@@ -1,0 +1,13 @@
+assume {
+  (G ((((gte topQueue) c0()) && ([topQueue <- ((sub topQueue) c1())] W ((eq topQueue) c0()))) -> (F ((eq topQueue) c0()))));
+  (G ((((eq topQueue) c0()) && [topQueue <- ((sub topQueue) c1())]) -> (X (! ((gte topQueue) c0())))));
+  (G ((gte topQueue) c0()));
+}
+
+guarantee {
+  (G (((gt botQueue) topQueue) -> [botQueue <- ((sub botQueue) c1())]));
+  (G ((! ((gt botQueue) topQueue)) -> [topQueue <- ((sub topQueue) c1())]));
+  (G (! ([topQueue <- ((sub topQueue) c1())] && [botQueue <- ((sub botQueue) c1())])));
+  (G (F ((eq botQueue) c0())));
+  (G (F ((eq topQueue) c0())));
+}

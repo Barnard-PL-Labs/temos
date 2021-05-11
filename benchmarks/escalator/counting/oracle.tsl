@@ -1,0 +1,11 @@
+assume {
+  (G ([moving <- False()] -> (! [top <- ((sub top) c1())])));
+}
+
+guarantee {
+  (G (([bottom <- ((add bottom) c1())] && [top <- top]) <-> [users <- ((add users) c1())]));
+  (G (([bottom <- bottom] && [top <- ((sub top) c1())]) <-> [users <- ((sub users) c1())]));
+  (G ((((eq users) c0()) && [bottom <- bottom]) -> [moving <- False()]));
+  (G (([moving <- False()] && [bottom <- ((add bottom) c1())]) -> [moving <- True()]));
+  (G ((gte users) c0()));
+}

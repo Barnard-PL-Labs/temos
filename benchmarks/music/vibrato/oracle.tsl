@@ -1,0 +1,14 @@
+assume {
+  (G (! ((! ((lte lfoFreq) c10())) && (! ((gt lfoFreq) c10())))));
+  (G ((((lte lfoFreq) c10()) && ([lfoFreq <- ((add lfoFreq) c1())] W ((gt lfoFreq) c10()))) -> (F ((gt lfoFreq) c10()))));
+  (G ((((gt lfoFreq) c10()) && ([lfoFreq <- ((sub lfoFreq) c1())] W ((lte lfoFreq) c10()))) -> (F ((lte lfoFreq) c10()))));
+}
+
+guarantee {
+  (G (G (F [lfo <- True()])));
+  (G (G (F [lfo <- False()])));
+  (G ((((lte lfoFreq) c10()) -> [lfo <- False()]) U ((gt lfoFreq) c10())));
+  (G ((((gt lfoFreq) c10()) -> [lfo <- True()]) U ((lte lfoFreq) c10())));
+  (G ([lfo <- False()] -> [lfoFreq <- ((add lfoFreq) c1())]));
+  (G ([lfo <- True()] -> [lfoFreq <- ((sub lfoFreq) c1())]));
+}

@@ -405,19 +405,24 @@ impl SygusHoareTriple {
         let postcond = (*self.postcond).clone().
             var_to_function(&var_name);
         let quantifier_free = self.precond.is_eq();
+        let mut const_vars : HashSet<&str> = HashSet::new();
 
         // If the precond-var is not part of a forall clause
         if quantifier_free {
             for var in &variables {
-                query.push_str(&format!("(declare-const {} Int)\n", var));
+                const_vars.insert(var);
             }
         }
         // Yes, I know this is repeated
         // Add all variables that aren't part of the function
         for var in &variables {
             if !(var.eq(&var_name)) {
-                query.push_str(&format!("(declare-const {} Int)\n", var));
+                const_vars.insert(var);
             }
+        }
+
+        for var in const_vars {
+            query.push_str(&format!("(declare-const {} Int)\n", var));
         }
 
         query.push_str(&header);

@@ -1,0 +1,7 @@
+assume {
+}
+
+guarantee {
+  (G (((gt bottom) top) -> [up <- True()]));
+  (G ((! ((gt bottom) top)) -> [up <- False()]));
+}

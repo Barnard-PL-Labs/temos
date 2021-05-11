@@ -1,0 +1,23 @@
+assume {
+  (G (! ((! ((lte fmFreq) c500())) && (! ((gt fmFreq) c500())))));
+  (G (! ((! ((lte amFreq) c500())) && (! ((gt amFreq) c500())))));
+  (G ((((lte amFreq) c500()) && ([amFreq <- ((add amFreq) c100())] W ((gt amFreq) c500()))) -> (F ((gt amFreq) c500()))));
+  (G ((((gt amFreq) c500()) && ([amFreq <- ((sub amFreq) c100())] W ((lte amFreq) c500()))) -> (F ((lte amFreq) c500()))));
+  (G ((((lte fmFreq) c500()) && ([fmFreq <- ((add fmFreq) c100())] W ((gt fmFreq) c500()))) -> (F ((gt fmFreq) c500()))));
+  (G ((((gt fmFreq) c500()) && ([fmFreq <- ((sub fmFreq) c100())] W ((lte fmFreq) c500()))) -> (F ((lte fmFreq) c500()))));
+}
+
+guarantee {
+  (G (G (F [amSynthesis <- True()])));
+  (G (G (F [amSynthesis <- False()])));
+  (G (G (F [fmSynthesis <- True()])));
+  (G (G (F [fmSynthesis <- False()])));
+  (G ((((lte amFreq) c500()) -> [amSynthesis <- False()]) U ((gt amFreq) c500())));
+  (G ((((gt amFreq) c500()) -> [amSynthesis <- True()]) U ((lte amFreq) c500())));
+  (G ([amSynthesis <- False()] -> [amFreq <- ((add amFreq) c100())]));
+  (G ([amSynthesis <- True()] -> [amFreq <- ((sub amFreq) c100())]));
+  (G ((((lte fmFreq) c500()) -> [fmSynthesis <- False()]) U ((gt fmFreq) c500())));
+  (G ((((gt amFreq) c500()) -> [fmSynthesis <- True()]) U ((lte fmFreq) c500())));
+  (G ([fmSynthesis <- False()] -> [fmFreq <- ((add fmFreq) c100())]));
+  (G ([fmSynthesis <- True()] -> [fmFreq <- ((sub fmFreq) c100())]));
+}

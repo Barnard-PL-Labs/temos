@@ -8,6 +8,6 @@ fi
 path_header=$1
 bin_mode=$2
 json="$path_header.json"
-tsl="$path_header.tsl"
+tsl="$path_header.tslmt"
 
 target/$bin_mode/temos "--time" $json $tsl

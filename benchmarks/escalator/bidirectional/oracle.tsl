@@ -1,0 +1,13 @@
+assume {
+  (G ([steps <- bottom()] <-> (! [bottom <- ((add bottom) c1())])));
+}
+
+guarantee {
+  (G (([bottom <- ((add bottom) c1())] && [top <- top]) <-> [users <- ((add users) c1())]));
+  (G (([bottom <- bottom] && [top <- ((sub top) c1())]) <-> [users <- ((sub users) c1())]));
+  (G (([bottom <- bottom] && [top <- ((add top) c1())]) <-> [users <- ((add users) c1())]));
+  (G (([bottom <- ((sub bottom) c1())] && [top <- top]) <-> [users <- ((sub users) c1())]));
+  (G (((((eq users) c0()) && ((eq bottom) c0())) && ((eq top) c0())) -> [steps <- stop()]));
+  (G ((((eq users) c0()) && ((gt bottom) top)) -> [steps <- up()]));
+  (G ((((eq users) c0()) && (! ((gt bottom) top))) -> [steps <- down]));
+}

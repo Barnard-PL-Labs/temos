@@ -1,0 +1,21 @@
+BTWN = (eq c c0()  || lt c0() c) && (eq c c100() || lt c c100());
+EQUAL = (eq c c0() || eq c c100());
+
+initially assume {
+	eq c c0();
+}
+
+always assume {		
+	!(EQUAL && !BTWN);
+	!(eq c c100() && eq c c0());
+	!(eq c c0())   && BTWN && [c <- sub c c1()] -> X BTWN;
+	!(eq c c100()) && BTWN && [c <- add c c1()] -> X BTWN;
+}
+
+always guarantee {
+	[c <- sub c c1()] -> [c <- sub c c1()] W (eq c c0());
+	[c <- add c c1()] -> [c <- add c c1()] W (eq c c100());
+	eq c c100() -> [c <- sub c c1()];
+	eq c c0()   -> [c <- add c c1()];
+	BTWN;
+}

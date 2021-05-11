@@ -1,0 +1,29 @@
+always assume{
+!(!(lte lfoFreq c10()) && !(gt lfoFreq c10()));
+!(!(lte fmFreq c500()) && !(gt fmFreq c500()));
+//(lte lfoFreq c10()) && ([lfoFreq <- ( sub lfoFreq c1() )] W (lte lfoFreq c10())) -> F (lte lfoFreq c10());
+(lte lfoFreq c10()) && ([lfoFreq <- ( add lfoFreq c1() )] W (gt lfoFreq c10())) -> F (gt lfoFreq c10());
+(gt lfoFreq c10()) && ([lfoFreq <- ( sub lfoFreq c1() )] W (lte lfoFreq c10())) -> F (lte lfoFreq c10());
+//(gt lfoFreq c10()) && ([lfoFreq <- ( add lfoFreq c1() )] W (gt lfoFreq c10())) -> F (gt lfoFreq c10());
+//(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+(gt fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+//(gt fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+
+}
+always guarantee {
+	G F [fmSynthesis <- True()];
+	G F [fmSynthesis <- False()];
+	G F [lfo <- True()];
+	G F [lfo <- False()];
+
+	lte lfoFreq c10() -> [fmSynthesis <- False()]  U gt  lfoFreq c10();
+	gt  lfoFreq c10() -> [fmSynthesis <- True()] U lte lfoFreq c10();
+	[fmSynthesis <- False()]   -> [lfoFreq <- add lfoFreq c1()];
+	[fmSynthesis <- True()]  -> [lfoFreq <- sub lfoFreq c1()];
+
+	lte fmFreq c500() -> [lfo <- True()]  U gt  fmFreq c500();
+	gt  fmFreq c500() -> [lfo <- False()] U lte fmFreq c500();
+	[lfo <- True()]   -> [fmFreq <- add fmFreq c100()];
+	[lfo <- False()]  -> [fmFreq <- sub fmFreq c100()];
+}

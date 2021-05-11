@@ -1,0 +1,13 @@
+assume {
+  (G (! ((hit paddle1) && (hit paddle2))));
+  (G (((hit paddle1) || (hit paddle2)) -> (! (((eq loc) c0()) || ((eq loc) c100())))));
+}
+
+guarantee {
+  (G ((hit paddle1) -> [loc <- ((add loc) c1())]));
+  (G ((hit paddle2) -> [loc <- ((sub loc) c1())]));
+  (G (((eq loc) c0()) -> [loc <- ((sub loc) c1())]));
+  (G (((eq loc) c100()) -> [loc <- ((sub loc) c1())]));
+  (G (([loc <- ((sub loc) c1())] -> [loc <- ((sub loc) c1())]) W (((eq loc) c0()) || (hit paddle1))));
+  (G (([loc <- ((add loc) c1())] -> [loc <- ((add loc) c1())]) W (((eq loc) c100()) || (hit paddle2))));
+}
