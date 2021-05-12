@@ -16,6 +16,4 @@ always guarantee {
 
 	lte lfoFreq c10() -> [lfo <- False()];
 	gt  lfoFreq c10() -> [lfo <- True()];
-	//[lfo <- False()] -> [lfoFreq <- add lfoFreq c1()];
-	//[lfo <- True()] -> [lfoFreq <- sub lfoFreq c1()];
 }

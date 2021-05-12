@@ -1,0 +1,25 @@
+//#LIA#
+
+assume {
+	eq num_tasks c0();
+}
+
+always assume {	
+	enqueue task1 <-> F dequeue task1;
+	enqueue task2 <-> F dequeue task2;
+
+	!((enqueue task1 || enqueue task2) && (dequeue task1 || dequeue task2));
+	!(enqueue task1 && dequeue task1);
+}
+
+always guarantee {
+	[next <- task1] || [next <- task2] || [next <- idle];
+
+	enqueue task1 -> [num_tasks <- inc num_tasks c1()] && ([next <- task1] U dequeue task1);
+	enqueue task2 -> [num_tasks <- inc num_tasks c1()] && ([next <- task2] U dequeue task2);
+
+	dequeue task1 -> [num_tasks <- sub num_tasks c1()] && (![next <- task1] W enqueue task1);
+	dequeue task2 -> [num_tasks <- sub num_tasks c1()] && (![next <- task2] W enqueue task2);
+
+	gte num_tasks c0();
+}

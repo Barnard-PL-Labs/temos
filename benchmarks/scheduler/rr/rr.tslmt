@@ -1,10 +1,4 @@
 //#LIA#
-always assume {
-	//!(eq ptr c0() && eq ptr c1());
-	//(eq ptr c1() && [ptr <- sub ptr c1()]) -> X eq ptr c0();
-	//(eq ptr c0() && [ptr <- add ptr c1()]) -> X eq ptr c1();
-}
-
 always guarantee {
 	[ptr <- add ptr c1()] || [ptr <- sub ptr c1()];
 

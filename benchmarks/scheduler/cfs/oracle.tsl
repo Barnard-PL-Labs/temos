@@ -1,0 +1,24 @@
+assume {
+  (G (! (((gt vruntime1) vruntime2) && ((gt vruntime2) vruntime1))));
+  (G (((! ((gt vruntime1) vruntime2)) && ([vruntime1 <- ((add vruntime1) c1())] W ((gt vruntime1) vruntime2))) -> (F ((gt vruntime1) vruntime2))));
+  (G (((! ((gt vruntime2) vruntime1)) && ([vruntime2 <- ((add vruntime2) c1())] W ((gt vruntime2) vruntime1))) -> (F ((gt vruntime2) vruntime1))));
+  (G ((F (dequeue job1)) -> (enqueue job1)));
+  (G ((F (dequeue job2)) -> (enqueue job2)));
+}
+
+always assume {
+	!(enqueue job1 && dequeue job1);
+	!(enqueue job2 && dequeue job2);
+}
+
+guarantee {
+  (G (([next <- job1] || [next <- job2]) || [next <- idle]));
+  (G ((enqueue job1) -> ((G (F [next <- job1])) W (dequeue job1))));
+  (G ((enqueue job2) -> ((G (F [next <- job2])) W (dequeue job2))));
+  (G ((dequeue job1) -> ((! [next <- job1]) W (enqueue job1))));
+  (G ((dequeue job2) -> ((! [next <- job2]) W (enqueue job2))));
+  (G ([next <- job1] -> [vruntime1 <- ((add vruntime1) c1())]));
+  (G ([next <- job2] -> [vruntime2 <- ((add vruntime2) c1())]));
+  (G (((gt vruntime1) vruntime2) -> (! [next <- job1])));
+  (G (((gt vruntime2) vruntime1) -> (! [next <- job2])));
+}

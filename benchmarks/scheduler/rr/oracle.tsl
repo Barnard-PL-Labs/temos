@@ -1,0 +1,13 @@
+assume {
+  (G (! (((eq ptr) c0()) && ((eq ptr) c1()))));
+  (G ((((eq ptr) c0()) && [ptr <- ((add ptr) c1())]) -> (X ((eq ptr) c1()))));
+  (G ((((eq ptr) c1()) && [ptr <- ((sub ptr) c1())]) -> (X ((eq ptr) c0()))));
+}
+
+guarantee {
+  (G ([ptr <- ((add ptr) c1())] || [ptr <- ((sub ptr) c1())]));
+  (G (G (F [next <- job0])));
+  (G (G (F [next <- job1])));
+  (G (((eq ptr) c0()) -> [next <- job0]));
+  (G (((eq ptr) c1()) -> [next <- job1]));
+}
