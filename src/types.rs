@@ -143,6 +143,29 @@ impl LogicOp {
             GTE => String::from("gte")
         }
     }
+    fn reverse(&self) -> LogicOp {
+        match self {
+            LT  => GTE,
+            GT  => LTE,
+            LTE => GT,
+            GTE => LT,
+            EQ  => panic!("No reversal for EQ")
+        }
+    }
+    fn is_lt(&self) -> bool {
+        match self {
+            LT  => true,
+            LTE => true,
+            _   => false
+        }
+    }
+    fn is_gt(&self) -> bool {
+        match self {
+            GT  => true,
+            GTE => true,
+            _   => false
+        }
+    }
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
@@ -161,7 +184,7 @@ impl Predicate {
             }
             // Assuming that we have elided UNSAT preds.
             And(_, _) => false,
-            Neg(pred) => !pred.is_eq()
+            Neg(_) => false
         }
     }
     fn is_two_var(&self) -> bool {
@@ -169,8 +192,8 @@ impl Predicate {
             Bool(_, lhs, rhs) =>
                 match lhs {
                     Const(_) => false,
-                    Var(ls) => match rhs {
-                        Var(rs)   => ls.eq(rs),
+                    Var(_) => match rhs {
+                        Var(_)   => true,
                         Const(_) => false
                     }
                 },
@@ -466,11 +489,35 @@ impl SygusHoareTriple {
 
     fn to_hack_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
+        query.push_str(&format!("(declare-const {} Int)\n", self.precond.get_var_name()));
         let header = format!("(synth-fun function (({} Int)) Int\n", self.var_name);
         if !self.precond.is_eq() {
             panic!("Not Implemented Error");
         }
         query.push_str(&header);
+
+        let model: i32;
+        let const_int = 5;
+        let mut is_neg = false;
+
+        match &*self.precond {
+            Bool(_, _, rhs) => {
+                match rhs {
+                    Const(x) => {model = *x;}
+                    _ => panic!("hack failed.")
+                }
+            },
+            Neg(pred) => match &**pred {
+                Bool(_, _, rhs) => {
+                    match rhs {
+                        Const(x) => {model = *x;}
+                        _ => panic!("Got precond {}", self.precond.to_smtlib())
+                    }
+                },
+                _ => panic!("hack failed.")
+            }
+            _ => panic!("Got precond {}", self.precond.to_smtlib())
+        };
 
         query.push_str("\t((I Int))(\n");
         query.push_str("\t\t(I Int (\n");
@@ -486,8 +533,63 @@ impl SygusHoareTriple {
         query.push_str(")\n");
 
         query.push_str(&self.precond.to_assert());
-        // TODO
-        query.push_str(&self.quantified_constraint());
+        { 
+            let operator;
+            let var_name;
+            match &*self.postcond {      
+                Bool(op, _, rhs) => {
+                    operator = op;
+                    match &*rhs {
+                        Var(s) => {var_name = s},
+                        _ => panic!("hack failed.")
+                    };
+                },
+                Neg(pred) => {
+                    is_neg = true;
+                    match &**pred {
+                        Bool(op, _, rhs) => {
+                            operator = op;
+                            match &*rhs {
+                                Var(s) => {var_name = s},
+                                _ => panic!("hack failed.")
+                            };
+                        },
+                        _ => panic!("hack failed.")
+                    }
+                },
+                _ => panic!("hack failed.")
+            };
+            let mut constraint = format!("(constraint (forall (({} Int))\n", var_name);
+            let val;
+            if operator.is_lt() {
+                val = model - const_int;
+            } else if operator.is_gt() {
+                val = model + const_int;
+            } else {
+                panic!("hack failed.");
+            }
+            let val = Const(val);
+            constraint.push_str(&format!("\t(=> ({} {} {})\n",
+                                         operator.reverse().to_string(),
+                                         var_name,
+                                         val.to_string(),
+                                         ));
+            if !is_neg {
+                constraint.push_str(&format!("\t({} (function {}) {})\n",
+                operator.to_string(),
+                self.precond.get_var_name(),
+                var_name
+                ));
+            } else {
+                constraint.push_str(&format!("\t(not ({} (function {}) {}))\n",
+                operator.to_string(),
+                self.precond.get_var_name(),
+                var_name
+                ));
+            }
+            constraint.push_str(")))\n");
+            query.push_str(&constraint);
+        }
         query.push_str("(check-synth)\n");
         query
     }
@@ -512,8 +614,9 @@ impl SygusHoareTriple {
                 if (*self.precond).is_eq() {
                     // XXX
                     if (*self.postcond).is_two_var(){
-                        utils::sygus_cvc4(self.to_sygus(), "sygus",
-                        TIMEOUT_DEPTH)
+                        let sygus = self.to_hack_sygus();
+                        let result = utils::sygus_cvc4(sygus, "sygus", TIMEOUT_DEPTH);
+                        result
                     }
                     else {
                         utils::sygus_cvc4(self.to_sygus(), "sygus",
