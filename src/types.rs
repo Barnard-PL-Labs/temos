@@ -164,6 +164,20 @@ impl Predicate {
             Neg(pred) => !pred.is_eq()
         }
     }
+    fn is_two_var(&self) -> bool {
+        match self {
+            Bool(_, lhs, rhs) =>
+                match lhs {
+                    Const(_) => false,
+                    Var(ls) => match rhs {
+                        Var(rs)   => ls.eq(rs),
+                        Const(_) => false
+                    }
+                },
+                And(_, _) => panic!("Not Implemented Error"),
+                Neg(pred) => pred.is_two_var()
+        }
+    }
     // XXX: no real support for two-element predicates yet.
     pub fn get_var_name(&self) -> String {
         match self {
@@ -450,6 +464,34 @@ impl SygusHoareTriple {
         query
     }
 
+    fn to_hack_sygus(&self) -> String {
+        let mut query = String::from("(set-logic LIA)\n");
+        let header = format!("(synth-fun function (({} Int)) Int\n", self.var_name);
+        if !self.precond.is_eq() {
+            panic!("Not Implemented Error");
+        }
+        query.push_str(&header);
+
+        query.push_str("\t((I Int))(\n");
+        query.push_str("\t\t(I Int (\n");
+        for update_term in &*self.updates {
+            query.push_str(&format!("\t\t\t\t{}\n", update_term.to_sygus()));
+            query.push_str(&format!("\t\t\t\t{}\n",
+                                    update_term.change_sink_name("I")
+                                    .to_sygus()));
+        }
+        query.push_str("\t\t\t)\n");
+        query.push_str("\t\t)\n");
+        query.push_str("\t)\n");
+        query.push_str(")\n");
+
+        query.push_str(&self.precond.to_assert());
+        // TODO
+        query.push_str(&self.quantified_constraint());
+        query.push_str("(check-synth)\n");
+        query
+    }
+
     fn verify_loop(&self, loop_body: &str) {
         match *self.temporal {
             Next(_) => panic!("This should not be called for safety specs\n"),
@@ -468,11 +510,17 @@ impl SygusHoareTriple {
             }
             Liveness => {
                 if (*self.precond).is_eq() {
-                    utils::sygus_cvc4(self.to_sygus(), "sygus",
-                                      TIMEOUT_DEPTH)
+                    // XXX
+                    if (*self.postcond).is_two_var(){
+                        utils::sygus_cvc4(self.to_sygus(), "sygus",
+                        TIMEOUT_DEPTH)
+                    }
+                    else {
+                        utils::sygus_cvc4(self.to_sygus(), "sygus",
+                        TIMEOUT_DEPTH)
+                    }
                 } 
                 // while loops with PBE
-                // XXX: fix value of 2nd variable, if exists
                 else {
                     let pred_pbe_vec = (*self.precond).generate_pbe(3);
                     let mut sygus_results = Vec::new();
@@ -504,14 +552,6 @@ impl SygusHoareTriple {
 
     fn to_assumption(&self) -> Option<String> {
         let sygus_result = parser::get_sygus_result(&self.run_synthesis());
-        // match *self.temporal {
-        //     Liveness => {
-        //         println!("\nProduced Assumption for \n{} and {}",
-        //             self.precond.to_smtlib(), self.postcond.to_smtlib()
-        //         );
-        //     }
-        //     _ => ()
-        // }
         if sygus_result.is_none() {
             return None;
         }
@@ -527,12 +567,6 @@ impl SygusHoareTriple {
                      update_ass,
                      timesteps,
                      self.postcond.to_tsl());
-        // match *self.temporal {
-        //     Liveness => {
-        //         println!("{}\n", &foo);
-        //     }
-        //     _ => ()
-        // }
         Some(foo)
     }
 }
@@ -561,10 +595,6 @@ impl Specification {
         }
         hoare_vec = hoare::enumerate_hoare(self.predicates.clone(),
         self.updates.clone());
-        // DEBUG to print out sygus queries
-        //for h in &hoare_vec {
-        //    println!("{}", h.to_sygus());
-        //}
         sygus_results = hoare_vec.iter()
             .filter_map(|x| x.to_assumption())
             .collect();
@@ -572,7 +602,7 @@ impl Specification {
             assumptions.push_str(&result);
             assumptions.push('\n');
         }
-        println!("Generated assumption from Specification.");
+        println!("Generated assumptions from specification.");
         assumptions
     }
     pub fn to_always_assume(&self) -> String {

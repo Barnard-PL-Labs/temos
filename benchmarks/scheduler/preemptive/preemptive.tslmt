@@ -1,0 +1,40 @@
+//#LIA#
+always assume {
+	(lte vruntime1 vruntime2 && ([vruntime1 <- add vruntime1 diff] W !(lte vruntime1 vruntime2))) -> F !(lte vruntime1 vruntime2);
+	(!(lte vruntime1 vruntime2) && ([vruntime2 <- add vruntime2 diff] W (lte vruntime1 vruntime2))) -> F (lte vruntime1 vruntime2);
+
+	!(enqueue job1 && dequeue job1);
+	!(enqueue job2 && dequeue job2);
+	!(preempt job1 && preempt job2);
+	!(enqueue job1 && preempt job1);
+	!(enqueue job2 && preempt job2);
+
+	F dequeue job1 -> enqueue job1;
+	F dequeue job2 -> enqueue job2;
+	F preempt job1 -> enqueue job1;
+	F preempt job2 -> enqueue job2;
+
+	gt now prev;
+}
+
+always guarantee {
+	[next <- job1] || [next <- job2] || [next <- idle];
+
+	enqueue job1 -> (((G F [next <- job1])) W (dequeue job1 || preempt job1));
+	enqueue job2 -> (((G F [next <- job2])) W (dequeue job2 || preempt job2));
+
+	dequeue job1 -> ((![next <- job1]) W enqueue job1);
+	dequeue job2 -> ((![next <- job2]) W enqueue job2);
+	
+	preempt job1 -> ![next <- job1];
+	preempt job2 -> ![next <- job2];
+
+	[prev <- now];
+	[diff <- sub prev now];
+
+	[next <- job1] <-> X [vruntime1 <- add vruntime1 diff];
+	[next <- job2] <-> X [vruntime1 <- add vruntime2 diff];
+
+	lte vruntime1 vruntime2    -> ![next <- job2];
+	!(lte vruntime1 vruntime2) -> ![next <- job1];
+}

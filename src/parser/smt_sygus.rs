@@ -161,12 +161,12 @@ pub fn get_while_loop(sygus_results: Vec<String>) -> Option<String> {
         .map(|x| get_ast(x.to_string(), "Int"))
         .map(|x| get_loop_body(scanner(&x)))
         .collect();
-    // let all_same = bodies.iter().all(|x| x == &bodies[0]);
-    // if !all_same {
-    //     panic!("Obtaining loop body failed.\n,
-    //            {:?}\n",
-    //            bodies);
-    // }
+    let all_same = bodies.iter().all(|x| x == &bodies[0]);
+    if !all_same {
+        panic!("Obtaining loop body failed.\n,
+               {:?}\n",
+               bodies);
+    }
     if bodies.len() > 0 {
         Some(bodies[0].clone())
     } else {

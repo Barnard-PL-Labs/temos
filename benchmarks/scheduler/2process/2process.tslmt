@@ -1,0 +1,26 @@
+//#LIA#
+always assume {
+	(lte vruntime1 vruntime2 && ([vruntime1 <- inc vruntime1] W !(lte vruntime1 vruntime2))) -> F !(lte vruntime1 vruntime2);
+	(!(lte vruntime1 vruntime2) && ([vruntime2 <- inc vruntime2] W (lte vruntime1 vruntime2))) -> F (lte vruntime1 vruntime2);
+
+	!(enqueue job1 && dequeue job1);
+	!(enqueue job2 && dequeue job2);
+	F dequeue job1 -> enqueue job1;
+	F dequeue job2 -> enqueue job2;
+}
+
+always guarantee {
+	[next <- job1] || [next <- job2] || [next <- idle];
+
+	enqueue job1 -> (((G F [next <- job1]) && [state1 <- runnable]) W dequeue job1);
+	enqueue job2 -> (((G F [next <- job2]) && [state2 <- runnable]) W dequeue job2);
+
+	dequeue job1 -> ((![next <- job1] && [state1 <- unrunnable]) W enqueue job1);
+	dequeue job2 -> ((![next <- job2] && [state2 <- unrunnable]) W enqueue job2);
+
+	[next <- job1] -> [vruntime1 <- inc vruntime1];
+	[next <- job2] -> [vruntime2 <- inc vruntime2];
+
+	lte vruntime1 vruntime2    && [state1 <- runnable] -> ![next <- job2];
+	!(lte vruntime1 vruntime2) && [state2 <- runnable] -> ![next <- job1];
+}
