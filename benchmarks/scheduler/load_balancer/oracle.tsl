@@ -1,0 +1,14 @@
+assume {
+  (G (! (((gt cpu0) cpu1) && ((gt cpu1) cpu0))));
+  (G ((((gt cpu0) cpu1) && ([cpu0 <- ((add cpu0) c1())] W ((gt cpu1) cpu0))) -> (F ((gt cpu1) cpu0))));
+  (G ((((gt cpu1) cpu0) && ([cpu1 <- ((add cpu1) c1())] W ((gt cpu0) cpu1))) -> (F ((gt cpu0) cpu1))));
+}
+
+guarantee {
+  (G ((enqueue && ((gt cpu0) cpu1)) -> [cpu0 <- ((add cpu0) c1())]));
+  (G ((enqueue && ((gt cpu1) cpu0)) -> [cpu1 <- ((add cpu1) c1())]));
+  (G (((! enqueue) && ((gt cpu0) cpu1)) -> ([cpu0 <- ((add cpu0) c1())] && [cpu1 <- ((sub cpu1) c0())])));
+  (G (((! enqueue) && ((gt cpu1) cpu0)) -> ([cpu1 <- ((add cpu1) c1())] && [cpu0 <- ((sub cpu0) c0())])));
+  (G (! (G ((gt cpu0) cpu1))));
+  (G (! (G ((gt cpu1) cpu0))));
+}

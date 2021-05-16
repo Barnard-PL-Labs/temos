@@ -31,9 +31,9 @@ pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
             continue; //TEMP HACK
         }
         for postcond in &pred_vec {
-            if &postcond.pred.get_var_name() != var_name {
-                continue;
-            }
+            // if &postcond.pred.get_var_name() != var_name {
+            //     continue;
+            // }
             for operator in &postcond.temporal {
                 let hoare = SygusHoareTriple {
                     precond : Rc::new(precond.pred.clone()),
