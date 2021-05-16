@@ -60,7 +60,7 @@ impl Literal {
     }
     fn change_name(&self, new_name: &str) -> Literal {
         match self {
-            Var(var_name) => Var(String::from(new_name)),
+            Var(_) => Var(String::from(new_name)),
             Const(val) => Const(*val)
         }
     }

@@ -1,4 +1,3 @@
-use crate::types::*;
 use Token::*;
 use regex::Regex;
 
@@ -202,7 +201,7 @@ mod tests {
     #[test]
     fn test_assumption() {
         let function = String::from("(define-fun function ((x Int)) Int (+ (+ x 1) 2))");
-        let result = fxn_to_tsl(function);
+        let result = get_ast(function, "Int");
         assert_eq!(&result, "(+ (+ x 1) 2)");
     }
 }

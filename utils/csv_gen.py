@@ -18,8 +18,11 @@ def run_spec(path):
     json = path + dir_name + ".json"
     result = subprocess.run(["target/release/temos",
         "--time", json, tslmt], stdout=subprocess.PIPE)
-    result = result.stdout.decode("utf-8") .strip().split('\n')[2:4]
-    result = [int(r) for r in result]
+    result = result.stdout.decode("utf-8") .strip().split('\n')
+    if result[1] != "REALIZABLE":
+        print(result[1])
+        sys.exit(1)
+    result = [int(r) for r in result[2:4]]
     return dict(type=dentries[-2],
             name=dentries[-1],
             lia=result[0],
