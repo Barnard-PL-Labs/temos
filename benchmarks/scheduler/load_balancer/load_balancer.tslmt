@@ -1,0 +1,18 @@
+//#LIA#
+
+always assume {	
+	!(lte cpu0 cpu1 && lt cpu1 cpu0);
+	(lte cpu0 cpu1 && ([cpu0 <- add cpu0 c1()] W lt cpu1 cpu0)) -> F lt cpu1 cpu0;
+	(lt cpu1 cpu0 && ([cpu1 <- add cpu1 c1()] W lte cpu0 cpu1)) -> F lte cpu0 cpu1;
+}
+
+always guarantee {
+	enqueue && lte cpu0 cpu1 -> [cpu0 <- add cpu0 c1()];
+	enqueue && lt cpu1 cpu0 -> [cpu1 <- add cpu1 c1()];
+
+	!enqueue && lte cpu0 cpu1 -> [cpu0 <- add cpu0 c1()] && [cpu1 <- sub cpu1 c0()];
+	!enqueue && lt cpu1 cpu0 -> [cpu1 <- add cpu1 c1()] && [cpu0 <- sub cpu0 c0()];
+
+	!(G lte cpu0 cpu1);
+	!(G lt cpu1 cpu0);
+}
