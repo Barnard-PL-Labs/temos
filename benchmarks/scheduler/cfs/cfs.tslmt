@@ -1,12 +1,13 @@
 //#LIA#
-assume {
-	![next <- job1] W enqueue job1;
-	![next <- job2] W enqueue job2;
-}
 
 always assume {
 	!(enqueue job1 && dequeue job1);
 	!(enqueue job2 && dequeue job2);
+}
+
+guarantee {
+	![next <- job1] W enqueue job1;
+	![next <- job2] W enqueue job2;
 }
 
 always guarantee {
