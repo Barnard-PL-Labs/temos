@@ -26,3 +26,8 @@ dev/
 *.aag
 *.js
 ___*
+
+# Java
+*.class
+*.iml
+out/
