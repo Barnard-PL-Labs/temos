@@ -13,12 +13,14 @@ __pycache__
 
 # Text Editor
 .idea
+*.iml
 tags
 TODO
 
 # Local development
 local_testing/
 dev/
+todo
 
 # Synthesis files
 *.json
@@ -29,5 +31,4 @@ ___*
 
 # Java
 *.class
-*.iml
 out/

@@ -4,14 +4,14 @@ Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesi
 
 ## Installation
 
-### Preliminaries
-1. Make directory `bin`.
-2. Download [CVC4](https://cvc4.github.io/downloads.html) and move the binary into `bin`.
-Please name the binary `cvc4`.
-3. Install `rustc`, probably preferably through [`rustup`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
+You can try out our [`Docker` image](#) or install the tool locally.
 
-### Building the source
-Simple as
-```sh
-cargo build
-```
+### Dependencies
+* [`Haskell` Stack](https://docs.haskellstack.org/en/stable/README/)
+* `Java` 8 or newer
+* [`rustc` and `cargo`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
+
+### Installing
+1. Run `install.sh`.
+2. Download the [CVC4](https://cvc4.github.io/downloads.html) binary and move it into the directory `bin`.
+Please name the binary `cvc4`.
