@@ -1,8 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 public class Decomp {
     // https://stackoverflow.com/a/3403112/11801882
@@ -21,8 +24,9 @@ public class Decomp {
         return logic.equals("LIA");
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        String path, logic, json;
+    public static void main(String[] args)
+            throws FileNotFoundException, IOException, ParseException {
+        String path, logic;
 
 //        if (args.length != 1) {
 //            System.err.println("USAGE: java Parser <file.tslmt>");
@@ -36,8 +40,8 @@ public class Decomp {
             System.err.printf("Unsupported logic: %s\n", logic);
             System.exit(1);
         }
-
-        json = Tsltools.decomp(path);
-        System.out.printf("%s\n", json);
+        ArrayList<Update> foo = Parser.getUpdates(path);
+        for (Update u: foo)
+            System.out.println(u.toJson());
     }
 }
