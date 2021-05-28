@@ -21,3 +21,8 @@ MacOS users may be able to run the tool by downloading the appropriate CVC4 bina
 ```
 ./temos.sh <TSLMT FILE>
 ```
+For instance:
+```
+./temo.sh examples/cfs.tslmt
+```
+prints a TSL specification, which can then be converted into executable code with [tsltools](https://github.com/reactive-systems/tsltools).

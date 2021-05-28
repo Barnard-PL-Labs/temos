@@ -705,7 +705,6 @@ impl Specification {
             assumptions.push_str(&result);
             assumptions.push('\n');
         }
-        println!("Generated assumptions from specification.");
         assumptions
     }
     pub fn to_always_assume(&self) -> String {
