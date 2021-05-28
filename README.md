@@ -4,16 +4,19 @@ Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesi
 
 ## Installation
 
-Docker image is coming; for now, follow these local installation procedures:
-Installation is only supported on Unix systems.
+Installation is only currently only supported for Linux systems.
 
 ### Dependencies
 * [`Haskell` Stack](https://docs.haskellstack.org/en/stable/README/)
 * [`Java` 8 or newer](https://www.java.com/en/download/)
-* [`maven`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
+* [`maven`](https://maven.apache.org/download.cgi)
 * [`rustc` and `cargo`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
 
-### Installing
-1. Run `install.sh`.
-2. Download the [CVC4](https://cvc4.github.io/downloads.html) binary and move it into the directory `bin`.
-Please name the binary `cvc4`.
+### Make
+To install all the dependencies, run `make all`.
+MacOS users may be able to run the tool by downloading the appropriate CVC4 binary, and Windows users may be able to run the tool with manual edits of the Makefile, but these are untested.
+
+### Running the tool
+```
+./temos.sh <TSLMT FILE>
+```

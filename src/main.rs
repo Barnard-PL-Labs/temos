@@ -6,26 +6,18 @@ mod predicate;
 mod utils;
 mod examples;
 use std::env;
+use std::fs;
 
 fn main() {
-    let usage = "USAGE: ./streamos <mode> <json> <tsl>";
-    let mode = env::args().nth(1).expect(&usage);
-    let json = env::args().nth(2).expect(&usage);
-    let tsl = env::args().nth(3).expect(&usage);
-    match &mode[..] {
-        "--time" => {
-            let (lia_dur, tsl_dur) = utils::time_all(&json, &tsl);
-            println!("{}\n{}",
-                     lia_dur.as_millis(),
-                     tsl_dur.as_millis()); 
-        },
-        "--lia" => {
-            let lia_spec = parser::json::get_spec_from_json(&json);
-    let (ass, lia_dur) = utils::time_tsllia(lia_spec);
-    println!("{}\n{}",
-            ass,
-            lia_dur.as_millis());
-        }
-        _ => panic!("")
-    }
+    let usage = "USAGE: ./temos <input.json> <input.tslmt> <output.tsl>";
+    let json_path = env::args().nth(1).expect(&usage);
+    let tslmt_path = env::args().nth(2).expect(&usage);
+    let output_name = env::args().nth(3).expect(&usage);
+
+    let lia_spec = parser::json::get_spec_from_json(&json_path);
+    let assumptions = lia_spec.to_always_assume();
+
+    let tslmt = fs::read_to_string(tslmt_path).unwrap();
+    let final_tsl = [assumptions, tslmt].join("\n");
+    fs::write(output_name, &final_tsl).unwrap();
 }
