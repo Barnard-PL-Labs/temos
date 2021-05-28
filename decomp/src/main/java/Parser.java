@@ -8,6 +8,8 @@ public class Parser {
     private static final int FUNC_NAME_IDX = 1;
     private static final int ARITY_IDX = 2;
     private static final int PRED_IDX = 3;
+    private static final HashSet<String> LIA_OPS = new HashSet<>(Arrays.asList("eq",
+            "gt", "gte", "lt", "lte"));
 
     private static String removeAnsiColorCode(String input) {
         return input.replaceAll("\u001B\\[[;\\d]*m", "").trim();
@@ -38,6 +40,8 @@ public class Parser {
             if (!columnEntries[PRED_IDX].equals("predicate")) { continue; }
 
             predicate = columnEntries[FUNC_NAME_IDX];
+            if (!LIA_OPS.contains(predicate)) { continue; }
+
             arity = columnEntries[ARITY_IDX].split("->").length - 1;
             hashtable.put(predicate, arity);
         }
