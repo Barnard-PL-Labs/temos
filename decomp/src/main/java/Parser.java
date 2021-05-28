@@ -15,7 +15,7 @@ public class Parser {
 
     private static Hashtable<String, Integer> getPredArityDict(String path)
         throws java.io.IOException {
-        String arg = String.format("../bin/tslsym %s", path);
+        String arg = String.format("bin/tslsym %s", path);
         Hashtable<String, Integer> hashtable = new Hashtable<>();
 
         ProcessBuilder builder = new ProcessBuilder("bash", "-c", arg);
@@ -40,6 +40,11 @@ public class Parser {
             predicate = columnEntries[FUNC_NAME_IDX];
             arity = columnEntries[ARITY_IDX].split("->").length - 1;
             hashtable.put(predicate, arity);
+        }
+
+        if (p.exitValue() != 0) {
+            System.err.println("Shell error!");
+            System.exit(1);
         }
 
         return hashtable;

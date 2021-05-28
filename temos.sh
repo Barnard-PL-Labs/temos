@@ -5,5 +5,8 @@ if [ "$#" -ne 1 ]; then
 	exit 1
 fi
 
-echo "Not fully reusable yet!" >&2
-exit 1
+tslmt=$1
+
+java -jar decomp/target/decomp-1.0-SNAPSHOT-jar-with-dependencies.jar $tslmt > tmp.json
+
+rm tmp.json

@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,12 +54,12 @@ public class Decomp {
         ArrayList<Predicate> predicates;
         ArrayList<Update> updates;
 
-//        if (args.length != 1) {
-//            System.err.println("USAGE: java Parser <file.tslmt>");
-//            System.exit(1);
-//        }
-        args = new String[]{"decomp", "cfs.tslmt"};
-        path  = args[1];
+        if (args.length != 1) {
+            System.err.println("USAGE: java Parser <file.tslmt>");
+            System.exit(1);
+        }
+
+        path  = args[0];
 
         logic = getLogic(path);
         if (!checkSupportedLogic(logic)) {
@@ -68,7 +69,5 @@ public class Decomp {
         predicates = Parser.getPredicates(path);
         updates = Parser.getUpdates(path);
         System.out.println(toJson(predicates, updates));
-//        for (Update upd: updates)
-//            System.out.println(upd.toJson());
     }
 }
