@@ -2,9 +2,9 @@
 
 Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesis.
 
-## Installation
+## Local Installation
 
-Installation is only currently only supported for Linux systems.
+Installation is currently only supported for Linux systems.
 
 ### Dependencies
 * [`Haskell` Stack](https://docs.haskellstack.org/en/stable/README/)
@@ -13,8 +13,8 @@ Installation is only currently only supported for Linux systems.
 * [`rustc` and `cargo`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
 * [`wget`](https://www.gnu.org/software/wget/)
 
-### Make
-To install all the dependencies, run `make all`.
+### Compilation
+To compile the executable, run `make all`.
 
 MacOS users may be able to run the tool by downloading the appropriate CVC4 binary, and Windows users may be able to run the tool with manual edits of the Makefile, but these are untested.
 
