@@ -12,9 +12,7 @@ all: tsltools cvc4 default
 tsltools:
 	mkdir bin
 	git clone https://github.com/reactive-systems/tsltools.git bin/tsltools
-	cd bin/tsltools/
-	make
-	cp tslsym ../
+	cd bin/tsltools/ && make && cp tslsym ../
 
 cvc4:
 	cd bin

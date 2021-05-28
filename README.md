@@ -11,6 +11,7 @@ Installation is only currently only supported for Linux systems.
 * [`Java` 8 or newer](https://www.java.com/en/download/)
 * [`maven`](https://maven.apache.org/download.cgi)
 * [`rustc` and `cargo`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
+* [`wget`](https://www.gnu.org/software/wget/)
 
 ### Make
 To install all the dependencies, run `make all`.
