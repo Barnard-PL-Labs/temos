@@ -86,9 +86,8 @@ public class Parser {
                     String predLiteral = String.join(" ",
                             Arrays.copyOfRange(words, i, i + arity + 1));
 
-                    if (!predicates.containsKey(predLiteral)) {
-                        predicates.put(word, new Predicate(predLiteral));
-                    }
+                    if (!predicates.containsKey(predLiteral))
+                        predicates.put(predLiteral, new Predicate(predLiteral));
 
                     pred = predicates.get(word);
 

@@ -10,4 +10,4 @@ output=$2
 
 java -jar decomp/target/decomp-1.0-SNAPSHOT-jar-with-dependencies.jar $tslmt > tmp.json
 target/release/temos tmp.json $tslmt $output
-#rm tmp.json
+rm tmp.json

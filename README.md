@@ -14,6 +14,7 @@ Installation is only currently only supported for Linux systems.
 
 ### Make
 To install all the dependencies, run `make all`.
+
 MacOS users may be able to run the tool by downloading the appropriate CVC4 binary, and Windows users may be able to run the tool with manual edits of the Makefile, but these are untested.
 
 ### Running the tool
