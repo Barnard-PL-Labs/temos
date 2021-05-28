@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Update {
     private String updateTerm;
@@ -27,7 +29,13 @@ public class Update {
         return id.hashCode();
     }
 
-    public String toJson() {
-        return String.format("[%s <- %s]", this.varName, this.updateTerm);
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+        JSONArray dependArr = new JSONArray();
+
+        obj.put("update_term", this.updateTerm.trim());
+        obj.put("var_name", this.varName.trim());
+        obj.put("depends", dependArr);
+        return obj;
     }
 }

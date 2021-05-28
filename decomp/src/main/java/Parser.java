@@ -1,12 +1,8 @@
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.HashSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class Parser {
     private static final int FUNC_NAME_IDX = 1;
@@ -17,7 +13,7 @@ public class Parser {
         return input.replaceAll("\u001B\\[[;\\d]*m", "").trim();
     }
 
-    public static Hashtable<String, Integer> getPredicateTerms(String path)
+    private static Hashtable<String, Integer> getPredArityDict(String path)
         throws java.io.IOException {
         String arg = String.format("../bin/tslsym %s", path);
         Hashtable<String, Integer> hashtable = new Hashtable<>();
@@ -50,23 +46,56 @@ public class Parser {
     }
 
     public static ArrayList<Predicate> getPredicates(String path)
-        throws java.io.IOException {
-        Hashtable<String, Integer> predicateTerms = getPredicateTerms(path);
+            throws java.io.IOException, ParseException {
+        Hashtable<String, Integer> predArityDict = getPredArityDict(path);
+        HashMap<String, Predicate> predicates = new HashMap<>();
+        ArrayList<Predicate> result = new ArrayList<>();
+        Scanner scanner = new Scanner(new File(path));
 
-        ArrayList<Predicate> list = new ArrayList<>();
-        Predicate testPred = new Predicate("eq loc 0");
-        list.add(testPred);
+        scanner.useDelimiter("\n");
 
-        return list;
-    }
+        while (scanner.hasNext()) {
+            ArrayList<String> wordsList = new ArrayList<>();
 
-    public static String fooTest(String path) throws IOException, ParseException {
-        ArrayList<Update> foo = getUpdates(path);
-        StringBuilder str = new StringBuilder();
-        for (Update u: foo) {
-            str.append(u.toJson()).append("\n");
+            for (String word : scanner.next().split(" ")) {
+                if (Utils.isConstNullaryNumber(word))
+                    word = String.valueOf(Utils.parseIntFromNullaryFunction(word));
+                word = word.replaceAll("[^a-zA-Z0-9]+","");
+                wordsList.add(word);
+            }
+            // Just easier for legacy code...
+            String [] words = wordsList.toArray(new String[0]);
+
+            // XXX
+            for (int i = 0; i < words.length; i++) {
+                String word = words[i];
+
+                if (predArityDict.containsKey(word)) {
+                    Predicate pred;
+                    int arity = predArityDict.get(word);
+
+                    String predLiteral = String.join(" ",
+                            Arrays.copyOfRange(words, i, i + arity + 1));
+
+                    if (!predicates.containsKey(predLiteral)) {
+                        predicates.put(word, new Predicate(predLiteral));
+                    }
+
+                    pred = predicates.get(word);
+
+                    if (0 < i && (words[i-1].equals("F") || words[i-1].equals("X")))
+                        pred.addTemporal(words[i-1]);
+                }
+            }
         }
-        return str.toString();
+
+        // XXX
+        for (Predicate pred : predicates.values()) {
+            pred.addTemporal("X");
+            pred.addTemporal("F");
+            result.add(pred);
+        }
+        return result;
     }
 
     public static ArrayList<Update> getUpdates(String path)
@@ -81,7 +110,8 @@ public class Parser {
             Pattern pattern = Pattern.compile("\\[(.+?)\\]");
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
-                String varName, updateTerm;
+                String varName;
+                StringBuilder updateTerm = new StringBuilder();
                 String [] parsedUpdate = matcher.group(1).split("<-");
 
                 if (parsedUpdate.length != 2) {
@@ -91,8 +121,13 @@ public class Parser {
                 }
 
                 varName = parsedUpdate[0];
-                updateTerm = parsedUpdate[1];
-                Update newUpdate = new Update(varName, updateTerm);
+                for (String literal: parsedUpdate[1].split(" ")) {
+                    if (Utils.isConstNullaryNumber(literal))
+                        literal = String.valueOf(Utils.parseIntFromNullaryFunction(literal));
+                    updateTerm.append(" ");
+                    updateTerm.append(literal);
+                }
+                Update newUpdate = new Update(varName, updateTerm.toString());
                 updateHashSet.add(newUpdate);
             }
         }

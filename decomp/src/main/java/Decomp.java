@@ -6,6 +6,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Decomp {
     // https://stackoverflow.com/a/3403112/11801882
@@ -24,9 +28,30 @@ public class Decomp {
         return logic.equals("LIA");
     }
 
+    static JSONObject toJson(ArrayList<Predicate> predicates,
+                             ArrayList<Update> updates) {
+        List<JSONObject> predJsonList;
+        List<JSONObject> updJsonList;
+        JSONObject obj = new JSONObject();
+        JSONArray predArr = new JSONArray();
+        JSONArray updArr = new JSONArray();
+
+        predJsonList = predicates.stream().map(Predicate::toJson).collect(Collectors.toList());
+        updJsonList = updates.stream().map(Update::toJson).collect(Collectors.toList());
+
+        predArr.addAll(predJsonList);
+        updArr.addAll(updJsonList);
+
+        obj.put("predicates", predArr);
+        obj.put("updates", updArr);
+        return obj;
+    }
+
     public static void main(String[] args)
-            throws FileNotFoundException, IOException, ParseException {
+            throws IOException, ParseException {
         String path, logic;
+        ArrayList<Predicate> predicates;
+        ArrayList<Update> updates;
 
 //        if (args.length != 1) {
 //            System.err.println("USAGE: java Parser <file.tslmt>");
@@ -40,8 +65,10 @@ public class Decomp {
             System.err.printf("Unsupported logic: %s\n", logic);
             System.exit(1);
         }
-        ArrayList<Update> foo = Parser.getUpdates(path);
-        for (Update u: foo)
-            System.out.println(u.toJson());
+        predicates = Parser.getPredicates(path);
+        updates = Parser.getUpdates(path);
+        System.out.println(toJson(predicates, updates));
+//        for (Update upd: updates)
+//            System.out.println(upd.toJson());
     }
 }

@@ -4,11 +4,13 @@ Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesi
 
 ## Installation
 
-You can try out our [`Docker` image](#) or install the tool locally.
+Docker image is coming; for now, follow these local installation procedures:
+Installation is only supported on Unix systems.
 
 ### Dependencies
 * [`Haskell` Stack](https://docs.haskellstack.org/en/stable/README/)
-* `Java` 8 or newer
+* [`Java` 8 or newer](https://www.java.com/en/download/)
+* [`maven`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
 * [`rustc` and `cargo`](https://doc.rust-lang.org/book/ch01-01-installation.html#installation)
 
 ### Installing

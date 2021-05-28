@@ -4,7 +4,7 @@ import java.text.ParseException;
 
 public class Utils {
 
-    public static boolean isConstNullaryFunction(String signal) {
+    public static boolean isConstNullaryNumber(String signal) {
         Pattern pattern = Pattern.compile("c[0-9]+\\(\\)");
         Matcher matcher = pattern.matcher(signal);
         return matcher.find();
