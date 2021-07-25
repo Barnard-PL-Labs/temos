@@ -16,7 +16,7 @@ Installation is currently only supported for Linux systems.
 ### Compilation
 To compile the executable, run `make all`.
 
-MacOS users may be able to run the tool by downloading the appropriate CVC4 binary, and Windows users may be able to run the tool with manual edits of the Makefile, but these are untested.
+MacOS users may be able to run the tool by installing the appropriate CVC4 homebrew tap, and Windows users may be able to run the tool with manual edits of the Makefile, but these are untested.
 
 ### Running the tool
 ```
