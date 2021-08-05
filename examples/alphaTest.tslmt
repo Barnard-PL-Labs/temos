@@ -1,0 +1,13 @@
+//#LIA#
+
+always assume{
+	!(play note45 && play note65);
+}
+always guarantee {
+	G [filterCutoff <- inc100 filterCutoff];
+	play note65 -> [lfoFreq <- inc1 lfoFreq];
+	G [arpeggiatorStyle <- downStyle()];
+	play note45 -> [filterQ <- inc1 filterQ];
+	play note45 -> [fmSynthesis <- toggle fmSynthesis];
+	play note45 -> [lfo <- toggle lfo];
+}

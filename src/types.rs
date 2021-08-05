@@ -608,18 +608,18 @@ impl SygusHoareTriple {
     fn run_synthesis(&self) -> String {
         match *self.temporal {
             Next(timestep) => {
-                utils::sygus_cvc4(self.to_sygus(),"sygus", timestep)
+                utils::sygus_cvc4(self.to_sygus(), "sygus2", timestep)
             }
             Liveness => {
                 if (*self.precond).is_eq() {
                     // XXX
                     if (*self.postcond).is_two_var(){
                         let sygus = self.to_hack_sygus();
-                        let result = utils::sygus_cvc4(sygus, "sygus", TIMEOUT_DEPTH);
+                        let result = utils::sygus_cvc4(sygus, "sygus2", TIMEOUT_DEPTH);
                         result
                     }
                     else {
-                        utils::sygus_cvc4(self.to_sygus(), "sygus",
+                        utils::sygus_cvc4(self.to_sygus(), "sygus2",
                         TIMEOUT_DEPTH)
                     }
                 } 

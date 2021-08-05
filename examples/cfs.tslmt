@@ -25,3 +25,4 @@ always guarantee {
 	[next <- job1] <-> [vruntime1 <- add vruntime1 c1()];
 	[next <- job2] <-> [vruntime2 <- add vruntime2 c1()];
 }
+

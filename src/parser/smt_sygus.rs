@@ -178,7 +178,7 @@ pub fn parse_model(cvc4_result: &str) -> i32 {
     let num_str;
     let no_model = &format!("No model?\n{}",  cvc4_result);
     if lines.next().unwrap().eq("sat") {
-        if !lines.next().expect(no_model).eq("(") {
+        if !lines.next().expect(no_model).eq("(model") {
             panic!("Invalid Model result!\n{}", cvc4_result)
         }
         num_str = get_ast(lines.next().unwrap().to_string(), "Int")

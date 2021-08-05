@@ -1,10 +1,11 @@
-//#RA#
+//#LIA#
+
 always guarantee {
 	G F [lfo <- True()];
 	G F [lfo <- False()];
 
-	lte lfoFreq c10() -> [lfo <- False()]  U gt  lfoFreq c10();
-	gt  lfoFreq c10() -> [lfo <- True()] U lte lfoFreq c10();
+	lte lfoFreq c10() -> [lfo <- False()]  U gt lfoFreq c10();
+	gt lfoFreq c10() -> [lfo <- True()] U lte lfoFreq c10();
 	[lfo <- False()]   -> [lfoFreq <- add lfoFreq c1()];
 	[lfo <- True()]  -> [lfoFreq <- sub lfoFreq c1()];
 }

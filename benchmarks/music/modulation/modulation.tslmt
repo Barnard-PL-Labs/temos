@@ -1,4 +1,4 @@
-//#RA#
+//#LIA#
 always guarantee {
 	G F [amSynthesis <- True()];
 	G F [amSynthesis <- False()];
