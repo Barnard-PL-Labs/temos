@@ -1,0 +1,12 @@
+assume {
+	leq c1() floor;
+	leq floor c3();
+}
+
+always guarantee {
+	[floor <- floor] || [floor <- sub floor c1()] || [floor <- add floor c1()];
+	leq c1() floor;
+	F eq floor c1();
+	F eq floor c2();
+	F eq floor c3();
+}

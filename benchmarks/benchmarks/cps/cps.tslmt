@@ -1,0 +1,26 @@
+assume {
+	leq c0.2() x1;
+	lq x1 c0.7();
+	leq c0.1() x2;
+	lq x2 c0.7();
+}
+
+always guarantee {
+	leq x1 c0.1();
+	lq x1 c0.7();
+	leq c0.1() x2;
+	lq x2 c0.7();
+	(lq x1 c0.2() && lq x2 c0.2()) -> (
+		([x1 <- x1] || [x1 <- add x1 (mult c0.0003() c324.6753())])
+		&&
+		[x2 <- mult c0.9635() x2]
+	);
+	(leq c0.2() x1 && leq x2 c0.2()) -> (
+		(
+		 	[x1 <- add (mult x1 c0.8281()) (mult x2 c0.1719())] ||
+		 	[x1 <- add (mult x1 c0.8281()) (add (mult x2 c0.1719())(mult c0.0003() c324.6753()))]
+		) 
+		&&
+		[x2 <- add (mult x2 c0.7916()) (mult x1 c0.1719())]
+	);
+}

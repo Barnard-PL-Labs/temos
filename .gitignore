@@ -32,3 +32,6 @@ ___*
 # Java
 *.class
 out/
+
+# Varia
+a.txt*

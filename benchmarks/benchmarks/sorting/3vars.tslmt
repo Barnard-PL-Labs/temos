@@ -1,0 +1,6 @@
+always guarantee {
+	([a <- b] && [b <- a] && [c <- c]) ||
+	([a <- a] && [b <- c] && [c <- b]) ||
+	([a <- c] && [b <- b] && [c <- a]);
+	(leq a b && leq b c);
+}

@@ -1,0 +1,13 @@
+assume {
+	leq c0() x && leq x c100();
+}
+
+always assume {
+	leq c0() i && leq i c5();
+}
+
+always guarantee {
+	[x <- add x c5()] || [x <- sub x c5()];
+	leq c0() x;
+	leq x c100();
+}
