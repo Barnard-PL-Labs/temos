@@ -628,6 +628,8 @@ impl SygusHoareTriple {
                     let pred_pbe_vec = (*self.precond).generate_pbe(3);
                     let mut sygus_results = Vec::new();
                     let while_loop : Option<String>;
+                    println!("Precondition: {:?}", self.precond);
+                    println!("\t\tModels: {:?}", pred_pbe_vec);
                     for pred_pbe in pred_pbe_vec {
                         let hoare_pbe = SygusHoareTriple {
                             precond: Rc::new(pred_pbe),

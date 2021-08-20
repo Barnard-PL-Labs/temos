@@ -1,3 +1,4 @@
+//#LIA#
 always guarantee {
 	([a <- b] && [b <- a] && [c <- c]) ||
 	([a <- a] && [b <- c] && [c <- b]) ||

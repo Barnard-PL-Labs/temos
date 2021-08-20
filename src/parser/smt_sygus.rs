@@ -162,7 +162,7 @@ pub fn get_while_loop(sygus_results: Vec<String>) -> Option<String> {
         .collect();
     let all_same = bodies.iter().all(|x| x == &bodies[0]);
     if !all_same {
-        panic!("Obtaining loop body failed.\n,
+        panic!("Obtaining loop body failed.\n
                {:?}\n",
                bodies);
     }
