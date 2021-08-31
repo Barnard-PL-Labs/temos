@@ -1,0 +1,38 @@
+* Environment assumptions
+* Type of variables: cells v.s. inputs v.s. constants? Create a hashmap
+
+----
+* enumerate_hoare
+* pred.get_var_name
+
+
+----
+* Better format for JSON? Start out with better parsing.
+TODO: Wider arity support
+
+Create a <BinaryFunction> 
+
+Predicate:
+{
+	function: gt
+	lhs: atom{cpu0}
+	rhs: atom{cpu1}
+}
+
+Update:
+{
+	function: gt
+	lhs: cpu0
+	rhs: function {
+		function: add
+		lhs: cpu0
+		rhs: cpu1
+	}
+},
+
+
+
+
+
+
+

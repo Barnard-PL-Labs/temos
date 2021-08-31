@@ -4,9 +4,11 @@ default:
 	chmod +x temos.sh
 
 clean:
-	rm -rf bin
 	cargo clean
 	cd decomp && mvn clean
+
+nuke: clean
+	rm -rf bin
 
 all: tsltools cvc4 default
 

@@ -1,0 +1,62 @@
+//#RA#
+always assume {
+	// Predicate connectives
+	!(lq x1 c0.2()) -> leq c0.1() x1;
+	!(lq x2 c0.2()) -> leq c0.1() x2;
+	lq x2 c0.2() -> lq x2 c0.7();
+	lq x1 c0.2() -> lq x1 c0.7();
+
+	// Update with self
+	lq x1 c0.2() && [x1 <- x1] -> X lq x1 c0.2();
+	!(lq x1 c0.2()) && [x1 <- x1] -> X !(lq x1 c0.2());
+
+	// No change
+	(lq x2 c0.2() && [x2 <- mult c0.9635() x2]) -> X (lq x2 c0.2());
+	
+	// Adding doesn't decrease
+	(
+		leq c0.1() x1()
+		&&
+		[x1 <- add x1 c0.09740259()]
+	)
+	-> X leq c0.1() x1();
+
+	// Adding eventually increases
+	(
+		lq x1 c0.2()
+		&&
+		[x1 <- add x1 c0.09740259()]
+	)
+	-> 
+	F !(lq x1 c0.2());
+
+}
+
+assume {
+	leq c0.2() x1;
+	lq x1 c0.7();
+	leq c0.1() x2;
+	lq x2 c0.7();
+}
+
+always guarantee {
+	leq c0.1() x1;
+	lq x1 c0.7();
+	leq c0.1() x2;
+	lq x2 c0.7();
+
+	(lq x1 c0.2() && lq x2 c0.2()) -> (
+		([x1 <- x1] || [x1 <- add x1 c0.09740259()])
+		&&
+		[x2 <- mult c0.9635() x2]
+	);
+
+	!(lq x1 c0.2() && lq x2 c0.2()) -> (
+		(
+		 	[x1 <- add (mult x1 c0.8281()) (mult x2 c0.1719())] ||
+		 	[x1 <- add (mult x1 c0.8281()) (add (mult x2 c0.1719()) c0.09740259())]
+		) 
+		&&
+		[x2 <- add (mult x2 c0.7916()) (mult x1 c0.1719())]
+	);
+}

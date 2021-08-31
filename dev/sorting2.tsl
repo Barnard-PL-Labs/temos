@@ -12,15 +12,14 @@ always assume {
 
 	(
 		( leq a b ) &&
-		([b <- c] && [c <- b]) &&
-		X ([a <- b] && [b <- a])
-	) -> X X (leq b c);
+		([b <- c] && [c <- b])
+	) -> X (leq a c);
 
 	(
-		( leq b c ) &&
-		([a <- b] && [b <- a]) &&
-		X ([c <- b] && [b <- c])
-	) -> X X (leq a b);
+		( leq a c ) &&
+		([a <- b] && [b <- a])
+	) -> X (leq b c);
+
 
 }
 

@@ -201,6 +201,9 @@ impl Predicate {
                 Neg(pred) => pred.is_two_var()
         }
     }
+    // FIXME: fix this.
+    // Get all atoms that are in the predicate.
+    // Make sure to only consider 
     // XXX: no real support for two-element predicates yet.
     pub fn get_var_name(&self) -> String {
         match self {

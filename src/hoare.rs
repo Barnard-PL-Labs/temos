@@ -16,6 +16,14 @@ fn var_updates(update_vec: Vec<Update>)
         var_updates
     }
 
+// FIXME: only consider predicates that have cells.
+// Need a better way of decomposing predicates into their constituent atoms.
+
+// FIXME: need to think about how to work with two variables (i.e. sorting, CPS)
+// This will require potentially two SyGuS queries.
+// First work with elevator example.
+
+
 // O(n^3) but it's probably fast enough.
 pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
                        update_vec: Vec<Update>) -> Vec<SygusHoareTriple> {
@@ -27,6 +35,7 @@ pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
     let mut hoare_vec : Vec<SygusHoareTriple> = Vec::new();
     for precond in &pred_vec {
         let var_name = &precond.pred.get_var_name();
+        // FIXME: the case where the var name was a number
         if var_name.parse::<f64>().is_ok() {
             continue; //TEMP HACK
         }

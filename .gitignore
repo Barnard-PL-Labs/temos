@@ -34,3 +34,4 @@ out/
 
 # Varia
 a.txt*
+*.ipynb*
