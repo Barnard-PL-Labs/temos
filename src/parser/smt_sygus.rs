@@ -92,6 +92,7 @@ pub fn scanner(sygus_result: &str) -> Vec<Token> {
     stream_of_tokens
 }
 
+// TODO: what does this do?
 fn get_lexified_variable(stream: &Vec<Token>) -> String {
     for token in stream {
         match token {
@@ -142,6 +143,7 @@ pub fn fxn_to_tsl(sygus_result: String) -> String {
 }
 
 /// Returns None when result is unrealizable.
+// TODO: rename fxn
 pub fn get_sygus_result(result: &str) -> Option<String> {
     let mut lines = result.lines();
     let fst_line = lines.next();

@@ -24,6 +24,7 @@ fn var_updates(update_vec: Vec<Update>)
 // First work with elevator example.
 
 
+// FIXME: just taken in from Specification
 // O(n^3) but it's probably fast enough.
 pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
                        update_vec: Vec<Update>) -> Vec<SygusHoareTriple> {
@@ -34,15 +35,17 @@ pub fn enumerate_hoare(pred_vec: Vec<SpecPredicate>,
     let var_updates = var_updates(update_vec);
     let mut hoare_vec : Vec<SygusHoareTriple> = Vec::new();
     for precond in &pred_vec {
+        // FIXME: should be a vector
         let var_name = &precond.pred.get_var_name();
-        // FIXME: the case where the var name was a number
-        if var_name.parse::<f64>().is_ok() {
-            continue; //TEMP HACK
-        }
+        //if var_name.parse::<f64>().is_ok() {
+        //    continue; //TEMP HACK
+        //}
         for postcond in &pred_vec {
             // if &postcond.pred.get_var_name() != var_name {
             //     continue;
             // }
+            
+            //FIXME: add environment assumptions
             for operator in &postcond.temporal {
                 let hoare = SygusHoareTriple {
                     precond : Rc::new(precond.pred.clone()),

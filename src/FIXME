@@ -1,10 +1,16 @@
-* Environment assumptions
-* Type of variables: cells v.s. inputs v.s. constants? Create a hashmap
+* Environment assumptions: restrictions on inputs, predicates
+* Type of variables: inputs v.s. outputs, Create a hashmap
 
 ----
 * enumerate_hoare
 * pred.get_var_name
 
+* Atom.rs
+* Predicate.rs
+* Update.rs
+* Temporal.rs
+* Hoare.rs
+*
 
 ----
 * Better format for JSON? Start out with better parsing.

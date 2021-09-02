@@ -187,6 +187,7 @@ impl Predicate {
             Neg(_) => false
         }
     }
+    // FIXME: where use?
     fn is_two_var(&self) -> bool {
         match self {
             Bool(_, lhs, rhs) =>
@@ -201,10 +202,7 @@ impl Predicate {
                 Neg(pred) => pred.is_two_var()
         }
     }
-    // FIXME: fix this.
-    // Get all atoms that are in the predicate.
-    // Make sure to only consider 
-    // XXX: no real support for two-element predicates yet.
+    // FIXME: return Vector<String>
     pub fn get_var_name(&self) -> String {
         match self {
             Bool(_, lhs, _) =>
@@ -608,6 +606,7 @@ impl SygusHoareTriple {
         assert_eq!(loop_body, loop_body);
     }
 
+    // TODO: decompose into PBE and non-PBE
     fn run_synthesis(&self) -> String {
         match *self.temporal {
             Next(timestep) => {
