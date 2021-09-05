@@ -6,6 +6,7 @@ mod lia;
 mod tsl;
 mod specification;
 mod utils;
+mod sample;
 
 fn main() {
     println!("Cardiovascular surgery")
