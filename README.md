@@ -2,6 +2,10 @@
 
 Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesis.
 
+## WARNING!
+This repository is going through major refactoring.
+To use the tool at its latest release, please download the source from [the alpha release](https://github.com/Barnard-PL-Labs/temos/releases/tag/v0.1.0a).
+
 ## Local Installation
 
 Installation is currently only supported for Linux systems.
