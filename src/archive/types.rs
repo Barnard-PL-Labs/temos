@@ -15,18 +15,6 @@ use std::convert::TryInto;
 
 const TIMEOUT_DEPTH: u32 = 10;
 
-#[derive(Debug, Clone)]
-pub enum Temporal {
-    Next(u32),
-    Liveness
-}
-
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub enum Literal {
-    Var(String),
-    Const(i32),
-}
-
 impl Literal {
     fn to_string(&self) -> String {
         match self {
@@ -64,12 +52,6 @@ impl Literal {
             Const(val) => Const(*val)
         }
     }
-}
-
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub enum LiaOp {
-    Add,
-    Sub
 }
 
 impl LiaOp {
@@ -113,66 +95,6 @@ impl UpdateTerm {
             Signal(var) => Signal(var.clone())
         }
     }
-}
-
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub enum LogicOp {
-    LT,
-    GT,
-    EQ,
-    LTE,
-    GTE
-}
-
-impl LogicOp {
-    fn to_string(&self) -> String {
-        match self {
-            LT  => String::from("<"),
-            GT  => String::from(">"),
-            EQ  => String::from("="),
-            LTE => String::from("<="),
-            GTE => String::from(">=")
-        }
-    }
-    fn to_tsl(&self) -> String {
-        match self {
-            LT  => String::from("lt"),
-            GT  => String::from("gt"),
-            EQ  => String::from("eq"),
-            LTE => String::from("lte"),
-            GTE => String::from("gte")
-        }
-    }
-    fn reverse(&self) -> LogicOp {
-        match self {
-            LT  => GTE,
-            GT  => LTE,
-            LTE => GT,
-            GTE => LT,
-            EQ  => panic!("No reversal for EQ")
-        }
-    }
-    fn is_lt(&self) -> bool {
-        match self {
-            LT  => true,
-            LTE => true,
-            _   => false
-        }
-    }
-    fn is_gt(&self) -> bool {
-        match self {
-            GT  => true,
-            GTE => true,
-            _   => false
-        }
-    }
-}
-
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub enum Predicate {
-    And(Rc<Predicate>, Rc<Predicate>),
-    Neg(Rc<Predicate>),
-    Bool(LogicOp, Literal, Literal)
 }
 
 impl Predicate {
