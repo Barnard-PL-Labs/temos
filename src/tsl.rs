@@ -1,5 +1,7 @@
+use std::fmt::Debug;
+
 pub trait Funct {
-    fn arity(self) -> u32;
+    fn arity(&self) -> u32;
 }
 
 pub trait Pred: Funct {
@@ -12,18 +14,19 @@ pub struct FunctionLiteral<T: Funct> {
     args: Vec< FunctionLiteral<T> >
 }
 
-//impl FunctionLiteral<T> {
-//    fn validate_arity(self) {
-//        let arity: u32 = self.function.arity();
-//        if self.function.arity() != self.args.len() {
-//            panic!("Arity mismatch!\n
-//                   Function: {}, 
-//                   Arity: {},
-//                   Arguments: {}",
-//                   self.function(), arity, self.args())
-//        }
-//    }
-//}
+impl<T:Funct + Debug> FunctionLiteral<T> {
+    fn validate_arity(self) {
+        let arity: u32 = self.function.arity();
+        let arg_len : u32 = self.args.len() as u32;
+        if arity != arg_len {
+            panic!("Arity mismatch!\n
+                   Function: {:?}, 
+                   Arity: {},
+                   Arguments: {:?}",
+                   self.function, arity, self.args)
+        }
+    }
+}
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Variable {
@@ -37,7 +40,7 @@ pub enum Connective {
 }
 
 impl Funct for Connective {
-    fn arity(self) -> u32 {2}
+    fn arity(&self) -> u32 {2}
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]

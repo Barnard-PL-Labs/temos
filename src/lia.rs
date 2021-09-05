@@ -13,8 +13,8 @@ pub enum Function {
 }
 
 impl Funct for Function {
-    fn arity(self) -> u32 {
-        match self {
+    fn arity(&self) -> u32 {
+        match &self {
             Function::Literal(_) => 0,
             Function::BinaryFunction(_) => 2
         }
@@ -37,7 +37,7 @@ pub enum Predicate {
 }
 
 impl Funct for Predicate {
-    fn arity(self) -> u32 {2}
+    fn arity(&self) -> u32 {2}
 }
 
 impl Pred for Predicate {
