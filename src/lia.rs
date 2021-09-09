@@ -8,14 +8,14 @@ pub enum Literal {
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Function {
-    Literal(Literal),
+    NullaryFunction(Literal),
     BinaryFunction(BinaryFunction)
 }
 
 impl Funct for Function {
     fn arity(&self) -> u32 {
         match &self {
-            Function::Literal(_) => 0,
+            Function::NullaryFunction(_) => 0,
             Function::BinaryFunction(_) => 2
         }
     }

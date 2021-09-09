@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-pub trait Funct {
+pub trait Funct: Debug {
     fn arity(&self) -> u32;
 }
 
@@ -8,14 +8,25 @@ pub trait Pred: Funct {
     fn evaluate(self) -> bool;
 }
 
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub struct FunctionLiteral<T: Funct> {
-    function: T,
-    args: Vec< FunctionLiteral<T> >
+// FIXME: type-check preds vs functs @ compile time
+#[derive(Debug)]
+pub struct FunctionLiteral {
+    function: Box<dyn Funct>,
+    args: Vec<FunctionLiteral>
 }
 
-impl<T:Funct + Debug> FunctionLiteral<T> {
-    fn validate_arity(self) {
+impl FunctionLiteral {
+    pub fn new(function: Box<dyn Funct>,
+               args : Vec<FunctionLiteral>)
+        -> FunctionLiteral {
+        let object = FunctionLiteral{
+            function,
+            args
+        };
+        object.validate_arity();
+        object
+    }
+    fn validate_arity(&self) {
         let arity: u32 = self.function.arity();
         let arg_len : u32 = self.args.len() as u32;
         if arity != arg_len {
@@ -55,7 +66,7 @@ pub enum Temporal {
     Eventually
 }
 
-pub struct UpdateLiteral<T: Funct> {
+pub struct UpdateLiteral {
     pub sink : Variable,
-    pub update : FunctionLiteral<T>
+    pub update : FunctionLiteral
 }

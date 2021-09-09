@@ -9,5 +9,6 @@ mod utils;
 mod sample;
 
 fn main() {
+    let _elevator = sample::elevator();
     println!("Cardiovascular surgery")
 }
