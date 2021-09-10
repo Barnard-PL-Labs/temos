@@ -1,5 +1,5 @@
 use crate::specification::Specification;
-use crate::lia::{Function, Predicate, Literal, Lia};
+use crate::theories::lia::{Function, Predicate, Literal, Lia};
 use crate::tsl::{Variable::Variable, FunctionLiteral, PredicateLiteral, UpdateLiteral};
 use std::rc::Rc;
 

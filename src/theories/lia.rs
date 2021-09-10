@@ -1,4 +1,4 @@
-use crate::tsl::{Funct, Pred, Variable, Theory};
+use crate::tsl::{Funct, Pred, Variable, Theory, PredicateLiteral};
 use std::fmt;
 use std::fmt::Display;
 
@@ -126,4 +126,16 @@ impl Predicate {
     }
     fn arity(&self) -> u32 {2}
     fn evaluate(&self) -> bool {true}
+}
+
+impl PredicateLiteral<Lia> {
+    fn evaluate(&self) -> bool {
+        panic!("")
+    }
+    fn to_tsl(&self) -> String {
+        String::from("foo")
+    }
+    pub fn to_tsl_assumption(&self) -> String {
+        format!("!{};", self.to_tsl())
+    }
 }

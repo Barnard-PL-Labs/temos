@@ -2,9 +2,8 @@
 mod cvc4;
 mod dto;
 mod json;
-mod lia;
+mod theories;
 mod tsl;
-mod tsl_lia;
 mod specification;
 mod utils;
 mod sample;
