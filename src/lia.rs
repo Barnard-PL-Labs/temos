@@ -1,9 +1,20 @@
 use crate::tsl::{Funct, Pred, Variable};
+use std::fmt;
+use std::fmt::Display;
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Literal {
     Var(Variable),
     Const(i32),
+}
+
+impl Display for Literal {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Literal::Var(var) => write!(f, "{}", var),
+            Literal::Const(constant) => write!(f, "{}", constant)
+        }
+    }
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
@@ -21,11 +32,30 @@ impl Funct for Function {
     }
 }
 
+impl Display for Function {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Function::NullaryFunction(null) => write!(f, "{}", null),
+            Function::BinaryFunction(bin) => write!(f, "{}", bin)
+        }
+    }
+}
+
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum BinaryFunction {
     Add,
     Sub
 }
+
+impl Display for BinaryFunction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            BinaryFunction::Add => write!(f, "(+)"),
+            BinaryFunction::Sub => write!(f, "(-)")
+        }
+    }
+}
+
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Predicate {
@@ -34,6 +64,19 @@ pub enum Predicate {
     EQ,
     LTE,
     GTE
+}
+
+impl Display for Predicate {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let as_str = match self {
+            Predicate::LT  => String::from("<"),
+            Predicate::GT  => String::from(">"),
+            Predicate::EQ  => String::from("="),
+            Predicate::LTE => String::from("<="),
+            Predicate::GTE => String::from(">=")
+        };
+        write!(f, "{}", as_str)
+    }
 }
 
 impl Funct for Predicate {
@@ -47,15 +90,6 @@ impl Pred for Predicate {
 }
 
 impl Predicate {
-    fn to_string(&self) -> String {
-        match self {
-            Predicate::LT  => String::from("<"),
-            Predicate::GT  => String::from(">"),
-            Predicate::EQ  => String::from("="),
-            Predicate::LTE => String::from("<="),
-            Predicate::GTE => String::from(">=")
-        }
-    }
     fn to_tsl(&self) -> String {
         match self {
             Predicate::LT  => String::from("LT"),

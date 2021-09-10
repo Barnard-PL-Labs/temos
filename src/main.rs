@@ -12,6 +12,7 @@ fn main() {
     let elevator = sample::elevator();
     let preds = elevator.predicates;
     let pair = utils::pair_preds(preds);
-    println!("{:?}", &pair);
-    println!("{:?}", pair.len());
+    for pred in pair.iter() {
+        println!("{}", pred);
+    }
 }
