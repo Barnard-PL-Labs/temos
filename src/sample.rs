@@ -1,7 +1,6 @@
 use crate::specification::Specification;
 use crate::theories::lia::{Function, Predicate, Literal, Lia};
-use crate::tsl::{Variable::Variable, FunctionLiteral, PredicateLiteral, UpdateLiteral};
-use std::rc::Rc;
+use crate::tsl::{Variable::Variable, FunctionLiteral, PredicateLiteral, UpdateLiteral, TheoryFunctions};
 
 pub fn elevator() -> Specification<Lia> {
     let cells = vec![
@@ -11,18 +10,18 @@ pub fn elevator() -> Specification<Lia> {
         // lte 1 floor
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::LTE),
+            TheoryFunctions::Predicate(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
@@ -32,18 +31,18 @@ pub fn elevator() -> Specification<Lia> {
         // lte floor 3
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::LTE),
+            TheoryFunctions::Predicate(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
                     vec![]
@@ -55,18 +54,18 @@ pub fn elevator() -> Specification<Lia> {
         // lte 1 floor
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::LTE),
+            TheoryFunctions::Predicate(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
@@ -76,18 +75,18 @@ pub fn elevator() -> Specification<Lia> {
         // lte floor 3
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::LTE),
+            TheoryFunctions::Predicate(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
                     vec![]
@@ -97,18 +96,18 @@ pub fn elevator() -> Specification<Lia> {
         // eq floor 1
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::EQ),
+            TheoryFunctions::Predicate(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
                     vec![]
@@ -118,18 +117,18 @@ pub fn elevator() -> Specification<Lia> {
         // eq floor 2
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::EQ),
+            TheoryFunctions::Predicate(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(2)
                     )),
                     vec![]
@@ -139,18 +138,18 @@ pub fn elevator() -> Specification<Lia> {
         // eq floor 3
         PredicateLiteral::new(
             Lia::LIA,
-            Rc::new(Predicate::EQ),
+            TheoryFunctions::Predicate(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
                     Lia::LIA,
-                    Rc::new(Function::NullaryFunction(
+                    TheoryFunctions::Function(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
                     vec![]
@@ -163,7 +162,7 @@ pub fn elevator() -> Specification<Lia> {
             sink: Variable(String::from("floor")),
             update: FunctionLiteral::new(
                 Lia::LIA,
-                Rc::new(
+                TheoryFunctions::Function(
                     Function::NullaryFunction(
                         Literal::Var(Variable(String::from("floor")))
                     )

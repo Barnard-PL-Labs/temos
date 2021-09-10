@@ -24,10 +24,21 @@ pub enum TheoryFunctions<T: Theory> {
     Connective(Connective)
 }
 
-// TODO
 impl<T> LogicWritable for TheoryFunctions<T> where T: Theory {
-    fn to_tsl(&self) -> String {String::new()}
-    fn to_smtlib(&self) -> String {String::new()}
+    fn to_tsl(&self) -> String {
+        match self {
+            TheoryFunctions::Function(f) => f.to_tsl(),
+            TheoryFunctions::Predicate(p) => p.to_tsl(),
+            TheoryFunctions::Connective(c) => c.to_tsl()
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
+            TheoryFunctions::Function(f) => f.to_smtlib(),
+            TheoryFunctions::Predicate(p) => p.to_smtlib(),
+            TheoryFunctions::Connective(c) => c.to_smtlib()
+        }
+    }
 }
 
 impl<T> Funct for TheoryFunctions<T> where T: Theory {
