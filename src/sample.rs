@@ -10,18 +10,18 @@ pub fn elevator() -> Specification<Lia> {
     let assumptions = vec![
         // lte 1 floor
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
@@ -31,18 +31,18 @@ pub fn elevator() -> Specification<Lia> {
         ),
         // lte floor 3
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
@@ -54,18 +54,18 @@ pub fn elevator() -> Specification<Lia> {
     let predicates = vec![
         // lte 1 floor
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
@@ -75,18 +75,18 @@ pub fn elevator() -> Specification<Lia> {
         ),
         // lte floor 3
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
@@ -96,18 +96,18 @@ pub fn elevator() -> Specification<Lia> {
         ),
         // eq floor 1
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(1)
                     )),
@@ -117,18 +117,18 @@ pub fn elevator() -> Specification<Lia> {
         ),
         // eq floor 2
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(2)
                     )),
@@ -138,18 +138,18 @@ pub fn elevator() -> Specification<Lia> {
         ),
         // eq floor 3
         PredicateLiteral::new(
-            Lia::Lia,
+            Lia::LIA,
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                             Literal::Var(Variable(String::from("floor")))
                     )),
                     vec![]
                 ),
                 FunctionLiteral::new(
-                    Lia::Lia,
+                    Lia::LIA,
                     Rc::new(Function::NullaryFunction(
                         Literal::Const(3)
                     )),
@@ -162,7 +162,7 @@ pub fn elevator() -> Specification<Lia> {
         UpdateLiteral {
             sink: Variable(String::from("floor")),
             update: FunctionLiteral::new(
-                Lia::Lia,
+                Lia::LIA,
                 Rc::new(
                     Function::NullaryFunction(
                         Literal::Var(Variable(String::from("floor")))

@@ -6,10 +6,10 @@ mod theories;
 mod tsl;
 mod specification;
 mod utils;
-mod sample;
+//mod sample;
 
 fn main() {
-    let elevator = sample::elevator();
-    let pred = &elevator.predicates[0];
-    println!("{}", pred.to_tsl_assumption());
+    // let elevator = sample::elevator();
+    // let pred = &elevator.predicates[0];
+    // println!("{}", pred.to_tsl_assumption());
 }

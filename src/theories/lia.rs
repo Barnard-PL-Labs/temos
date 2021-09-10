@@ -1,17 +1,35 @@
-use crate::tsl::{Funct, Pred, Variable, Theory, PredicateLiteral};
+use crate::tsl::{Funct, Pred, Variable, Theory};
+use crate::tsl::{PredicateLiteral, LogicWritable};
+//use crate::cvc4;
 use std::fmt;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, Copy)]
-pub enum Lia {
-    Lia
+pub enum Lia {LIA}
+impl Theory for Lia {
+    type FunctType = Function;
+    type PredType = Predicate;
 }
-impl Theory for Lia {}
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Literal {
     Var(Variable),
     Const(i32),
+}
+
+impl LogicWritable for Literal {
+    fn to_tsl(&self) -> String {
+        match self {
+            Literal::Var(variable) => variable.to_tsl(),
+            Literal::Const(constant) => constant.to_string()
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
+            Literal::Var(variable) => variable.to_smtlib(),
+            Literal::Const(constant) => constant.to_string()
+        }
+    }
 }
 
 impl Display for Literal {
@@ -29,6 +47,21 @@ pub enum Function {
     BinaryFunction(BinaryFunction)
 }
 
+impl LogicWritable for Function {
+    fn to_tsl(&self) -> String {
+        match self {
+            Function::NullaryFunction(literal) => literal.to_tsl(),
+            Function::BinaryFunction(binop) => binop.to_tsl()
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
+            Function::NullaryFunction(literal) => literal.to_smtlib(),
+            Function::BinaryFunction(binop) => binop.to_smtlib()
+        }
+    }
+}
+
 impl Funct for Function {
     fn arity(&self) -> u32 {
         match &self {
@@ -41,7 +74,7 @@ impl Funct for Function {
 impl Display for Function {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Function::NullaryFunction(null) => write!(f, "{}", null),
+            Function::NullaryFunction(literal) => write!(f, "{}", literal),
             Function::BinaryFunction(bin) => write!(f, "{}", bin)
         }
     }
@@ -53,12 +86,24 @@ pub enum BinaryFunction {
     Sub
 }
 
+impl LogicWritable for BinaryFunction {
+    fn to_tsl(&self) -> String {
+        match self {
+            BinaryFunction::Add => String::from("add"),
+            BinaryFunction::Sub => String::from("sub"),
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
+            BinaryFunction::Add => String::from("+"),
+            BinaryFunction::Sub => String::from("-"),
+        }
+    }
+}
+
 impl Display for BinaryFunction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            BinaryFunction::Add => write!(f, "(+)"),
-            BinaryFunction::Sub => write!(f, "(-)")
-        }
+        write!(f, "({})", self.to_smtlib())
     }
 }
 
@@ -74,14 +119,28 @@ pub enum Predicate {
 
 impl Display for Predicate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let as_str = match self {
+        write!(f, "{}", self.to_smtlib())
+    }
+}
+
+impl LogicWritable for Predicate {
+    fn to_tsl(&self) -> String {
+        match self {
+            Predicate::LT  => String::from("lt"),
+            Predicate::GT  => String::from("gt"),
+            Predicate::EQ  => String::from("eq"),
+            Predicate::LTE => String::from("lte"),
+            Predicate::GTE => String::from("gte")
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
             Predicate::LT  => String::from("<"),
             Predicate::GT  => String::from(">"),
             Predicate::EQ  => String::from("="),
             Predicate::LTE => String::from("<="),
             Predicate::GTE => String::from(">=")
-        };
-        write!(f, "{}", as_str)
+        }
     }
 }
 
@@ -91,49 +150,9 @@ impl Funct for Predicate {
 
 impl Pred for Predicate {}
 
-impl Predicate {
-    fn to_tsl(&self) -> String {
-        match self {
-            Predicate::LT  => String::from("LT"),
-            Predicate::GT  => String::from("GT"),
-            Predicate::EQ  => String::from("EQ"),
-            Predicate::LTE => String::from("LTE"),
-            Predicate::GTE => String::from("GTE")
-        }
-    }
-    fn reverse(&self) -> Predicate {
-        match self {
-            Predicate::LT  => Predicate::GTE,
-            Predicate::GT  => Predicate::LTE,
-            Predicate::LTE => Predicate::GT,
-            Predicate::GTE => Predicate::LT,
-            Predicate::EQ  => panic!("No reversal for EQ")
-        }
-    }
-    fn is_lt(&self) -> bool {
-        match self {
-            Predicate::LT  => true,
-            Predicate::LTE => true,
-            _   => false
-        }
-    }
-    fn is_gt(&self) -> bool {
-        match self {
-            Predicate::GT  => true,
-            Predicate::GTE => true,
-            _   => false
-        }
-    }
-    fn arity(&self) -> u32 {2}
-    fn evaluate(&self) -> bool {true}
-}
-
 impl PredicateLiteral<Lia> {
     fn evaluate(&self) -> bool {
         panic!("")
-    }
-    fn to_tsl(&self) -> String {
-        String::from("foo")
     }
     pub fn to_tsl_assumption(&self) -> String {
         format!("!{};", self.to_tsl())

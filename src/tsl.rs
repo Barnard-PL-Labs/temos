@@ -1,38 +1,90 @@
 use std::fmt;
-use std::fmt::{Debug, Display};
-use std::rc::Rc;
+use std::fmt::Display;
 
-pub trait Funct: Debug + Display {
+pub trait LogicWritable {
+    fn to_tsl(&self) -> String;
+    fn to_smtlib(&self) -> String;
+}
+
+pub trait Funct: Display + Clone + LogicWritable {
     fn arity(&self) -> u32;
 }
 
-pub trait Pred : Funct + Debug + Clone {
-}
+pub trait Pred : Funct + Display + Clone + LogicWritable {}
 
 pub trait Theory : Clone + Copy {
+    type FunctType: Funct;
+    type PredType: Pred;
 }
+
+#[derive(Debug, Copy, Clone)]
+pub enum TheoryFunctions<T: Theory> {
+    Function(T::FunctType),
+    Predicate(T::PredType),
+    Connective(Connective)
+}
+
+// TODO
+impl<T> LogicWritable for TheoryFunctions<T> where T: Theory {
+    fn to_tsl(&self) -> String {String::new()}
+    fn to_smtlib(&self) -> String {String::new()}
+}
+
+impl<T> Funct for TheoryFunctions<T> where T: Theory {
+    fn arity(&self) -> u32 {
+        match &self{
+            TheoryFunctions::Function(f) => f.arity(),
+            TheoryFunctions::Predicate(p) => p.arity(),
+            TheoryFunctions::Connective(c) => c.arity(),
+        }
+    }
+}
+
+impl<T> Display for TheoryFunctions<T> where T: Theory {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let as_str = match &self{
+            TheoryFunctions::Function(f) => f.to_string(),
+            TheoryFunctions::Predicate(p) => p.to_string(),
+            TheoryFunctions::Connective(c) => c.to_string()
+        }; 
+        write!(f, "{}", as_str)
+    }
+}
+
 
 #[derive(Clone)]
 pub struct FunctionLiteral<T: Theory> {
     theory: T,
-    function: Rc<dyn Funct>,
+    pub function: TheoryFunctions<T>,
     args: Vec< FunctionLiteral<T> >
+}
+
+impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
+    fn to_tsl(&self) -> String {
+        let arg_vec : Vec<String> = self.args
+            .iter()
+            .map(|x| x.to_tsl())
+            .collect();
+        format!("{} {}", self.function.to_tsl(), arg_vec.join(" "))
+    }
+    fn to_smtlib(&self) -> String {
+        let arg_vec : Vec<String> = self.args
+            .iter()
+            .map(|x| x.to_smtlib())
+            .collect();
+        format!("{} {}", self.function.to_smtlib(), arg_vec.join(" "))
+    }
 }
 
 impl<T> Display for FunctionLiteral<T> where T: Theory {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let arg_fmt_vector : Vec<String> = self.args
-            .iter()
-            .map(|x| x.to_string())
-            .collect();
-        let args_str = arg_fmt_vector.join(" ");
-        write!(f, "{} {}", self.function, args_str)
+        write!(f, "")
     }
 }
 
 impl<T> FunctionLiteral<T> where T: Theory {
     pub fn new(theory: T,
-               function: Rc<dyn Funct>,
+               function: TheoryFunctions<T>,
                args : Vec< FunctionLiteral <T> >)
         -> FunctionLiteral<T> {
         let object = FunctionLiteral{
@@ -66,11 +118,18 @@ impl<T> Display for PredicateLiteral<T> where T: Theory {
     }
 }
 
+impl<T> LogicWritable for PredicateLiteral<T> where T: Theory {
+    fn to_tsl(&self) -> String {
+        self.function_literal.to_tsl()
+    }
+    fn to_smtlib(&self) -> String {
+        self.function_literal.to_smtlib()
+    }
+}
+
 impl<T> PredicateLiteral<T> where T: Theory {
-    // Cannot put Rc<dyn Pred> due to lack of trait upcasting in Rust
-    // https://stackoverflow.com/q/28632968/13567582
     pub fn new(theory : T,
-               function: Rc<dyn Funct>,
+               function: TheoryFunctions<T>,
                args : Vec< FunctionLiteral<T> >)
         -> PredicateLiteral<T> {
         let object = FunctionLiteral{
@@ -87,7 +146,7 @@ impl<T> PredicateLiteral<T> where T: Theory {
         PredicateLiteral {
             function_literal: FunctionLiteral {
                 theory: self.function_literal.theory,
-                function: Rc::new(Connective::Neg),
+                function: TheoryFunctions::Connective(Connective::Neg),
                 args: vec![self.function_literal.clone()]
             }
         }
@@ -96,7 +155,7 @@ impl<T> PredicateLiteral<T> where T: Theory {
         PredicateLiteral {
             function_literal: FunctionLiteral {
                 theory: self.function_literal.theory,
-                function: Rc::new(Connective::And),
+                function: TheoryFunctions::Connective(Connective::And),
                 args: vec![
                     self.function_literal.clone(),
                     other.function_literal.clone()
@@ -112,6 +171,11 @@ pub enum Variable {
     Variable(String)
 }
 
+impl LogicWritable for Variable {
+    fn to_tsl(&self) -> String {self.to_string()}
+    fn to_smtlib(&self) -> String {self.to_string()}
+}
+
 impl Display for Variable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -120,7 +184,7 @@ impl Display for Variable {
     }
 }
 
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone, Copy)]
 pub enum Connective {
     And,
     Neg
@@ -128,9 +192,21 @@ pub enum Connective {
 
 impl Display for Connective {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.to_smtlib())
+    }
+}
+
+impl LogicWritable for Connective {
+    fn to_tsl(&self) -> String {
         match self {
-            Connective::And => write!(f, "{}", "AND"),
-            Connective::Neg => write!(f, "{}", "NOT")
+            Connective::And => String::from("&&"),
+            Connective::Neg => String::from("!"),
+        }
+    }
+    fn to_smtlib(&self) -> String {
+        match self {
+            Connective::And => String::from("and"),
+            Connective::Neg => String::from("not"),
         }
     }
 }
@@ -139,8 +215,7 @@ impl Funct for Connective {
     fn arity(&self) -> u32 {2}
 }
 
-impl Pred for Connective {
-}
+impl Pred for Connective {}
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum PredicateTerm<T> {
