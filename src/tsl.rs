@@ -7,16 +7,19 @@ pub trait Funct: Debug + Display {
 }
 
 pub trait Pred : Funct + Debug + Clone {
-    fn evaluate(&self) -> bool;
+}
+
+pub trait Theory : Clone + Copy {
 }
 
 #[derive(Clone)]
-pub struct FunctionLiteral {
+pub struct FunctionLiteral<T: Theory> {
+    theory: T,
     function: Rc<dyn Funct>,
-    args: Vec<FunctionLiteral>
+    args: Vec< FunctionLiteral<T> >
 }
 
-impl Display for FunctionLiteral {
+impl<T> Display for FunctionLiteral<T> where T: Theory {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let arg_fmt_vector : Vec<String> = self.args
             .iter()
@@ -27,12 +30,13 @@ impl Display for FunctionLiteral {
     }
 }
 
-
-impl FunctionLiteral {
-    pub fn new(function: Rc<dyn Funct>,
-               args : Vec<FunctionLiteral>)
-        -> FunctionLiteral {
+impl<T> FunctionLiteral<T> where T: Theory {
+    pub fn new(theory: T,
+               function: Rc<dyn Funct>,
+               args : Vec< FunctionLiteral <T> >)
+        -> FunctionLiteral<T> {
         let object = FunctionLiteral{
+            theory,
             function,
             args
         };
@@ -52,23 +56,25 @@ impl FunctionLiteral {
 }
 
 #[derive(Clone)]
-pub struct PredicateLiteral {
-    function_literal: FunctionLiteral
+pub struct PredicateLiteral<T: Theory> {
+    function_literal: FunctionLiteral<T>
 }
 
-impl Display for PredicateLiteral {
+impl<T> Display for PredicateLiteral<T> where T: Theory {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.function_literal)
     }
 }
 
-impl PredicateLiteral {
+impl<T> PredicateLiteral<T> where T: Theory {
     // Cannot put Rc<dyn Pred> due to lack of trait upcasting in Rust
     // https://stackoverflow.com/q/28632968/13567582
-    pub fn new(function: Rc<dyn Funct>,
-               args : Vec<FunctionLiteral>)
-        -> PredicateLiteral {
+    pub fn new(theory : T,
+               function: Rc<dyn Funct>,
+               args : Vec< FunctionLiteral<T> >)
+        -> PredicateLiteral<T> {
         let object = FunctionLiteral{
+            theory,
             function,
             args
         };
@@ -77,17 +83,19 @@ impl PredicateLiteral {
             function_literal: object
         }
     }
-    pub fn negate(&self) -> PredicateLiteral {
+    pub fn negate(&self) -> PredicateLiteral<T> {
         PredicateLiteral {
             function_literal: FunctionLiteral {
+                theory: self.function_literal.theory,
                 function: Rc::new(Connective::Neg),
                 args: vec![self.function_literal.clone()]
             }
         }
     }
-    pub fn and(&self, other: &PredicateLiteral) -> PredicateLiteral {
+    pub fn and(&self, other: &PredicateLiteral<T>) -> PredicateLiteral<T> {
         PredicateLiteral {
             function_literal: FunctionLiteral {
+                theory: self.function_literal.theory,
                 function: Rc::new(Connective::And),
                 args: vec![
                     self.function_literal.clone(),
@@ -132,9 +140,6 @@ impl Funct for Connective {
 }
 
 impl Pred for Connective {
-    fn evaluate(&self) -> bool {
-        panic!("Not Implemented Error")
-    }
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
@@ -149,7 +154,7 @@ pub enum Temporal {
     Eventually
 }
 
-pub struct UpdateLiteral {
+pub struct UpdateLiteral<T: Theory> {
     pub sink : Variable,
-    pub update : FunctionLiteral
+    pub update : FunctionLiteral<T>
 }

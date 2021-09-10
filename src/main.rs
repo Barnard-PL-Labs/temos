@@ -9,10 +9,5 @@ mod utils;
 mod sample;
 
 fn main() {
-    let elevator = sample::elevator();
-    let preds = elevator.predicates;
-    let pair = utils::pair_preds(preds);
-    for pred in pair.iter() {
-        println!("{}", pred);
-    }
+    let _elevator = sample::elevator();
 }

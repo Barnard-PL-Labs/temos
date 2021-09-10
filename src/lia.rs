@@ -1,6 +1,12 @@
-use crate::tsl::{Funct, Pred, Variable};
+use crate::tsl::{Funct, Pred, Variable, Theory};
 use std::fmt;
 use std::fmt::Display;
+
+#[derive(Debug, Clone, Copy)]
+pub enum Lia {
+    Lia
+}
+impl Theory for Lia {}
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Literal {
@@ -83,11 +89,7 @@ impl Funct for Predicate {
     fn arity(&self) -> u32 {2}
 }
 
-impl Pred for Predicate {
-    fn evaluate(&self) -> bool {
-        panic!("Not Implemented Error")
-    }
-}
+impl Pred for Predicate {}
 
 impl Predicate {
     fn to_tsl(&self) -> String {
