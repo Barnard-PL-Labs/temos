@@ -45,6 +45,20 @@ pub struct PredicateLiteral {
 }
 
 impl PredicateLiteral {
+    // Cannot put Rc<dyn Pred> due to lack of trait upcasting in Rust
+    // https://stackoverflow.com/q/28632968/13567582
+    pub fn new(function: Rc<dyn Funct>,
+               args : Vec<FunctionLiteral>)
+        -> PredicateLiteral {
+        let object = FunctionLiteral{
+            function,
+            args
+        };
+        object.validate_arity();
+        PredicateLiteral {
+            function_literal: object
+        }
+    }
     pub fn negate(&self) -> PredicateLiteral {
         PredicateLiteral {
             function_literal: FunctionLiteral {

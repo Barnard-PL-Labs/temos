@@ -1,4 +1,4 @@
-use crate::tsl::{FunctionLiteral, UpdateLiteral, Variable};
+use crate::tsl::{PredicateLiteral, UpdateLiteral, Variable};
 
 /* 
  * FIMXE: can only handle assumptions that only have predicates.
@@ -7,7 +7,7 @@ use crate::tsl::{FunctionLiteral, UpdateLiteral, Variable};
  */
 pub struct Specification {
     pub cells : Vec<Variable>,
-    pub assumptions : Vec <FunctionLiteral>,
-    pub predicates : Vec<FunctionLiteral>,
+    pub assumptions : Vec <PredicateLiteral>,
+    pub predicates : Vec<PredicateLiteral>,
     pub updates : Vec<UpdateLiteral>
 }

@@ -9,6 +9,9 @@ mod utils;
 mod sample;
 
 fn main() {
-    let _elevator = sample::elevator();
-    println!("Cardiovascular surgery")
+    let elevator = sample::elevator();
+    let preds = elevator.predicates;
+    let pair = utils::pair_preds(preds);
+    println!("{:?}", &pair);
+    println!("{:?}", pair.len());
 }

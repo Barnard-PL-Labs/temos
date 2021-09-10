@@ -1,6 +1,6 @@
 use crate::specification::Specification;
 use crate::lia::{Function, Predicate, Literal};
-use crate::tsl::{Variable::Variable, FunctionLiteral, UpdateLiteral};
+use crate::tsl::{Variable::Variable, FunctionLiteral, PredicateLiteral, UpdateLiteral};
 use std::rc::Rc;
 
 pub fn elevator() -> Specification {
@@ -9,7 +9,7 @@ pub fn elevator() -> Specification {
     ];
     let assumptions = vec![
         // lte 1 floor
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
@@ -27,7 +27,7 @@ pub fn elevator() -> Specification {
             ]
         ),
         // lte floor 3
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
@@ -47,7 +47,7 @@ pub fn elevator() -> Specification {
     ];
     let predicates = vec![
         // lte 1 floor
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
@@ -65,7 +65,7 @@ pub fn elevator() -> Specification {
             ]
         ),
         // lte floor 3
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::LTE),
             vec![
                 FunctionLiteral::new(
@@ -83,7 +83,7 @@ pub fn elevator() -> Specification {
             ]
         ),
         // eq floor 1
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
@@ -101,7 +101,7 @@ pub fn elevator() -> Specification {
             ]
         ),
         // eq floor 2
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
@@ -119,7 +119,7 @@ pub fn elevator() -> Specification {
             ]
         ),
         // eq floor 3
-        FunctionLiteral::new(
+        PredicateLiteral::new(
             Rc::new(Predicate::EQ),
             vec![
                 FunctionLiteral::new(
