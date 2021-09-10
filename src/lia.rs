@@ -41,7 +41,7 @@ impl Funct for Predicate {
 }
 
 impl Pred for Predicate {
-    fn evaluate(self) -> bool {
+    fn evaluate(&self) -> bool {
         panic!("Not Implemented Error")
     }
 }
