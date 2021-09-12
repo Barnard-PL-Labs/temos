@@ -178,7 +178,7 @@ impl PredicateLiteral<Lia> {
     }
 
     fn to_smt2_assert(&self) -> String {
-        format!("(assert {})\n", self.to_smtlib())
+        format!("(assert ({}))\n", self.to_smtlib())
     }
 
     pub fn to_smt2_query(&self) -> String {
@@ -197,9 +197,9 @@ impl PredicateLiteral<Lia> {
         let smt2_query = self.to_smt2_query();
         let result = cvc4::cvc4_runner(&smt2_query, "smt", 0);
         if result == "sat\n" {
-            return false
-        } else if result == "unsat\n" {
             return true
+        } else if result == "unsat\n" {
+            return false
         } else {
             panic!("Not sat or unsat??\n
                    Result:{}\nQuery:{}",

@@ -10,6 +10,11 @@ mod sample;
 
 fn main() {
     let elevator = sample::elevator();
-    let pred = &elevator.predicates[0];
-    println!("{}", pred.to_smt2_query());
+    for pred in &elevator.predicates {
+        println!("Query: ({})", pred);
+        // let query : String = pred.to_smt2_query();
+        // let result = cvc4::cvc4_runner(&query, "smt", 0);
+        let result = pred.evaluate();
+        println!("Result: {}", result);
+    }
 }

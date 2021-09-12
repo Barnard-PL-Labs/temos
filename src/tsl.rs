@@ -24,6 +24,7 @@ pub enum TheoryFunctions<T: Theory> {
     Connective(Connective)
 }
 
+
 impl<T> LogicWritable for TheoryFunctions<T> where T: Theory {
     fn to_tsl(&self) -> String {
         match self {
@@ -70,6 +71,16 @@ pub struct FunctionLiteral<T: Theory> {
     pub args: Vec< FunctionLiteral<T> >
 }
 
+impl<T> Display for FunctionLiteral<T> where T: Theory {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let arg_vec : Vec<String> = self.args
+            .iter()
+            .map(|x| x.to_string())
+            .collect();
+        write!(f, "{} {}", self.function.to_string(), arg_vec.join(" "))
+    }
+}
+
 impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
     fn to_tsl(&self) -> String {
         let arg_vec : Vec<String> = self.args
@@ -90,12 +101,6 @@ impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
 impl<T> Funct for FunctionLiteral<T> where T: Theory {
     fn arity(&self) -> u32 {
         self.function.arity()
-    }
-}
-
-impl<T> Display for FunctionLiteral<T> where T: Theory {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "")
     }
 }
 
