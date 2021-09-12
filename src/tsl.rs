@@ -67,14 +67,14 @@ impl<T> Display for TheoryFunctions<T> where T: Theory {
 pub struct FunctionLiteral<T: Theory> {
     theory: T,
     pub function: TheoryFunctions<T>,
-    args: Vec< FunctionLiteral<T> >
+    pub args: Vec< FunctionLiteral<T> >
 }
 
 impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
     fn to_tsl(&self) -> String {
         let arg_vec : Vec<String> = self.args
             .iter()
-            .map(|x| x.to_tsl())
+            .map(FunctionLiteral::to_tsl)
             .collect();
         format!("{} {}", self.function.to_tsl(), arg_vec.join(" "))
     }
@@ -84,6 +84,12 @@ impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
             .map(|x| x.to_smtlib())
             .collect();
         format!("{} {}", self.function.to_smtlib(), arg_vec.join(" "))
+    }
+}
+
+impl<T> Funct for FunctionLiteral<T> where T: Theory {
+    fn arity(&self) -> u32 {
+        self.function.arity()
     }
 }
 
@@ -120,7 +126,7 @@ impl<T> FunctionLiteral<T> where T: Theory {
 
 #[derive(Clone)]
 pub struct PredicateLiteral<T: Theory> {
-    function_literal: FunctionLiteral<T>
+    pub function_literal: FunctionLiteral<T>
 }
 
 impl<T> Display for PredicateLiteral<T> where T: Theory {

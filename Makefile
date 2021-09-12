@@ -16,5 +16,5 @@ tsltools:
 	cd tsltools && make
 
 cvc4:
-	wget http://cvc4.cs.stanford.edu/downloads/builds/x86_64-linux-opt/unstable/cvc4-2021-03-23-x86_64-linux-opt -O bin/cvc4
+	wget https://github.com/CVC4/CVC4/releases/download/1.8/cvc4-1.8-x86_64-linux-opt -O bin/cvc4 
 	chmod +x bin/cvc4

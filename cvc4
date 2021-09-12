@@ -1,0 +1,6 @@
+(set-logic LIA)
+(declare-const floor Int)
+
+(assert <= 1  floor )
+(check-sat)
+

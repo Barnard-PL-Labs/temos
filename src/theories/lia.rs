@@ -1,6 +1,6 @@
-use crate::tsl::{Funct, Pred, Variable, Theory};
-use crate::tsl::{PredicateLiteral, LogicWritable};
-//use crate::cvc4;
+use crate::tsl::{Funct, Pred, Variable, Theory, TheoryFunctions};
+use crate::tsl::{FunctionLiteral, PredicateLiteral, LogicWritable};
+use crate::cvc4;
 use std::fmt;
 use std::fmt::Display;
 
@@ -107,6 +107,28 @@ impl Display for BinaryFunction {
     }
 }
 
+impl FunctionLiteral<Lia> {
+    fn get_arg_vars(&self) -> Vec<Variable> {
+        self.args
+            .iter()
+            .map(FunctionLiteral::get_vars)
+            .flatten()
+            .collect()
+    }
+    pub fn get_vars(&self) -> Vec<Variable> {
+        match &self.function {
+            TheoryFunctions::Function(f) => match f {
+                Function::NullaryFunction(literal) => match literal {
+                    Literal::Var(variable) => vec![variable.clone()],
+                    Literal::Const(_) => vec![]
+                },
+                _ => self.get_arg_vars()
+            }
+            _ => self.get_arg_vars()
+        }
+    }
+}
+
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Predicate {
@@ -151,9 +173,40 @@ impl Funct for Predicate {
 impl Pred for Predicate {}
 
 impl PredicateLiteral<Lia> {
-    fn evaluate(&self) -> bool {
-        panic!("")
+    fn get_vars(&self) -> Vec<Variable> {
+        self.function_literal.get_vars()
     }
+
+    fn to_smt2_assert(&self) -> String {
+        format!("(assert {})\n", self.to_smtlib())
+    }
+
+    pub fn to_smt2_query(&self) -> String {
+        let mut query = String::from("(set-logic LIA)\n");
+        for variable in self.get_vars() {
+            query.push_str(&format!("(declare-const {} Int)\n", variable));
+        }
+
+        query.push_str("\n");
+        query.push_str(&self.to_smt2_assert());
+        query.push_str("(check-sat)\n");
+        query
+    }
+
+    pub fn evaluate(&self) -> bool {
+        let smt2_query = self.to_smt2_query();
+        let result = cvc4::cvc4_runner(&smt2_query, "smt", 0);
+        if result == "sat\n" {
+            return false
+        } else if result == "unsat\n" {
+            return true
+        } else {
+            panic!("Not sat or unsat??\n
+                   Result:{}\nQuery:{}",
+                   result, smt2_query);
+        }
+    }
+
     pub fn to_tsl_assumption(&self) -> String {
         format!("!{};", self.to_tsl())
     }

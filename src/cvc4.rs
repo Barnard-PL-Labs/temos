@@ -3,7 +3,7 @@ use std::process::Command;
 use std::fs;
 
 /// Runs CVC4 by creating a temp file and feeding it into CVC4.
-pub fn cvc4_runner(arg: String, lang: &str, abort_size: u32) -> String {
+pub fn cvc4_runner(arg: &str, lang: &str, abort_size: u32) -> String {
     let rand_int : i32 = rand::thread_rng().gen();
     let hack_file_name = format!("tmp-hack{}", rand_int);
     let max_abort_size = format!("--sygus-abort-size={}", abort_size);
