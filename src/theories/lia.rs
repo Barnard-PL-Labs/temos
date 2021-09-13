@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use std::iter::FromIterator;
 use crate::tsl::{Funct, Pred, Variable, Theory, TheoryFunctions};
 use crate::tsl::{FunctionLiteral, PredicateLiteral, LogicWritable};
 use crate::cvc4;
@@ -108,19 +110,22 @@ impl Display for BinaryFunction {
 }
 
 impl FunctionLiteral<Lia> {
-    fn get_arg_vars(&self) -> Vec<Variable> {
+    fn get_arg_vars(&self) -> HashSet<Variable> {
         self.args
             .iter()
             .map(FunctionLiteral::get_vars)
             .flatten()
             .collect()
     }
-    pub fn get_vars(&self) -> Vec<Variable> {
+    pub fn get_vars(&self) -> HashSet<Variable> {
         match &self.function {
             TheoryFunctions::Function(f) => match f {
-                Function::NullaryFunction(literal) => match literal {
-                    Literal::Var(variable) => vec![variable.clone()],
-                    Literal::Const(_) => vec![]
+                Function::NullaryFunction(literal) => {
+                    let literal_vec = match literal {
+                        Literal::Var(variable) => vec![variable.clone()],
+                        Literal::Const(_) => vec![]
+                    };
+                    HashSet::<_>::from_iter(literal_vec)
                 },
                 _ => self.get_arg_vars()
             }
@@ -173,12 +178,12 @@ impl Funct for Predicate {
 impl Pred for Predicate {}
 
 impl PredicateLiteral<Lia> {
-    fn get_vars(&self) -> Vec<Variable> {
+    fn get_vars(&self) -> HashSet<Variable> {
         self.function_literal.get_vars()
     }
 
     fn to_smt2_assert(&self) -> String {
-        format!("(assert ({}))\n", self.to_smtlib())
+        format!("(assert {})\n", self.to_smtlib())
     }
 
     pub fn to_smt2_query(&self) -> String {
@@ -186,7 +191,6 @@ impl PredicateLiteral<Lia> {
         for variable in self.get_vars() {
             query.push_str(&format!("(declare-const {} Int)\n", variable));
         }
-
         query.push_str("\n");
         query.push_str(&self.to_smt2_assert());
         query.push_str("(check-sat)\n");
@@ -195,16 +199,12 @@ impl PredicateLiteral<Lia> {
 
     pub fn evaluate(&self) -> bool {
         let smt2_query = self.to_smt2_query();
-        let result = cvc4::cvc4_runner(&smt2_query, "smt", 0);
-        if result == "sat\n" {
-            return true
-        } else if result == "unsat\n" {
-            return false
-        } else {
-            panic!("Not sat or unsat??\n
-                   Result:{}\nQuery:{}",
-                   result, smt2_query);
-        }
+        let result = cvc4::runner(&smt2_query, "smt", 0);
+        cvc4::parse_satisfiable(&result, &smt2_query)
+    }
+
+    pub fn is_unsat(&self) -> bool {
+        !self.evaluate()
     }
 
     pub fn to_tsl_assumption(&self) -> String {

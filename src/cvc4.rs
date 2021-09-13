@@ -3,7 +3,7 @@ use std::process::Command;
 use std::fs;
 
 /// Runs CVC4 by creating a temp file and feeding it into CVC4.
-pub fn cvc4_runner(arg: &str, lang: &str, abort_size: u32) -> String {
+pub fn runner(arg: &str, lang: &str, abort_size: u32) -> String {
     let rand_int : i32 = rand::thread_rng().gen();
     let hack_file_name = format!("tmp-hack{}", rand_int);
     let max_abort_size = format!("--sygus-abort-size={}", abort_size);
@@ -32,4 +32,16 @@ pub fn cvc4_runner(arg: &str, lang: &str, abort_size: u32) -> String {
         println!("CVC4 Error:\n{}\n{}", err, arg);
     }
     String::from(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
+pub fn parse_satisfiable(output: &str, query: &str) -> bool {
+        if output == "sat\n" {
+            return true
+        } else if output == "unsat\n" {
+            return false
+        } else {
+            panic!("Not sat or unsat??\n
+                   Result:{}\nQuery:\n{}",
+                   output, query);
+        }
 }

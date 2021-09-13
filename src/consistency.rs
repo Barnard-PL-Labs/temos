@@ -1,10 +1,12 @@
-use crate::tsl::PredicateLiteral;
+use crate::tsl::{Theory, PredicateLiteral};
+use crate::theories::lia::Lia;
 
-fn pair_preds(preds: Vec<PredicateLiteral>) -> Vec<PredicateLiteral> {
+fn pair_preds<T: Theory>(preds: Vec<PredicateLiteral<T> >)
+-> Vec<PredicateLiteral <T> > {
     let mut all_preds = preds.clone();
-    let negs : Vec<PredicateLiteral> = preds.iter().map(|p| p.negate()).collect();
+    let negs : Vec< PredicateLiteral<T> > = preds.iter().map(|p| p.negate()).collect();
     all_preds.extend(negs);
-    let mut pair : Vec<PredicateLiteral> = Vec::new();
+    let mut pair : Vec< PredicateLiteral<T> > = Vec::new();
 
     for i in 0..all_preds.len() {
         for j in i+1..all_preds.len() {
@@ -14,15 +16,15 @@ fn pair_preds(preds: Vec<PredicateLiteral>) -> Vec<PredicateLiteral> {
     pair
 }
 
-pub fn consistency_checking(preds: Vec<PredicateLiteral>) {
+/// Specifically bound to LIA due to limits of specialization.
+/// RFC: https://rust-lang.github.io/rfcs/1210-impl-specialization.html
+pub fn consistency_checking(preds: Vec< PredicateLiteral <Lia> >)
+-> Vec<String> {
+    let mut assumptions = Vec::new();
+    for predicate in pair_preds(preds) {
+        if predicate.is_unsat() {
+            assumptions.push(predicate.to_tsl_assumption());
+        }
+    }
+    assumptions
 }
-
-// pub fn gen_assumptions(preds: Vec<Predicate>) -> Vec<String> {
-//     let mut assumptions = Vec::new();
-//     for predicate in enumerate_preds(preds) {
-//         if predicate.is_unsat() {
-//             assumptions.push(predicate.to_assumption());
-//         }
-//     }
-//     assumptions
-// }

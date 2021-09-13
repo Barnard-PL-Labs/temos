@@ -83,18 +83,44 @@ impl<T> Display for FunctionLiteral<T> where T: Theory {
 
 impl<T> LogicWritable for FunctionLiteral<T> where T: Theory {
     fn to_tsl(&self) -> String {
-        let arg_vec : Vec<String> = self.args
-            .iter()
-            .map(FunctionLiteral::to_tsl)
-            .collect();
-        format!("{} {}", self.function.to_tsl(), arg_vec.join(" "))
+        match &self.function {
+            // For logical connectives
+            TheoryFunctions::Connective(connective) => {
+                match connective {
+                    Connective::And => {
+                        assert!(self.args.len() == 2,
+                        "Expected arguments of length 2 for AND");
+                        format!("({} && {})",
+                                self.args[0].to_tsl(),
+                                self.args[1].to_tsl())
+                    },
+                    Connective::Neg => {
+                        assert!(self.args.len() == 1,
+                        "Expected arguments of length 1 for NOT");
+                        format!("!({})", self.args[0].to_tsl())
+                    }
+                }
+            }
+
+            // For general functions
+            _ => {
+                let arg_vec : Vec<String> = self.args
+                    .iter()
+                    .map(FunctionLiteral::to_tsl)
+                    .collect();
+                format!("{} {}", self.function.to_tsl(), arg_vec.join(" "))
+            }
+        }
     }
     fn to_smtlib(&self) -> String {
+        if self.arity() == 0 {
+            return format!("{}", self.function.to_smtlib());
+        }
         let arg_vec : Vec<String> = self.args
             .iter()
             .map(|x| x.to_smtlib())
             .collect();
-        format!("{} {}", self.function.to_smtlib(), arg_vec.join(" "))
+        format!("({} {})", self.function.to_smtlib(), arg_vec.join(" "))
     }
 }
 
