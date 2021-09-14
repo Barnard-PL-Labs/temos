@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::process::Command;
 use std::fs;
+use crate::tsl::{FunctionLiteral, Theory};
 
 /// Runs CVC4 by creating a temp file and feeding it into CVC4.
 pub fn runner(arg: &str, lang: &str, abort_size: u32) -> String {
@@ -34,14 +35,22 @@ pub fn runner(arg: &str, lang: &str, abort_size: u32) -> String {
     String::from(String::from_utf8_lossy(&output.stdout).to_string())
 }
 
-pub fn parse_satisfiable(output: &str, query: &str) -> bool {
-        if output == "sat\n" {
+pub fn parse_satisfiable(result: &str, query: &str) -> bool {
+        if result == "sat\n" {
             return true
-        } else if output == "unsat\n" {
+        } else if result == "unsat\n" {
             return false
         } else {
             panic!("Not sat or unsat??\n
                    Result:{}\nQuery:\n{}",
-                   output, query);
+                   result, query);
         }
+}
+
+// TODO
+pub fn parse_sygus_result<T: Theory>(result: &str, query: &str)
+-> FunctionLiteral<T> {
+    panic!("Failed to parse result.\n
+           Result:\n{}\n
+           Query:\n{}\n", result, query)
 }

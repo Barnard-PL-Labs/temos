@@ -171,10 +171,10 @@ pub fn elevator() -> Specification<Lia> {
             )
         }
     ];
-    Specification {
+    Specification::new(
         cells,
         assumptions,
         predicates,
         updates
-    }
+    )
 }

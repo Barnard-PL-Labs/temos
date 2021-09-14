@@ -178,7 +178,7 @@ impl Funct for Predicate {
 impl Pred for Predicate {}
 
 impl PredicateLiteral<Lia> {
-    fn get_vars(&self) -> HashSet<Variable> {
+    pub fn get_vars(&self) -> HashSet<Variable> {
         self.function_literal.get_vars()
     }
 

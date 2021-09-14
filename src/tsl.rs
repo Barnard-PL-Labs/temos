@@ -202,7 +202,7 @@ impl<T> PredicateLiteral<T> where T: Theory {
     pub fn and(&self, other: &PredicateLiteral<T>) -> PredicateLiteral<T> {
         PredicateLiteral {
             function_literal: FunctionLiteral {
-                theory: self.function_literal.theory,
+                theory: self.function_literal.theory.clone(),
                 function: TheoryFunctions::Connective(Connective::And),
                 args: vec![
                     self.function_literal.clone(),
@@ -277,6 +277,7 @@ pub enum Temporal {
     Eventually
 }
 
+#[derive(Clone)]
 pub struct UpdateLiteral<T: Theory> {
     pub sink : Variable,
     pub update : FunctionLiteral<T>
