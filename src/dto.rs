@@ -20,7 +20,7 @@ impl Dto<Lia> {
     fn synthesize_next(&self, timesteps: u32) -> FunctionLiteral<Lia> {
         let query = self.to_sygus();
         let result = cvc4::runner(&query, "sygus", timesteps);
-        cvc4::parse_sygus_result(&result, &query)
+        cvc4::parse_sygus_result(&result)
     }
     // TODO
     fn synthesize_eventually(&self) -> FunctionLiteral<Lia> {
