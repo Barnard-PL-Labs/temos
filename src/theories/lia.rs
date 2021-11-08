@@ -47,7 +47,7 @@ impl Literal {
     /// If this literal is the variable to exchanged,
     /// change it to the function application of this literal.
     /// Currently, limited arity support.
-    // TODO: better name
+    // FIXME: better name
     fn to_smt2_function(self, var_exchange: &Variable) -> Literal {
         match &self {
             Literal::Var(var) =>  match var {
@@ -268,9 +268,8 @@ impl PredicateLiteral<Lia> {
         query
     }
     
-    // TODO
     pub fn to_constraint(&self) -> String {
-        panic!("Not Implemented Error");
+        self.function_literal.to_constraint()
     }
 
     pub fn evaluate(&self) -> bool {

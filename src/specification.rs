@@ -43,7 +43,7 @@ impl<T> Specification<T> where T: Theory {
 
 // O(n^3) but it's probably fast enough.
 impl Specification<Lia> {
-    fn generate_dtos(&self) -> Vec< Dto<Lia> > {
+    pub fn generate_dtos(&self) -> Vec< Dto<Lia> > {
         let mut dto_vec = Vec::new();
         // Let's get down to business,
         // to defeat, the borrow checker...

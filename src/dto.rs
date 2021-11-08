@@ -3,7 +3,7 @@ use std::rc::Rc;
 use crate::theories::lia::Lia;
 use crate::tsl::{Temporal, Variable, Theory};
 use crate::tsl::{FunctionLiteral, PredicateLiteral, UpdateLiteral};
-use crate::tsl::{LogicWritable};
+use crate::tsl::LogicWritable;
 use crate::cvc4;
 
 /// Data Transformation Obligation.
@@ -19,7 +19,6 @@ impl Dto<Lia> {
         self.grammar[0].sink.clone()
     }
 
-    // TODO
     fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
         let header = format!("(synth-fun function (({} Int)) Int\n", self.variable());

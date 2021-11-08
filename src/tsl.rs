@@ -153,6 +153,9 @@ impl<T> FunctionLiteral<T> where T: Theory {
                    arity, self)
         }
     }
+    pub fn to_constraint(&self) -> String {
+        format!("(constraint {})\n", self.to_smtlib())
+    }
 }
 
 #[derive(Clone)]
