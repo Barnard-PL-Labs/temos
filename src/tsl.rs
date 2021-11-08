@@ -186,10 +186,16 @@ impl<T> PredicateLiteral<T> where T: Theory {
             args
         };
         object.validate_arity();
+        PredicateLiteral::from_function_literal(object)
+    }
+
+    pub fn from_function_literal(function_literal: FunctionLiteral<T>) 
+    -> PredicateLiteral<T> {
         PredicateLiteral {
-            function_literal: object
+            function_literal
         }
     }
+
     pub fn negate(&self) -> PredicateLiteral<T> {
         PredicateLiteral {
             function_literal: FunctionLiteral {
@@ -281,4 +287,16 @@ pub enum Temporal {
 pub struct UpdateLiteral<T: Theory> {
     pub sink : Variable,
     pub update : FunctionLiteral<T>
+}
+
+impl<T> UpdateLiteral<T>  where T: Theory{
+    pub fn change_sink_name(&self, new_name: &str) -> UpdateLiteral<T> {
+        UpdateLiteral {
+            sink: Variable::Variable(String::from(new_name)),
+            update: self.update.clone()
+        }
+    }
+    pub fn to_sygus(&self) -> String {
+        panic!()
+    }
 }

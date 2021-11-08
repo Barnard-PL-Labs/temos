@@ -43,6 +43,28 @@ impl Display for Literal {
     }
 }
 
+impl Literal {
+    /// If this literal is the variable to exchanged,
+    /// change it to the function application of this literal.
+    /// Currently, limited arity support.
+    // TODO: better name
+    fn to_smt2_function(self, var_exchange: &Variable) -> Literal {
+        match &self {
+            Literal::Var(var) =>  match var {
+                Variable::Variable(var_name) => {
+                    if var == var_exchange {
+                        let function = format!("(function {})", var_name);
+                        Literal::Var(Variable::Variable(function))
+                    } else {
+                        self
+                    }
+                }
+            },
+            _ => self
+        }
+    }
+}
+
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Function {
     NullaryFunction(Literal),
@@ -132,6 +154,39 @@ impl FunctionLiteral<Lia> {
             _ => self.get_arg_vars()
         }
     }
+    pub fn var_to_function(&self, to_swap: Variable) -> FunctionLiteral<Lia> {
+        let updated_function = match &self.function {
+            TheoryFunctions::Function(f) => match f {
+                Function::NullaryFunction(literal) => {
+                    match literal {
+                        Literal::Var(variable) => {
+                            if variable.to_string() == to_swap.to_string() {
+                                TheoryFunctions::Function(
+                                    Function::NullaryFunction(
+                                        Literal::Var(
+                                            Variable::Variable(
+                                                format!("(function {})", variable.to_tsl())
+                                            )
+                                        )
+                                    )
+                                )
+                            } else {
+                                self.function.clone()
+                            }
+                        },
+                        _ => self.function.clone()
+                    }
+                },
+                _ => self.function.clone()
+            }
+            _ => self.function.clone()
+        };
+        FunctionLiteral::new(
+            Lia::LIA,
+            updated_function,
+            vec![]
+        )
+    }
 }
 
 
@@ -182,7 +237,23 @@ impl PredicateLiteral<Lia> {
         self.function_literal.get_vars()
     }
 
-    fn to_smt2_assert(&self) -> String {
+    pub fn var_to_function(&self, to_swap: Variable) -> PredicateLiteral<Lia> {
+        PredicateLiteral::from_function_literal(
+            self.function_literal.var_to_function(to_swap)
+        )
+    }
+
+    pub fn is_eq(&self) -> bool {
+        match &self.function_literal.function {
+            TheoryFunctions::Predicate(pred) => match pred {
+                Predicate::EQ => true,
+                _ => false
+            }
+            _ => false
+        }
+    }
+
+    pub fn to_smt2_assert(&self) -> String {
         format!("(assert {})\n", self.to_smtlib())
     }
 
@@ -195,6 +266,11 @@ impl PredicateLiteral<Lia> {
         query.push_str(&self.to_smt2_assert());
         query.push_str("(check-sat)\n");
         query
+    }
+    
+    // TODO
+    pub fn to_constraint(&self) -> String {
+        panic!("Not Implemented Error");
     }
 
     pub fn evaluate(&self) -> bool {

@@ -143,12 +143,12 @@ impl Predicate {
                 Bool(op,
                      lhs.to_function(var_name),
                      rhs.to_function(var_name)),
-                     And(larg, rarg) =>
-                         Predicate::new_and((*larg).clone()
-                                            .var_to_function(var_name),
-                                            (*rarg).clone()
-                                            .var_to_function(var_name)),
-                     Neg(pred) =>
+            And(larg, rarg) =>
+                Predicate::new_and((*larg).clone()
+                                   .var_to_function(var_name),
+                                   (*rarg).clone()
+                                   .var_to_function(var_name)),
+            Neg(pred) =>
                          Predicate::new_neg((*pred).clone()
                                             .var_to_function(var_name))
         }

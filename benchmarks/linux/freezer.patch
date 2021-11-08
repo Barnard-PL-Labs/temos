@@ -1,0 +1,1169 @@
+diff --git a/README.txt b/README.txt
+index 4c02d5502..3e47cba92 100644
+--- a/README.txt
++++ b/README.txt
+@@ -1,10 +1,2 @@
+-This file should contain:
+-
+--	Your name & UNI (or those of all group members for group assignments)
+--	Homework assignment number
+--	Description for each part
+-
+-The description should indicate whether your solution for the part is working
+-or not. You may also want to include anything else you would like to
+-communicate to the grader, such as extra functionality you implemented or how
+-you tried to fix your non-working code.
++COMS 4118: Operating Systems
++Homework 6 Solutions
+diff --git a/linux/include/linux/sched.h b/linux/include/linux/sched.h
+index 5dc024e28..e01a6bbe7 100644
+--- a/linux/include/linux/sched.h
++++ b/linux/include/linux/sched.h
+@@ -567,6 +567,13 @@ struct sched_dl_entity {
+ 	struct hrtimer inactive_timer;
+ };
+ 
++/* FREEZER entity*/
++struct sched_freezer_entity {
++	struct list_head list;
++	unsigned int time_slice;
++	unsigned short on_rq;
++};
++
+ union rcu_special {
+ 	struct {
+ 		u8			blocked;
+@@ -648,6 +655,7 @@ struct task_struct {
+ 	struct task_group		*sched_task_group;
+ #endif
+ 	struct sched_dl_entity		dl;
++	struct sched_freezer_entity freezer;
+ 
+ #ifdef CONFIG_PREEMPT_NOTIFIERS
+ 	/* List of struct preempt_notifier: */
+diff --git a/linux/include/linux/sched/freezer.h b/linux/include/linux/sched/freezer.h
+new file mode 100644
+index 000000000..70b217ff2
+--- /dev/null
++++ b/linux/include/linux/sched/freezer.h
+@@ -0,0 +1,6 @@
++#ifndef _SCHED_FREEZER_H
++#define _SCHED_FREEZER_H
++
++#define FREEZER_TIMESLICE		(100 * HZ / 1000)
++
++#endif /* _SCHED_FREEZER_H */
+\ No newline at end of file
+diff --git a/linux/include/uapi/linux/sched.h b/linux/include/uapi/linux/sched.h
+index 22627f800..c8598c1d8 100644
+--- a/linux/include/uapi/linux/sched.h
++++ b/linux/include/uapi/linux/sched.h
+@@ -40,6 +40,7 @@
+ /* SCHED_ISO: reserved but not implemented yet */
+ #define SCHED_IDLE		5
+ #define SCHED_DEADLINE		6
++#define SCHED_FREEZER		7
+ 
+ /* Can be ORed in to make sure the process is reverted back to SCHED_NORMAL on fork */
+ #define SCHED_RESET_ON_FORK     0x40000000
+diff --git a/linux/init/init_task.c b/linux/init/init_task.c
+index 5aebe3be4..4d83ee77d 100644
+--- a/linux/init/init_task.c
++++ b/linux/init/init_task.c
+@@ -13,6 +13,7 @@
+ 
+ #include <asm/pgtable.h>
+ #include <linux/uaccess.h>
++#include <linux/sched/freezer.h>
+ 
+ static struct signal_struct init_signals = {
+ 	.nr_threads	= 1,
+@@ -70,7 +71,7 @@ struct task_struct init_task
+ 	.prio		= MAX_PRIO - 20,
+ 	.static_prio	= MAX_PRIO - 20,
+ 	.normal_prio	= MAX_PRIO - 20,
+-	.policy		= SCHED_NORMAL,
++	.policy		= SCHED_FREEZER, //we now want to start as freezer
+ 	.cpus_allowed	= CPU_MASK_ALL,
+ 	.nr_cpus_allowed= NR_CPUS,
+ 	.mm		= NULL,
+@@ -85,6 +86,10 @@ struct task_struct init_task
+ 		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
+ 		.time_slice	= RR_TIMESLICE,
+ 	},
++	.freezer	= {
++		.list	= LIST_HEAD_INIT(init_task.freezer.list),
++		.time_slice	= FREEZER_TIMESLICE,
++	},
+ 	.tasks		= LIST_HEAD_INIT(init_task.tasks),
+ #ifdef CONFIG_SMP
+ 	.pushable_tasks	= PLIST_NODE_INIT(init_task.pushable_tasks, MAX_PRIO),
+diff --git a/linux/kernel/kthread.c b/linux/kernel/kthread.c
+index 087d18d77..db1c1a164 100644
+--- a/linux/kernel/kthread.c
++++ b/linux/kernel/kthread.c
+@@ -21,6 +21,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/uaccess.h>
+ #include <trace/events/sched.h>
++#include <linux/freezer.h>
+ 
+ static DEFINE_SPINLOCK(kthread_create_lock);
+ static LIST_HEAD(kthread_create_list);
+@@ -337,7 +338,11 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 		 * root may have changed our (kthreadd's) priority or CPU mask.
+ 		 * The kernel thread should not inherit these properties.
+ 		 */
+-		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
++		if (task->policy == SCHED_NORMAL)
++			sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
++		else
++			sched_setscheduler_nocheck(task, SCHED_FREEZER, &param);
++
+ 		set_cpus_allowed_ptr(task, cpu_all_mask);
+ 	}
+ 	kfree(create);
+diff --git a/linux/kernel/locking/locktorture.c b/linux/kernel/locking/locktorture.c
+index 7d0b0ed74..4a31f6f13 100644
+--- a/linux/kernel/locking/locktorture.c
++++ b/linux/kernel/locking/locktorture.c
+@@ -476,7 +476,7 @@ static void torture_rtmutex_boost(struct torture_random_state *trsp)
+ 		 */
+ 		if (!trsp || !(torture_random(trsp) %
+ 			       (cxt.nrealwriters_stress * factor * 2))) {
+-			policy = SCHED_NORMAL;
++			policy = SCHED_FREEZER;
+ 			param.sched_priority = 0;
+ 		} else /* common case, do nothing */
+ 			return;
+diff --git a/linux/kernel/sched/Makefile b/linux/kernel/sched/Makefile
+index 7fe183404..260de43af 100644
+--- a/linux/kernel/sched/Makefile
++++ b/linux/kernel/sched/Makefile
+@@ -19,6 +19,7 @@ endif
+ obj-y += core.o loadavg.o clock.o cputime.o
+ obj-y += idle.o fair.o rt.o deadline.o
+ obj-y += wait.o wait_bit.o swait.o completion.o
++obj-y += freezer.o
+ 
+ obj-$(CONFIG_SMP) += cpupri.o cpudeadline.o topology.o stop_task.o pelt.o
+ obj-$(CONFIG_SCHED_AUTOGROUP) += autogroup.o
+diff --git a/linux/kernel/sched/core.c b/linux/kernel/sched/core.c
+index 6859ea1d5..d2c10e3a6 100644
+--- a/linux/kernel/sched/core.c
++++ b/linux/kernel/sched/core.c
+@@ -7,6 +7,8 @@
+  */
+ #include "sched.h"
+ 
++#include <linux/freezer.h> /*not sure*/
++
+ #include <linux/nospec.h>
+ 
+ #include <linux/kcov.h>
+@@ -2168,6 +2170,11 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	p->rt.on_rq		= 0;
+ 	p->rt.on_list		= 0;
+ 
++	/** init freezer run_list **/
++	INIT_LIST_HEAD(&p->freezer.list);
++	p->freezer.time_slice	= FREEZER_TIMESLICE;
++	p->freezer.on_rq		= 0;
++
+ #ifdef CONFIG_PREEMPT_NOTIFIERS
+ 	INIT_HLIST_HEAD(&p->preempt_notifiers);
+ #endif
+@@ -2311,8 +2318,10 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	 * Revert to default priority/policy on fork if requested.
+ 	 */
+ 	if (unlikely(p->sched_reset_on_fork)) {
+-		if (task_has_dl_policy(p) || task_has_rt_policy(p)) {
+-			p->policy = SCHED_NORMAL;
++		if (task_has_dl_policy(p) || task_has_rt_policy(p) ||
++		    fair_policy(p->policy)) {
++			//p->policy = SCHED_NORMAL;
++			p->policy = SCHED_FREEZER;
+ 			p->static_prio = NICE_TO_PRIO(0);
+ 			p->rt_priority = 0;
+ 		} else if (PRIO_TO_NICE(p->static_prio) < 0)
+@@ -2332,8 +2341,10 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 		return -EAGAIN;
+ 	else if (rt_prio(p->prio))
+ 		p->sched_class = &rt_sched_class;
+-	else
++	else if (fair_policy(p->policy)) //if true: we don't want to use freezer
+ 		p->sched_class = &fair_sched_class;
++	else
++		p->sched_class = &freezer_sched_class;
+ 
+ 	init_entity_runnable_average(&p->se);
+ 
+@@ -3314,10 +3325,11 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	 * opportunity to pull in more work from other CPUs.
+ 	 */
+ 	if (likely((prev->sched_class == &idle_sched_class ||
+-		    prev->sched_class == &fair_sched_class) &&
++		    prev->sched_class == &freezer_sched_class) &&
+ 		   rq->nr_running == rq->cfs.h_nr_running)) {
+ 
+-		p = fair_sched_class.pick_next_task(rq, prev, rf);
++		p = freezer_sched_class.pick_next_task(rq, prev, rf);
++
+ 		if (unlikely(p == RETRY_TASK))
+ 			goto again;
+ 
+@@ -3838,7 +3850,10 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
+ 			p->dl.dl_boosted = 0;
+ 		if (rt_prio(oldprio))
+ 			p->rt.timeout = 0;
+-		p->sched_class = &fair_sched_class;
++		if (p->policy == SCHED_FREEZER)
++			p->sched_class = &freezer_sched_class;
++		else
++			p->sched_class = &fair_sched_class;
+ 	}
+ 
+ 	p->prio = prio;
+@@ -4093,6 +4108,8 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
+ 		p->sched_class = &dl_sched_class;
+ 	else if (rt_prio(p->prio))
+ 		p->sched_class = &rt_sched_class;
++	else if (p->policy == SCHED_FREEZER)
++		p->sched_class = &freezer_sched_class;
+ 	else
+ 		p->sched_class = &fair_sched_class;
+ }
+@@ -5164,6 +5181,7 @@ SYSCALL_DEFINE1(sched_get_priority_max, int, policy)
+ 	case SCHED_NORMAL:
+ 	case SCHED_BATCH:
+ 	case SCHED_IDLE:
++	case SCHED_FREEZER: // freezer has no prio
+ 		ret = 0;
+ 		break;
+ 	}
+@@ -5191,6 +5209,7 @@ SYSCALL_DEFINE1(sched_get_priority_min, int, policy)
+ 	case SCHED_NORMAL:
+ 	case SCHED_BATCH:
+ 	case SCHED_IDLE:
++	case SCHED_FREEZER: // freezer has no prio
+ 		ret = 0;
+ 	}
+ 	return ret;
+@@ -5988,6 +6007,7 @@ void __init sched_init(void)
+ 		init_cfs_rq(&rq->cfs);
+ 		init_rt_rq(&rq->rt);
+ 		init_dl_rq(&rq->dl);
++		init_freezer_rq(&rq->freezer); //init frezer run queue
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
+ 		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);
+@@ -6158,7 +6178,7 @@ void normalize_rt_tasks(void)
+ {
+ 	struct task_struct *g, *p;
+ 	struct sched_attr attr = {
+-		.sched_policy = SCHED_NORMAL,
++		.sched_policy = SCHED_FREEZER,
+ 	};
+ 
+ 	read_lock(&tasklist_lock);
+diff --git a/linux/kernel/sched/freezer.c b/linux/kernel/sched/freezer.c
+new file mode 100644
+index 000000000..366cbaff4
+--- /dev/null
++++ b/linux/kernel/sched/freezer.c
+@@ -0,0 +1,272 @@
++#include "sched.h"
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/threads.h>
++#include <linux/cpumask.h>
++
++
++/*
++ * enqueue_task is the class function to put the task on the list
++ * of tasks i.e. the list of entities. The head is rq->freezer_rq.queue and
++ * each entity has a list_head called list.
++ */
++static void
++enqueue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
++{
++	struct freezer_rq *freezer_rq = &rq->freezer;
++	struct sched_freezer_entity *entity = &p->freezer;
++
++	freezer_rq->nr_running++;
++	entity->on_rq = 1;
++	list_add_tail(&entity->list, &freezer_rq->queue);
++}
++
++/*
++ * dequeue_task is called mainly from the scheduler function deactivate_task().
++ * This function takes the task off the list of runnable tasks.
++ * Called when the task is done running NOT when its timeslice has expired.
++ */
++static void
++dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
++{
++	struct freezer_rq *freezer_rq = &rq->freezer;
++	struct sched_freezer_entity *entity = &p->freezer;
++
++	entity->on_rq = 0;
++	if (freezer_rq->nr_running) {
++		freezer_rq->nr_running--;
++		list_del(&entity->list);
++	}
++}
++
++/*
++ * This function is not really needed because freezer is
++ * not a cooperative scheduler. However, certain programs might
++ * want to cooperatively yield the scheduler. This is as simple as
++ * setting the time_slice to zero and then the task will be rescheduled in
++ * the next tick.
++ */
++static void
++yield_task_freezer(struct rq *rq)
++{
++
++	rq->curr->freezer.time_slice = 0;
++
++}
++
++/*
++ * Not needed since FREEZER is not a preemptive scheduler.
++ */
++static void
++check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int flags)
++{
++}
++
++/*
++ * This function is called when a new task needs to be picked. Since
++ * we are doing round-robin with FREEZER, we choose the first entity
++ * from the list of entities for that particular runqueue.
++ *
++ * This is also the entry point into each scheduling class. When
++ * the core scheduler goes through the list of scheduling classes,
++ * it checks if any class' pick_next_task function will return a task
++ * that needs to run.
++ */
++static struct task_struct *
++pick_next_task_freezer(struct rq *rq, struct task_struct *prev,
++		       struct rq_flags *rf)
++{
++	struct freezer_rq *freezer_rq = &rq->freezer;
++	struct sched_freezer_entity *entity;
++	struct task_struct *p;
++
++	if (list_empty(&freezer_rq->queue))
++		return NULL;
++
++	put_prev_task(rq, prev);
++	entity = list_first_entry(&freezer_rq->queue,
++			struct sched_freezer_entity, list);
++	p = container_of(entity, struct task_struct, freezer);
++
++	p->se.exec_start = rq_clock_task(rq);
++	return p;
++}
++
++/*
++ * This function is typically called by the scheduler when the current task
++ * is yielding to another task.This gives us a chance to move the current
++ * task to the tail of the list.
++ */
++static void put_prev_task_freezer(struct rq *rq, struct task_struct *prev)
++{
++	struct sched_freezer_entity *entity = &prev->freezer;
++
++	if (!entity->on_rq)
++		return;
++
++	list_move_tail(&entity->list, &rq->freezer.queue);
++}
++
++#ifdef CONFIG_SMP
++/*
++ * Helper function called by select_task_rq_freezer()
++ */
++static int find_min_rq_cpu(struct task_struct *p)
++{
++	int cpu, min_cpu = 0, min_running = 0, first = 1;
++	struct rq *rq;
++	struct freezer_rq *freezer_rq;
++	struct cpumask allowed = (struct cpumask) p->cpus_allowed;
++
++	for_each_cpu(cpu, &allowed) {
++		rq = cpu_rq(cpu);
++		freezer_rq = &rq->freezer;
++
++		if (first) {
++			min_running = rq->freezer.nr_running;
++			min_cpu = cpu;
++			first = 0;
++			continue;
++		}
++
++		if (min_running > rq->freezer.nr_running) {
++			min_running = rq->freezer.nr_running;
++			min_cpu = cpu;
++		}
++	}
++
++	return min_cpu;
++}
++
++/*
++ * When a new task has to be allotted to a rq, this function is called.
++ * Internally calls find_min_rq_cpu since FREEZER allots a new task to the
++ * runqueue that has the least number of tasks at a given moment
++ */
++static int
++select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, int flags)
++{
++	int min_cpu = 0;
++
++	min_cpu = find_min_rq_cpu(p);
++	return min_cpu;
++}
++#endif
++/*
++ * When a task sets its policy to FREEZER, this function is called.
++ * At this point, the task's policy is already set so we just have to
++ * initialize the timeslice.
++ */
++static void
++set_curr_task_freezer(struct rq *rq)
++{
++	struct task_struct *p = rq->curr;
++
++	p->freezer.time_slice = FREEZER_TIMESLICE;
++}
++
++/*
++ * Update the current task's runtime statistics. Skip current tasks that
++ * are not in our scheduling class.
++ */
++void update_curr_freezer(struct rq *rq)
++{
++	struct task_struct *curr = rq->curr;
++	u64 delta_exec;
++	u64 now;
++
++	if (curr->sched_class != &freezer_sched_class)
++		return;
++
++	now = rq_clock_task(rq);
++	delta_exec = now - curr->se.exec_start;
++	if (unlikely((s64)delta_exec <= 0))
++		return;
++
++	schedstat_set(curr->se.statistics.exec_max,
++			max(curr->se.statistics.exec_max, delta_exec));
++
++	curr->se.sum_exec_runtime += delta_exec;
++	account_group_exec_runtime(curr, delta_exec);
++
++	curr->se.exec_start = now;
++	cgroup_account_cputime(curr, delta_exec);
++}
++
++
++/*
++ * Every kernel tick, this function is called. We use the kernel ticks,
++ * configured by the kernel config directive HZ to set the timeslice so it is
++ * safe to say that this is called every kernel tick. Decrement the time_slice
++ * here and if the task has run out of its timeslice, reschedule it. Valid
++ * values for time_slice are between 0 and FREEZER_TIMESLICE.
++ *
++ * When a task runs out of its timeslice, it is moved to the tail of the list
++ * and then resched_curr() is called on it. Timeslice is reset to the default
++ * value here since it needs to have a valid amount for the next time it runs.
++ */
++static void
++task_tick_freezer(struct rq *rq, struct task_struct *curr, int queued)
++{
++	struct sched_freezer_entity *entity = &curr->freezer;
++
++	entity->time_slice--;
++
++	update_curr_freezer(rq);
++
++	if (entity->time_slice > 0 && entity->time_slice <= FREEZER_TIMESLICE)
++		return;
++
++	entity->time_slice = FREEZER_TIMESLICE;
++
++	if (rq->freezer.nr_running > 1) {
++
++		list_move_tail(&entity->list, &rq->freezer.queue);
++		resched_curr(rq);
++	}
++}
++
++static void
++prio_changed_freezer(struct rq *rq, struct task_struct *p, int oldprio)
++{
++}
++
++
++static void switched_to_freezer(struct rq *rq, struct task_struct *p)
++{
++	/*
++	 * If we are already running, there is nothing to be done.
++	 * If we are not running, we may need to preempt the current
++	 * running task.
++	 */
++	if (p->on_rq && rq->curr != p) {
++		if (!dl_task(rq->curr) && !rt_task(rq->curr))
++			resched_curr(rq);
++	}
++}
++
++
++void init_freezer_rq(struct freezer_rq *freezer_rq)
++{
++	freezer_rq->nr_running = 0;
++	INIT_LIST_HEAD(&freezer_rq->queue);
++}
++
++const struct sched_class freezer_sched_class = {
++	.next			= &fair_sched_class,
++	.enqueue_task		= enqueue_task_freezer,
++	.dequeue_task		= dequeue_task_freezer,
++	.yield_task		= yield_task_freezer,
++	.check_preempt_curr	= check_preempt_curr_freezer,
++	.pick_next_task		= pick_next_task_freezer,
++	.put_prev_task		= put_prev_task_freezer,
++#ifdef CONFIG_SMP
++	.select_task_rq		= select_task_rq_freezer,
++	.set_cpus_allowed       = set_cpus_allowed_common,
++#endif
++	.set_curr_task          = set_curr_task_freezer,
++	.task_tick		= task_tick_freezer,
++	.update_curr		= update_curr_freezer,
++	.prio_changed		= prio_changed_freezer,
++	.switched_to		= switched_to_freezer,
++};
+diff --git a/linux/kernel/sched/rt.c b/linux/kernel/sched/rt.c
+index b980cc966..7d7675244 100644
+--- a/linux/kernel/sched/rt.c
++++ b/linux/kernel/sched/rt.c
+@@ -2375,7 +2375,7 @@ static unsigned int get_rr_interval_rt(struct rq *rq, struct task_struct *task)
+ }
+ 
+ const struct sched_class rt_sched_class = {
+-	.next			= &fair_sched_class,
++	.next			= &freezer_sched_class,
+ 	.enqueue_task		= enqueue_task_rt,
+ 	.dequeue_task		= dequeue_task_rt,
+ 	.yield_task		= yield_task_rt,
+diff --git a/linux/kernel/sched/sched.h b/linux/kernel/sched/sched.h
+index 9a7c3d08b..65d10dbd4 100644
+--- a/linux/kernel/sched/sched.h
++++ b/linux/kernel/sched/sched.h
+@@ -4,6 +4,7 @@
+  */
+ #include <linux/sched.h>
+ 
++#include <linux/sched/freezer.h>
+ #include <linux/sched/autogroup.h>
+ #include <linux/sched/clock.h>
+ #include <linux/sched/coredump.h>
+@@ -153,6 +154,11 @@ static inline void cpu_load_update_active(struct rq *this_rq) { }
+  */
+ #define RUNTIME_INF		((u64)~0ULL)
+ 
++static inline int freezer_policy(int policy)
++{
++	return policy == SCHED_FREEZER;
++}
++
+ static inline int idle_policy(int policy)
+ {
+ 	return policy == SCHED_IDLE;
+@@ -174,7 +180,8 @@ static inline int dl_policy(int policy)
+ static inline bool valid_policy(int policy)
+ {
+ 	return idle_policy(policy) || fair_policy(policy) ||
+-		rt_policy(policy) || dl_policy(policy);
++		rt_policy(policy) || dl_policy(policy) ||
++		freezer_policy(policy);
+ }
+ 
+ static inline int task_has_rt_policy(struct task_struct *p)
+@@ -324,6 +331,8 @@ extern bool dl_cpu_busy(unsigned int cpu);
+ 
+ struct cfs_rq;
+ struct rt_rq;
++/* FREEZER RUNQUEUE */
++struct freezer_rq;
+ 
+ extern struct list_head task_groups;
+ 
+@@ -579,6 +588,12 @@ static inline int rt_bandwidth_enabled(void)
+ # define HAVE_RT_PUSH_IPI
+ #endif
+ 
++/* FREEZER RUNQUEUE DEFINITION */
++struct freezer_rq {
++	unsigned int nr_running;
++	struct list_head queue;
++};
++
+ /* Real-Time classes' related field in a runqueue: */
+ struct rt_rq {
+ 	struct rt_prio_array	active;
+@@ -808,6 +823,7 @@ struct rq {
+ 	struct cfs_rq		cfs;
+ 	struct rt_rq		rt;
+ 	struct dl_rq		dl;
++	struct freezer_rq   freezer;
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	/* list of leaf cfs_rq on this CPU: */
+@@ -1201,6 +1217,7 @@ struct sched_group_capacity {
+ 	int			id;
+ #endif
+ 
++
+ 	unsigned long		cpumask[0];		/* Balance mask */
+ };
+ 
+@@ -1585,6 +1602,7 @@ extern const struct sched_class dl_sched_class;
+ extern const struct sched_class rt_sched_class;
+ extern const struct sched_class fair_sched_class;
+ extern const struct sched_class idle_sched_class;
++extern const struct sched_class freezer_sched_class;
+ 
+ 
+ #ifdef CONFIG_SMP
+@@ -1631,6 +1649,11 @@ extern void update_max_interval(void);
+ extern void init_sched_dl_class(void);
+ extern void init_sched_rt_class(void);
+ extern void init_sched_fair_class(void);
++extern void init_sched_freezer_class(void);
++
++extern void reweight_task(struct task_struct *p, int prio);
++
++extern void reweight_task(struct task_struct *p, int prio);
+ 
+ extern void reweight_task(struct task_struct *p, int prio);
+ 
+@@ -2062,6 +2085,7 @@ print_numa_stats(struct seq_file *m, int node, unsigned long tsf,
+ extern void init_cfs_rq(struct cfs_rq *cfs_rq);
+ extern void init_rt_rq(struct rt_rq *rt_rq);
+ extern void init_dl_rq(struct dl_rq *dl_rq);
++extern void init_freezer_rq(struct freezer_rq *freezer_rq);
+ 
+ extern void cfs_bandwidth_usage_inc(void);
+ extern void cfs_bandwidth_usage_dec(void);
+@@ -2214,6 +2238,7 @@ static inline unsigned long cpu_util_rt(struct rq *rq)
+ }
+ #endif
+ 
++
+ #ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+ static inline unsigned long cpu_util_irq(struct rq *rq)
+ {
+diff --git a/linux/tools/include/uapi/linux/sched.h b/linux/tools/include/uapi/linux/sched.h
+index 22627f800..c8598c1d8 100644
+--- a/linux/tools/include/uapi/linux/sched.h
++++ b/linux/tools/include/uapi/linux/sched.h
+@@ -40,6 +40,7 @@
+ /* SCHED_ISO: reserved but not implemented yet */
+ #define SCHED_IDLE		5
+ #define SCHED_DEADLINE		6
++#define SCHED_FREEZER		7
+ 
+ /* Can be ORed in to make sure the process is reverted back to SCHED_NORMAL on fork */
+ #define SCHED_RESET_ON_FORK     0x40000000
+diff --git a/run_checkpatch.sh b/run_checkpatch.sh
+deleted file mode 100755
+index 75c89dc8a..000000000
+--- a/run_checkpatch.sh
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#!/bin/bash
+-
+-INIT_COMMIT=$(git log --reverse --pretty=format:"%h" | head -n 1)
+-IGNORES=FILE_PATH_CHANGES,SPDX_LICENSE_TAG,MISSING_EOF_NEWLINE
+-
+-HW6_IGNORES=$IGNORES,EXPORT_SYMBOL,ENOSYS,AVOID_EXTERNS,LINE_CONTINUATIONS
+-git diff $INIT_COMMIT | linux/scripts/checkpatch.pl --ignore $HW6_IGNORES
+-
+-# ENOSYS: Looks like ENOSYS is often misused in the kernel so checkpatch always
+-#         warns on seeing ENOSYS. Our use is correct, though!
+-#         (Nonexistent syscall was called)
+-# EXPORT_SYMBOL: Buggy for our use-case, let's just ignore this.
+-# AVOID_EXTERNS: Checkpatch will complain if you extern in a .c file instead of
+-#                a .h file.
+-# MISSING_EOF_NEWLINE: Expects a file to end with a newline, which isn't the
+-#                      case for symlinks.
+-# LINE_CONTINUATIONS: Sometimes these are useful, as is the case with long
+-#                     macros.
+diff --git a/user/test/nice-forker/Makefile b/user/test/nice-forker/Makefile
+new file mode 100644
+index 000000000..764e26ae1
+--- /dev/null
++++ b/user/test/nice-forker/Makefile
+@@ -0,0 +1,10 @@
++CC = gcc
++CFLAGS = -O0 -Wall
++
++nice-forker:
++nice-forker.o:
++
++clean:
++	rm -rf nice-forker *.o a.out
++
++.PHONY: clean
+diff --git a/user/test/nice-forker/nice-forker.c b/user/test/nice-forker/nice-forker.c
+new file mode 100644
+index 000000000..ae3c5c884
+--- /dev/null
++++ b/user/test/nice-forker/nice-forker.c
+@@ -0,0 +1,121 @@
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdlib.h>
++#include <sched.h>
++#include <errno.h>
++#include <sys/wait.h>
++
++#define err_die(msg) \
++	do { \
++		perror(msg); \
++		exit(1); \
++	} while (0)
++
++#define die(...) \
++	do { \
++		fprintf(stderr, __VA_ARGS__); \
++		exit(1); \
++	} while (0)
++
++
++#define usage(msg, arg0) \
++	do { \
++		fprintf(stderr, "argument err: %s\n", msg); \
++		fprintf(stderr, "usage: %s <CPU-no> [<nice>...]\n", arg0); \
++		exit(2); \
++	} while (0)
++
++static inline int atoi_err(int val, char *str)
++{
++	return !val && strncmp("0", str, strlen("0"));
++}
++
++void spin(void)
++{
++	int i;
++
++	for (i = 0; ; i++)
++		;
++}
++
++void nice_forker(int nproc, char **procv)
++{
++	int *nicev, i;
++
++	nicev = malloc(sizeof(*nicev) * nproc);
++
++	for (i = 0; i < nproc; i++) {
++		nicev[i] = atoi(procv[i]);
++		if (atoi_err(nicev[i], procv[i]))
++			die("could not parse arg %d: %s\n", i + 2, procv[i]);
++	}
++
++	for (i = 0; i < nproc; i++) {
++		pid_t pid = fork();
++
++		if (!pid) {
++			/* child */
++			int nice_val = nice(0);
++
++			errno = 0;
++			nice_val = nice(nicev[i] - nice_val);
++			if (errno)
++				die("(%d): nice=%d: %s\n", getpid(), nice_val,
++						strerror(errno));
++
++			fprintf(stderr, "(%d): spinning with nice=%d\n",
++					getpid(), nice_val);
++
++			spin();
++
++			die("never reached\n");
++		}
++	}
++
++	/* parent has done its job, wait for death by SIGTERM */
++	waitpid(0, NULL, 0);
++}
++
++
++void set_cpu(int cpu)
++{
++	cpu_set_t set;
++
++	CPU_ZERO(&set);
++	CPU_SET(cpu, &set);
++
++	if (sched_setaffinity(0, sizeof(set), &set))
++		err_die("sched_setaffinity");
++}
++
++
++int main(int argc, char **argv)
++{
++	int cpu;
++
++	if (argc < 2)
++		usage(argv[0], "not enough args");
++
++
++	cpu = atoi(argv[1]);
++	printf("%s %d\n", argv[1], cpu);
++	if (atoi_err(cpu, argv[1]))
++		usage(argv[0], "CPU-no must be an integer");
++
++	set_cpu(cpu);
++
++	fprintf(stderr, "P(%d): set CPU to %d\n", getpid(), cpu);
++
++	if (argc < 4) {
++		fprintf(stderr,
++			"P(%d): 0 or 1 CPU%%s specified, spinning in parent\n",
++			getpid());
++		spin();
++	}
++
++	nice_forker(argc - 2, argv + 2);
++
++	return 0;
++}
+diff --git a/user/test/set-freezer/Makefile b/user/test/set-freezer/Makefile
+new file mode 100644
+index 000000000..f40e367d4
+--- /dev/null
++++ b/user/test/set-freezer/Makefile
+@@ -0,0 +1,11 @@
++CC = gcc
++CFLAGS = -g -Wall -Werror
++
++set-freezer:
++
++.PHONY: clean
++clean:
++	rm -f set-freezer *.o
++
++.PHONY: all
++all: clean set-freezer
+diff --git a/user/test/set-freezer/set-freezer.c b/user/test/set-freezer/set-freezer.c
+new file mode 100644
+index 000000000..97550d647
+--- /dev/null
++++ b/user/test/set-freezer/set-freezer.c
+@@ -0,0 +1,38 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sched.h>
++#include <errno.h>
++#include <sys/syscall.h>
++
++#define SCHED_FREEZER 7
++
++int main(int argc, char **argv)
++{
++	pid_t pid;
++	struct sched_param param;
++	int old_policy, new_policy;
++
++	if (argc != 2) {
++		fprintf(stderr, "usage: %s <pid>\n", argv[0]);
++		exit(1);
++	}
++
++	pid = (pid_t) atoi(argv[1]);
++
++	param.sched_priority = 0;
++
++	old_policy = sched_getscheduler(pid);
++
++	if (sched_setscheduler(pid, SCHED_FREEZER, &param) < 0) {
++		perror("sched_setscheduler failed");
++		exit(1);
++	}
++
++	new_policy = sched_getscheduler(pid);
++
++	printf("[%d] sched policy changed: %d --> %d\n", pid, old_policy,
++		new_policy);
++
++	return 0;
++}
+diff --git a/user/test/spin/Makefile b/user/test/spin/Makefile
+new file mode 100644
+index 000000000..97fd189be
+--- /dev/null
++++ b/user/test/spin/Makefile
+@@ -0,0 +1,10 @@
++CC = gcc
++CFLAGS = -O0
++
++spin:
++spin.o:
++
++clean:
++	rm -rf *.o spin
++
++.PHONY: clean
+diff --git a/user/test/spin/spin.c b/user/test/spin/spin.c
+new file mode 100644
+index 000000000..9d4478b74
+--- /dev/null
++++ b/user/test/spin/spin.c
+@@ -0,0 +1,13 @@
++#include <stdio.h>
++#include <unistd.h>
++
++int main(void)
++{
++	int i;
++
++	printf("%u\n", getpid());
++
++	for (i = 0; ; i++)
++		;
++	return 0;
++}
+diff --git a/written_answers.txt b/written_answers.txt
+index 7f65555d2..6b2677303 100644
+--- a/written_answers.txt
++++ b/written_answers.txt
+@@ -11,7 +11,37 @@ Describe how you created the 70%/30% split.
+     - Indicate if you needed root privileges for any of those commands
+     - Include the top output
+ 
+-    /* TODO */ 
++Build and run `user/test/nice-forker/nice-forker`:
++
++	$ ./nice-forker <CPU-num> 16 16 16 16 16 20 20 20 20 20
++
++`<CPU-no>` is can be any number `[0,nproc)`; no root privileges needed.
++
++`top` output:
++
++```
++top - 18:15:39 up 15:44,  2 users,  load average: 6.46, 2.67, 1.19
++Tasks: 115 total,  11 running, 104 sleeping,   0 stopped,   0 zombie
++%Cpu0  :   0.0/0.0     0[                                                      ]
++%Cpu1  :   0.7/0.0     1[|                                                     ]
++%Cpu2  :   0.7/0.0     1[|                                                     ]
++%Cpu3  : 100.0/0.0   100[||||||||||||||||||||||||||||||||||||||||||||||||||||||]
++GiB Mem :  9.4/3.864    [                                                      ]
++GiB Swap:  0.0/0.000    [                                                      ]
++
++  PID USER      PR  NI    VIRT    RES  %CPU %MEM     TIME+ S COMMAND
++ 2091 archie    20   0    4.2m   0.7m   0.0  0.0   0:00.00 S `- nice-forker
++ 2092 archie    36  16    4.2m   0.1m  13.2  0.0   0:07.66 R     `- nice-forker
++ 2093 archie    36  16    4.2m   0.1m  13.2  0.0   0:07.65 R     `- nice-forker
++ 2094 archie    36  16    4.2m   0.1m  12.6  0.0   0:07.65 R     `- nice-forker
++ 2095 archie    36  16    4.2m   0.1m  13.9  0.0   0:07.66 R     `- nice-forker
++ 2096 archie    36  16    4.2m   0.1m  13.2  0.0   0:07.65 R     `- nice-forker
++ 2097 archie    39  19    4.2m   0.1m   6.6  0.0   0:03.95 R     `- nice-forker
++ 2098 archie    39  19    4.2m   0.1m   7.3  0.0   0:03.96 R     `- nice-forker
++ 2099 archie    39  19    4.2m   0.1m   6.6  0.0   0:03.96 R     `- nice-forker
++ 2100 archie    39  19    4.2m   0.1m   7.3  0.0   0:03.96 R     `- nice-forker
++ 2101 archie    39  19    4.2m   0.1m   7.3  0.0   0:03.96 R     `- nice-forker
++```
+ 
+ =================================== P1Q1 end ===================================
+ 
+@@ -21,96 +51,77 @@ Describe how you created a real-time priority task.
+     - Indicate if you needed root privileges for any of those commands
+     - Include the top output
+ 
+-    /* TODO */ 
++Create one more `nice-forker`:
+ 
+-=================================== P1Q2 end ===================================
+-
+-
+-
+-================================== P2Q1 start ==================================
+-The output of diff or diffconfig when comparing the config files for your 
+-mainline fallback kernel and your MuQSS kernel
+-
+-    /* TODO */
+-
+-=================================== P2Q1 end ===================================
+-
+-================================== P2Q2 start ==================================
+-Indicate you successfully patched, built, and booted into your MuQSS-enabled 
+-Linux kernel.
+-
+-    /* TODO */ 
+-
+-=================================== P2Q2 end ===================================
+-
+-
+-
+-================================== P3Q1 start ==================================
+-Describe how you created the 70%/30% split. 
+-    - Include the command lines you executed
+-    - Indicate if you needed root privileges for any of those commands
+-    - How were the results different from P1Q1, if at all.
+-
+-    /* TODO */
+-
+-=================================== P3Q1 end ===================================
++	$ ./nice-forker <CPU-num> 0
+ 
+-================================== P3Q2 start ==================================
+-Describe how you created a real-time priority task. 
+-    - Include the command lines you executed
+-    - Indicate if you needed root privileges for any of those commands
+-    - How were the results different from P1Q2, if at all.
+-
+-    /* TODO */ 
+-
+-=================================== P3Q2 end ===================================
+-
+-================================== P3Q3 start ==================================
+-MuQSS features unprivileged real-time tasks. Perform the previous task with and
+-without root privileges, and describe the differences. 
++Change its priority to realtime:
+ 
+-    /* TODO */
++	# chrt -p 99 <pid>
+ 
+-=================================== P3Q3 end ===================================
++Root privileges needed.
+ 
++`top` output:
+ 
++```
++top - 18:19:57 up 15:48,  2 users,  load average: 10.30, 6.98, 3.35
++Tasks: 116 total,  12 running, 104 sleeping,   0 stopped,   0 zombie
++%Cpu0  :   0.0/0.0     0[                                                      ]
++%Cpu1  :   0.0/0.0     0[                                                      ]
++%Cpu2  :   0.0/0.0     0[                                                      ]
++%Cpu3  : 100.0/0.0   100[||||||||||||||||||||||||||||||||||||||||||||||||||||||]
++GiB Mem :  9.3/3.864    [                                                      ]
++GiB Swap:  0.0/0.000    [                                                      ]
+ 
+-================================== P4Q1 start ==================================
+-Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
+-and your MuQSS-patched kernels.
+-    
+-    /* TODO */ 
++  PID USER      PR  NI    VIRT    RES  %CPU %MEM     TIME+ S COMMAND
++ 2091 archie    20   0    4.2m   0.7m   0.0  0.0   0:00.00 S `- nice-forker
++ 2092 archie    36  16    4.2m   0.1m   0.0  0.0   0:39.12 R     `- nice-forker
++ 2093 archie    36  16    4.2m   0.1m   0.0  0.0   0:39.12 R     `- nice-forker
++ 2094 archie    36  16    4.2m   0.1m   0.0  0.0   0:39.11 R     `- nice-forker
++ 2095 archie    36  16    4.2m   0.1m   0.0  0.0   0:39.12 R     `- nice-forker
++ 2096 archie    36  16    4.2m   0.1m   0.0  0.0   0:39.12 R     `- nice-forker
++ 2097 archie    39  19    4.2m   0.1m   0.0  0.0   0:20.23 R     `- nice-forker
++ 2098 archie    39  19    4.2m   0.1m   0.0  0.0   0:20.24 R     `- nice-forker
++ 2099 archie    39  19    4.2m   0.1m   0.0  0.0   0:20.23 R     `- nice-forker
++ 2100 archie    39  19    4.2m   0.1m   0.0  0.0   0:20.24 R     `- nice-forker
++ 2101 archie    39  19    4.2m   0.1m   0.0  0.0   0:20.24 R     `- nice-forker
++ 3289 archie    rt   0    4.2m   0.7m 100.0  0.0   0:19.10 R `- nice-forker
++```
+ 
+-=================================== P4Q1 end ===================================
+-
+-================================== P4Q2 start ==================================
+-Design an experiment that you think will highlight MuQSS’s strength. Perform 
+-the experiment and report your findings.
+-
+-    /* TODO */ 
++=================================== P1Q2 end ===================================
+ 
+-=================================== P4Q2 end ===================================
+ 
+ 
+ 
+ ================================== P5Q1 start ==================================
+ Briefly describe the advantages and disadvantages of a larger HZ.
+ 
+-    /* TODO */ 
++Pros:
++    -   The kernel timer has a finer resolution and increased accuracy when
++        determining ticks
++    -   Processes can be preempted more reliably
++    -   Performance analytics can be performed with a higher precision
++
++Cons:
++    -   CPU needs to spend more time processing more frequent interrupts,
++        possibly decreasing throughput
++    -   The increased clock rate may also be less power efficient
+ 
+ =================================== P5Q1 end ===================================
+ 
+ ================================== P5Q2 start ==================================
+ What is the HZ currently configured for your running Linux system?
+ 
+-    /* TODO */ 
++-  It is 250 (pound-defined as `CONFIG_HZ` in `include/asm-generic/param.h`).
++-  This can be checked in your `.config`.
+ 
+ =================================== P5Q2 end ===================================
+ 
+ ================================== P5Q3 start ==================================
+ What are jiffies? Explain the relationship between jiffies, HZ, and time.
+ 
+-    /* TODO */ 
++-  Jiffies represents the number of ticks that have passed since boot time.
++-  Jiffies = HZ * time
+ 
+ =================================== P5Q3 end ===================================
+ 
+@@ -123,13 +134,37 @@ Find the current value of jiffies in your system.
+     - Why does this large difference exist? (Hint: in 32-bit Linux systems,
+       jiffies is a 32-bit value.)
+ 
+-    /* TODO */ 
++-   Ran the following command:
++        # cat /proc/timer_list | grep 'jiffies:' | uniq
++
++    `jiffies` is 4300701353
++
++-   In minutes, how much time does this `jiffies` value represent?
++        time = `jiffies` / HZ / 60
++
++-   Does it match the uptime reported by the `uptime` command?
++    (Hint: it doesn’t.) Please give the formula to convert `jiffies` to the
++    current (real) uptime, in minutes.
++        real_uptime = (jiffies - (2 ^ 32 - (300 * HZ))) / HZ / 60
++
++-   Why does this large difference exist? (Hint: in 32-bit Linux systems,
++    `jiffies` is a 32-bit value.)
++
++        `jiffies` is [initialized][jiffies-init] to the following:
++
++            #define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
++
++        That is, 2^32 ticks - 5 minutes worth of ticks. It is done so that
++        in 32-bit Linux systems, where wraparound may occur, it occurs
++        within the first 5min of boot so that wrapround bugs surface early.
+ 
+ =================================== P5Q4 end ===================================
+ 
+ ================================== P5Q5 start ==================================
+ What are Niffies? How do they differ from Jiffies?
+ 
+-    /* TODO */ 
+-
+-=================================== P5Q5 end ===================================
+\ No newline at end of file
++-   Niffies are nanosecond-resolution jiffies; MuQSS uses niffies in order
++    to keep track of time and calculate deadlines. They offer higher
++    resolution than jiffies and can be used to accurately measure time
++    indepedent of tick resolution.
++=================================== P5Q5 end ===================================
