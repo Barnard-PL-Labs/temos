@@ -11,8 +11,10 @@ mod sample;
 
 fn main() {
     let elevator = sample::elevator();
-    elevator.generate_dtos();
-    println!("Worked");
+    let dtos = elevator.generate_dtos();
+    println!("{}", dtos[0]);
+    let sygus_test = dtos[0].to_sygus();
+    println!("{}", sygus_test);
     // let assumptions = consistency::consistency_checking(&(elevator.predicates));
     // for assumption in assumptions {
     //     println!("{}", assumption);

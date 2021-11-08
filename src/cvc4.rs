@@ -244,7 +244,7 @@ fn get_function(sygus_result: &str, keyword: &str) -> String {
     String::from(&sygus_result[start..end])
 }
 
-// TODO
+// TODO: parse
 pub fn parse_sygus_result(result: &str) -> FunctionLiteral<Lia> {
     parse(&scan(&get_function(result, "Int")))
 }

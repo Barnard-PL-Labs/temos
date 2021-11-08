@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 use crate::tsl::{Funct, Pred, Variable, Theory, TheoryFunctions};
-use crate::tsl::{FunctionLiteral, PredicateLiteral, LogicWritable};
+use crate::tsl::{FunctionLiteral, PredicateLiteral, UpdateLiteral, LogicWritable};
 use crate::cvc4;
 use std::fmt;
 use std::fmt::Display;
@@ -184,8 +184,24 @@ impl FunctionLiteral<Lia> {
         FunctionLiteral::new(
             Lia::LIA,
             updated_function,
-            vec![]
+            self.args.clone()
         )
+    }
+    fn to_sygus(&self) -> String {
+        match &self.function {
+            TheoryFunctions::Function(f) => {
+                match f {
+                    Function::NullaryFunction(constant) => constant.to_string(),
+                    Function::BinaryFunction(binop) => {
+                        format!("({} {} {})",
+                        binop.to_string(),
+                        self.args[0].to_string(),
+                        self.args[1].to_string())
+                    }
+                }
+            }
+            _ => panic!("Trying to apply SyGuS-ify to non-function update term!")
+        }
     }
 }
 
@@ -284,5 +300,11 @@ impl PredicateLiteral<Lia> {
 
     pub fn to_tsl_assumption(&self) -> String {
         format!("!{};", self.to_tsl())
+    }
+}
+
+impl UpdateLiteral<Lia> {
+    pub fn to_sygus(&self) -> String {
+        self.update.to_sygus()
     }
 }

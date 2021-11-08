@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 use std::rc::Rc;
+use std::fmt;
+use std::fmt::Display;
 use crate::theories::lia::Lia;
 use crate::tsl::{Temporal, Variable, Theory};
 use crate::tsl::{FunctionLiteral, PredicateLiteral, UpdateLiteral};
@@ -14,12 +16,21 @@ pub struct Dto<T: Theory> {
     pub grammar: Vec< UpdateLiteral<T> >
 }
 
+impl<T> Display for Dto<T> where T: Theory {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let precond = self.precond.to_string();
+        let postcond = self.postcond.to_string();
+        write!(f, "DTO:\nprecond: {}\npostcond: {}",
+               precond, postcond)
+    }
+}
+
 impl Dto<Lia> {
     fn variable(&self) -> Variable {
         self.grammar[0].sink.clone()
     }
 
-    fn to_sygus(&self) -> String {
+    pub fn to_sygus(&self) -> String {
         let mut query = String::from("(set-logic LIA)\n");
         let header = format!("(synth-fun function (({} Int)) Int\n", self.variable());
         let variables = self.postcond.get_vars();
@@ -90,7 +101,7 @@ impl Dto<Lia> {
         constraint
     }
 
-    // TODO
+    // TODO: F
     fn synthesize_eventually(&self) -> FunctionLiteral<Lia> {
         panic!("Not Implemented Error")
     }

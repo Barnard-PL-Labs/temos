@@ -146,11 +146,18 @@ impl<T> FunctionLiteral<T> where T: Theory {
     fn validate_arity(&self) {
         let arity: u32 = self.function.arity();
         let arg_len : u32 = self.args.len() as u32;
+        let args = self.args
+            .iter()
+            .map(FunctionLiteral::to_string)
+            .collect::<Vec<String>>()
+            .join(" , ");
         if arity != arg_len {
             panic!("Arity mismatch!\n
-                   Arity: {},
-                   Literal: {}",
-                   arity, self)
+                   Expected Arity: {},
+                   Actual Arity: {},
+                   Arguments: {},
+                   FunctionLiteral: {}",
+                   arity, arg_len, args, self);
         }
     }
     pub fn to_constraint(&self) -> String {
@@ -175,6 +182,12 @@ impl<T> LogicWritable for PredicateLiteral<T> where T: Theory {
     }
     fn to_smtlib(&self) -> String {
         self.function_literal.to_smtlib()
+    }
+}
+
+impl<T> Funct for PredicateLiteral<T> where T: Theory {
+    fn arity(&self) -> u32 {
+        self.function_literal.arity()
     }
 }
 
@@ -298,8 +311,5 @@ impl<T> UpdateLiteral<T>  where T: Theory{
             sink: Variable::Variable(String::from(new_name)),
             update: self.update.clone()
         }
-    }
-    pub fn to_sygus(&self) -> String {
-        panic!()
     }
 }
