@@ -1,6 +1,3 @@
-# Run 
-# git clone --single-branch --branch art-eval-pldi22 https://github.com/Barnard-PL-Labs/temos
-
 sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
 apt update
 apt install python3-pip
@@ -11,7 +8,7 @@ source $HOME/.cargo/env
 git fetch origin art-eval-pldi22
 git checkout art-eval-pldi22
 git clone https://github.com/reactive-systems/tsltools.git tsltools && cd tsltools && make
-mv tsltools/cfm2code bin/
-mv tsltools/tsl2tlsf bin/
+mv cfm2code ../bin/
+mv tsl2tlsf ../bin/
 chmod +x bin/*
 cargo build --release
