@@ -19,10 +19,10 @@ def run_spec(path):
     result = subprocess.run(["target/release/temos",
         "--time", json, tslmt], stdout=subprocess.PIPE)
     result = result.stdout.decode("utf-8") .strip().split('\n')
-    if result[1] != "REALIZABLE":
-        print(result[1])
-        sys.exit(1)
-    result = [int(r) for r in result[2:4]]
+    # if realizable == -1:
+    #     print(result[1])
+    #     sys.exit(1)
+    result = [int(r) for r in result[-2:]]
     return dict(type=dentries[-2],
             name=dentries[-1],
             lia=result[0],
