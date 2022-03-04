@@ -1,0 +1,66 @@
+{
+	"predicates": [
+		{
+			"pred": "eq users 0",
+			"temporal": []
+		},
+		{
+			"pred": "eq bottom 0",
+			"temporal": []
+		},
+		{
+			"pred": "eq top 0",
+			"temporal": []
+		},
+		{
+			"pred": "gt bottom top",
+			"temporal": []
+		},
+		{
+			"pred": "gte users 0",
+			"temporal": ["X"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add users 1",
+			"var_name": "users",
+			"depends": []
+		},
+		{
+			"update_term": "sub users 1",
+			"var_name": "users",
+			"depends": []
+		},
+		{
+			"update_term": "bottom",
+			"var_name": "bottom",
+			"depends": []
+		},
+		{
+			"update_term": "add bottom 1",
+			"var_name": "bottom",
+			"depends": []
+		},
+		{
+			"update_term": "sub bottom 1",
+			"var_name": "bottom",
+			"depends": []
+		},
+		{
+			"update_term": "top",
+			"var_name": "top",
+			"depends": []
+		},
+		{
+			"update_term": "add top 1",
+			"var_name": "top",
+			"depends": []
+		},
+		{
+			"update_term": "sub top 1",
+			"var_name": "top",
+			"depends": []
+		}
+	]
+}

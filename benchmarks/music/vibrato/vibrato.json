@@ -1,0 +1,24 @@
+{
+	"predicates": [
+		{
+			"pred": "lte lfoFreq 10",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "gt lfoFreq 10",
+			"temporal": ["F"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add lfoFreq 1",
+			"var_name": "lfoFreq",
+			"depends": []
+		},
+		{
+			"update_term": "sub lfoFreq 1",
+			"var_name": "lfoFreq",
+			"depends": []
+		}
+	]
+}

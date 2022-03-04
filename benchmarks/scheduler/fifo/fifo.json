@@ -1,0 +1,24 @@
+{
+	"predicates": [
+		{
+			"pred": "eq num_tasks 0",
+			"temporal": ["X"]
+		},
+		{
+			"pred": "gte num_tasks 0",
+			"temporal": ["X"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add num_tasks 1",
+			"var_name": "num_tasks",
+			"depends": []
+		},
+		{
+			"update_term": "sub num_tasks 1",
+			"var_name": "num_tasks",
+			"depends": []
+		}
+	]
+}

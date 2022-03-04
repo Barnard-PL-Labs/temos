@@ -1,0 +1,60 @@
+{
+	"predicates": [
+		{
+			"pred": "lte amFreq 500",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "gt amFreq 500",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "lte fmFreq 500",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "gt fmFreq 500",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "lte lfoFreq 10",
+			"temporal": []
+		},
+		{
+			"pred": "gt lfoFreq 10",
+			"temporal": []
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add fmFreq 100",
+			"var_name": "fmFreq",
+			"depends": []
+		},
+		{
+			"update_term": "sub fmFreq 100",
+			"var_name": "fmFreq",
+			"depends": []
+		},
+		{
+			"update_term": "add amFreq 100",
+			"var_name": "amFreq",
+			"depends": []
+		},
+		{
+			"update_term": "sub amFreq 100",
+			"var_name": "amFreq",
+			"depends": []
+		},
+		{
+			"update_term": "add lfoFreq 1",
+			"var_name": "lfoFreq",
+			"depends": []
+		},
+		{
+			"update_term": "sub lfoFreq 1",
+			"var_name": "lfoFreq",
+			"depends": []
+		}
+	]
+}

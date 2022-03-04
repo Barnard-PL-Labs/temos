@@ -1,0 +1,24 @@
+{
+	"predicates": [
+		{
+			"pred": "gt runtime1 runtime2",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "gt runtime2 runtime1",
+			"temporal": ["F"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add runtime1 1",
+			"var_name": "runtime1",
+			"depends": []
+		},
+		{
+			"update_term": "add runtime2 1",
+			"var_name": "runtime2",
+			"depends": []
+		}
+	]
+}

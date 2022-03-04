@@ -1,0 +1,24 @@
+{
+	"predicates": [
+		{
+			"pred": "eq ptr 0",
+			"temporal": ["X"]
+		},
+		{
+			"pred": "eq ptr 1",
+			"temporal": ["X"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add ptr 1",
+			"var_name": "ptr",
+			"depends": []
+		},
+		{
+			"update_term": "sub ptr 1",
+			"var_name": "ptr",
+			"depends": []
+		}
+	]
+}

@@ -1,0 +1,36 @@
+{
+	"predicates": [
+		{
+			"pred": "gt botQueue topQueue",
+			"temporal": ["X","F"]
+		},
+		{
+			"pred": "gte botQueue 0",
+			"temporal": ["X"]
+		},
+		{
+			"pred": "gte topQueue 0",
+			"temporal": ["X"]
+		},
+		{
+			"pred": "eq botQueue 0",
+			"temporal": ["X", "F"]
+		},
+		{
+			"pred": "eq topQueue 0",
+			"temporal": ["X", "F"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "sub topQueue 1",
+			"var_name": "topQueue",
+			"depends": []
+		},
+		{
+			"update_term": "sub botQueue 1",
+			"var_name": "botQueue",
+			"depends": []
+		}
+	]
+}

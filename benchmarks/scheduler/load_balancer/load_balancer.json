@@ -1,0 +1,24 @@
+{
+	"predicates": [
+		{
+			"pred": "gt cpu0 cpu1",
+			"temporal": ["F"]
+		},
+		{
+			"pred": "gt cpu1 cpu0",
+			"temporal": ["F"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add cpu0 1",
+			"var_name": "cpu0",
+			"depends": []
+		},
+		{
+			"update_term": "add cpu1 1",
+			"var_name": "cpu1",
+			"depends": []
+		}
+	]
+}

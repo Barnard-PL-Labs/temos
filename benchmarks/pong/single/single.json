@@ -1,0 +1,20 @@
+{
+	"predicates": [
+		{
+			"pred": "eq loc 100",
+			"temporal": ["X"]
+		}
+	],
+	"updates": [
+		{
+			"update_term": "add loc 1",
+			"var_name": "loc",
+			"depends": []
+		},
+		{
+			"update_term": "sub loc 1",
+			"var_name": "loc",
+			"depends": []
+		}
+	]
+}

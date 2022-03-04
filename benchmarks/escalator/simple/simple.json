@@ -1,0 +1,10 @@
+{
+	"predicates": [
+		{
+			"pred": "gt bottom top",
+			"temporal": []
+		}
+	],
+	"updates": [
+	]
+}
