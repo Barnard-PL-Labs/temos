@@ -2,6 +2,7 @@
 
 from csv_gen import gen_csv
 import os
+import time
 import pandas as pd
 
 BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
@@ -9,6 +10,7 @@ BENCHMARK_DIR = "benchmarks"
 
 if __name__ == "__main__":
     eval_df = pd.DataFrame()
+    oracle_times = []
     for benchmark in BENCHMARKS:
         benchmark_dir = BENCHMARK_DIR + '/' + benchmark
         if not os.path.isdir(benchmark_dir):
@@ -19,4 +21,12 @@ if __name__ == "__main__":
                 continue
             print(path)
             eval_df = eval_df.append(gen_csv(path))
+
+            oracle = path + '/oracle.tsl'
+            oracle_before = time.time()
+            os.subprocess.run(["/Strix/scripts/strix_tlsf.sh", oracle])
+            oracle_after = time.time() - oracle_before
+            oracle_times.append(oracle_after)
+
+    eval_df["oracle"] = oracle_times
     print(eval_df)
