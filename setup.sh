@@ -10,5 +10,6 @@ git checkout art-eval-pldi22
 git clone https://github.com/reactive-systems/tsltools.git tsltools && cd tsltools && make
 mv cfm2code ../bin/
 mv tsl2tlsf ../bin/
-chmod +x bin/*
+chmod +x bin/tsl2js.sh
+chmod +x bin/cvc4
 cargo build --release

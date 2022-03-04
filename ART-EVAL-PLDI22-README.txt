@@ -21,6 +21,8 @@ Run the setup script:
 NOTE: we have also included a binary version of CVC4. However, if you wish to build from source instead, you can clone 
 `git clone https://github.com/cvc5/cvc5`
 `git checkout 34798fb86eabe7b9aaff86be23a7a3428ebfc957`
-And then build according to the instructions. This will take ~2 hours, depending on your system.
+And then build according to the instructions. This will take about two hours, depending on your system.
 
-Now, after everything is installed and built, you can 
+Now, after everything is installed and built, you can run the evaluation by
+`python3 utils/eval_all.py`
+which will present the running times of the various benchmarks as described in the paper.
