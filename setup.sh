@@ -1,4 +1,8 @@
+# Run 
+# git clone --single-branch --branch art-eval-pldi22 https://github.com/Barnard-PL-Labs/temos
+
 sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+apt update
 apt install python3-pip
 python3 -m pip install --upgrade pip
 python3 -m pip install pandas
