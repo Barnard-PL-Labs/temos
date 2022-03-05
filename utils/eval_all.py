@@ -6,6 +6,8 @@ import subprocess
 import time
 import pandas as pd
 
+RANDOM_ITERS = 0x2f
+
 BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
 BENCHMARK_DIR = "benchmarks"
 
@@ -21,7 +23,11 @@ if __name__ == "__main__":
             if not os.path.isdir(path):
                 continue
             print(path)
-            eval_df = eval_df.append(gen_csv(path))
+
+            for _ in range(RANDOM_ITERS):
+                try:
+                    eval_df = eval_df.append(gen_csv(path))
+                    break
 
             oracle = path + '/oracle.tsl'
             oracle_before = time.time()

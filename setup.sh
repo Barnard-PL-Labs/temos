@@ -5,11 +5,10 @@ python3 -m pip install --upgrade pip
 python3 -m pip install pandas
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 source $HOME/.cargo/env
-git fetch origin art-eval-pldi22
-git checkout art-eval-pldi22
 git clone https://github.com/reactive-systems/tsltools.git tsltools && cd tsltools && make
 mv cfm2code ../bin/
 mv tsl2tlsf ../bin/
+cd ..
 chmod +x bin/tsl2js.sh
 chmod +x bin/cvc4
 cargo build --release
