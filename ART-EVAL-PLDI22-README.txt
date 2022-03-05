@@ -25,13 +25,14 @@ NOTE: we have also included a binary version of CVC4. However, if you wish to bu
 `git checkout 34798fb86eabe7b9aaff86be23a7a3428ebfc957`
 And then build according to the instructions. This will take about two hours, depending on your system.
 
+
+** Results of evaluation **
+
 Now, after everything is installed and built, you can run the evaluation by
 `python3 utils/eval_all.py`
 which will present the running times of the various benchmarks as described in the paper.
 
-** Results of evaluation **
-The experimental evaluation in the paper stresses about the SyGuS and reactive synthesis times taken for each TSL Modulo Theories specification.
-Therefore, the most important point to check is that the evaluation time is consistent with the claims made in the paper.
-Because the runtime will vary depending on each system and its load, we suggest that the reviewers check that the evaluation is consistent with the primary claim of the paper, that the SyGuS synthesis times is generally much less than the reactive synthesis time.
+The experimental evaluation in the paper focuses on the SyGuS and reactive synthesis times taken for each TSL Modulo Theories specification.
+Since runtime will vary depending on each system and its load, to check that the artficat is consisten with the paper, we suggest that the reviewers check the primary claim of the paper: SyGuS synthesis times are generally much smaller than the reactive synthesis times.
 
 For the number of assumptions, since we rely on CVC4 to make synthesis decisions for us, this may result in a non-deterministic number of assumptions generated.
