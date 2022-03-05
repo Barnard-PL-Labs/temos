@@ -1,0 +1,29 @@
+always assume{
+!((eq users c0()) && !(eq users c0()));
+!((gte users c0()) && !(gte users c0()));
+!((eq users c0()) && !(gte users c0()));
+(eq users c0()) && ([users <- ( add users c1() )]) -> X  (gte users c0());
+(eq users c0()) && ([users <- ( sub users c1() )]) -> X  !(gte users c0());
+(gte users c0()) && ([users <- ( add users c1() )]) -> X  (gte users c0());
+!(gte users c0()) && ([users <- ( sub users c1() )]) -> X  !(gte users c0());
+
+}
+always assume {
+	[moving <- False()] -> ![top <- sub top c1()];
+}
+
+always guarantee {
+  // increase the number of counted users if a new user enters, but no one leaves
+  [bottom <- add bottom c1()] && [top <- top] <-> [ users <- add users c1() ];
+
+  // decrease the number of counted users if some user leaves, but nobody enters
+  [bottom <- bottom] && [top <- sub top c1()] <-> [ users <- sub users c1() ];
+
+  // if the last users left the escalator and no new user entered, then stop the steps
+  eq users c0() && [bottom <- bottom] -> [moving <- False()];
+
+  // if there are no users on the escalator and somebody enters, start the steps
+  [moving <- False()] && [bottom <- add bottom c1()] -> [moving <- True()];
+
+  gte users c0();
+}

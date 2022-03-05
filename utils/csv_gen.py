@@ -9,6 +9,7 @@ import subprocess
 import os
 import sys
 
+
 def run_spec(path):
     if path[-1] != '/':
         path = path + '/'
@@ -28,17 +29,21 @@ def run_spec(path):
 
     assumptions = subprocess.run(["target/release/temos",
         "--lia", json, tslmt], stdout=subprocess.PIPE).stdout.decode("utf-8") .strip().split('\n')
-    NUM_SURROUNDERS = 5
 
-    return dict(type=dentries[-2],
-            name=dentries[-1],
-            num_assumptions=len(assumptions)-NUM_SURROUNDERS,
-            lia=result[0],
-            tsl=result[1],
-            sum=result[0]+result[1])
+    guarantee_idx = assumptions.index("always assume{")
+    NUM_TAIL = 3
+
+    return {
+        "TYPE": dentries[-2],
+        "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
+        "SyGuS": result[0],
+        "REACTIVE SYNTH": result[1],
+        "SUM": result[0] + result[1]
+    }
 
 def gen_csv(path):
-    columns = ["type", "name", "num_assumptions", "lia", "tsl", "sum"]
+    data = run_spec(path)
+    columns = list(data.keys())
     df = pd.DataFrame(columns=columns, data=run_spec(path), index=[0])
     return df
 
@@ -50,4 +55,5 @@ if __name__ == "__main__":
         raise NotImplementedError
     else:
         result = gen_csv(sys.argv[1])
+        result.reset_index(drop=True, inplace=True)
         print(result)

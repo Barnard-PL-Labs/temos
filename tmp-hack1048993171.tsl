@@ -1,0 +1,58 @@
+always assume{
+!((gte topQueue c0()) && !(gte topQueue c0()));
+!((eq topQueue c0()) && !(eq topQueue c0()));
+!((gte botQueue c0()) && !(gte botQueue c0()));
+!((eq botQueue c0()) && !(eq botQueue c0()));
+!((gt botQueue topQueue) && !(gt botQueue topQueue));
+!((eq topQueue c0()) && !(gte topQueue c0()));
+!((eq botQueue c0()) && !(gte botQueue c0()));
+(gt botQueue topQueue) && ([botQueue <- ( sub botQueue c1() )] W (eq botQueue c0())) -> F (eq botQueue c0());
+(gt botQueue topQueue) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+(gte botQueue c0()) && ([botQueue <- ( sub botQueue c1() )] W (eq botQueue c0())) -> F (eq botQueue c0());
+(gte botQueue c0()) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W (eq topQueue c0())) -> F (eq topQueue c0());
+(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(gt botQueue topQueue)) -> F !(gt botQueue topQueue);
+(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(eq topQueue c0())) -> F !(eq topQueue c0());
+(eq botQueue c0()) && ([botQueue <- ( sub botQueue c1() )]) -> X  !(gte botQueue c0());
+(eq botQueue c0()) && ([botQueue <- ( sub botQueue c1() )]) -> X  !(eq botQueue c0());
+(eq botQueue c0()) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(gt botQueue topQueue)) -> F !(gt botQueue topQueue);
+(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )]) -> X  !(gte topQueue c0());
+(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )]) -> X  !(eq topQueue c0());
+(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(eq topQueue c0())) -> F !(eq topQueue c0());
+!(gt botQueue topQueue) && ([botQueue <- ( sub botQueue c1() )]) -> X  !(gt botQueue topQueue);
+!(gt botQueue topQueue) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+!(gte botQueue c0()) && ([botQueue <- ( sub botQueue c1() )]) -> X  !(gte botQueue c0());
+!(gte botQueue c0()) && ([botQueue <- ( sub botQueue c1() )]) -> X  !(eq botQueue c0());
+!(gte botQueue c0()) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+!(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(gt botQueue topQueue)) -> F !(gt botQueue topQueue);
+!(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )]) -> X  !(gte topQueue c0());
+!(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )]) -> X  !(eq topQueue c0());
+!(gte topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(eq topQueue c0())) -> F !(eq topQueue c0());
+!(eq botQueue c0()) && ([botQueue <- ( sub botQueue c1() )] W !(eq botQueue c0())) -> F !(eq botQueue c0());
+!(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(gt botQueue topQueue)) -> F !(gt botQueue topQueue);
+!(eq topQueue c0()) && ([topQueue <- ( sub topQueue c1() )] W !(eq topQueue c0())) -> F !(eq topQueue c0());
+
+}
+//#LIA#
+
+goDown = [ topQueue <- sub topQueue c1()];
+goUp =   [ botQueue <- sub botQueue c1()];
+
+always assume {
+	gte botQueue c0();
+	gte topQueue c0();
+}
+
+always guarantee {
+  // Fairly send the direction with more people
+  gt botQueue topQueue    -> goUp;
+  !(gt botQueue topQueue) -> goDown;
+
+  // One direction at a time
+  !(goDown && goUp);
+
+  // All users leave
+  F eq botQueue c0();
+  F eq topQueue c0();
+}

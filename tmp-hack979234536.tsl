@@ -1,0 +1,30 @@
+always assume{
+!((eq loc c100()) && !(eq loc c100()));
+!((eq loc c0()) && !(eq loc c0()));
+!((eq loc c0()) && (eq loc c100()));
+(eq loc c0()) && ([loc <- ( add ( sub loc c1() ) c1() )]) -> X  (eq loc c0());
+(eq loc c0()) && ([loc <- ( sub loc c1() )]) -> X  !(eq loc c0());
+(eq loc c0()) && ([loc <- ( sub loc c1() )]) -> X  !(eq loc c100());
+(eq loc c100()) && ([loc <- ( add ( sub loc c1() ) c1() )]) -> X  (eq loc c100());
+(eq loc c100()) && ([loc <- ( sub loc c1() )]) -> X  !(eq loc c0());
+(eq loc c100()) && ([loc <- ( sub loc c1() )]) -> X  !(eq loc c100());
+!(eq loc c0()) && ([loc <- ( add ( sub loc c1() ) c1() )]) -> X  !(eq loc c0());
+!(eq loc c100()) && ([loc <- ( add ( sub loc c1() ) c1() )]) -> X  !(eq loc c100());
+
+}
+//#LIA#
+always assume {
+	!(hit paddle1 && hit paddle2);
+	(hit paddle1 || hit paddle2) -> !(eq loc c0() || eq loc c100());
+}
+
+always guarantee {
+	hit paddle1 -> [loc <- add loc c1()];
+	hit paddle2 -> [loc <- sub loc c1()];
+
+	eq loc c0()   -> [loc <- sub loc c1()];
+	eq loc c100() -> [loc <- sub loc c1()];
+
+	[loc <- sub loc c1()] -> [loc <- sub loc c1()] W (eq loc c0()   || hit paddle1);
+	[loc <- add loc c1()] -> [loc <- add loc c1()] W (eq loc c100() || hit paddle2);
+}

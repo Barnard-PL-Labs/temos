@@ -1,0 +1,68 @@
+always assume{
+!((eq location c1()) && !(eq location c1()));
+!(((lte location c1()) && (lte c0() location)) && !((lte location c1()) && (lte c0() location)));
+!((eq location c0()) && !(eq location c0()));
+!((eq location c1()) && !((lte location c1()) && (lte c0() location)));
+!((eq location c0()) && !((lte location c1()) && (lte c0() location)));
+!((eq location c0()) && (eq location c1()));
+(eq location c0()) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  (eq location c0());
+(eq location c0()) && ([location <- ( sub ( add location c1() ) c1() )] W (eq location c0())) -> F (eq location c0());
+(eq location c0()) && ([location <- ( add location c1() )]) -> X  (eq location c1());
+(eq location c0()) && ([location <- ( add location c1() )] W (eq location c1())) -> F (eq location c1());
+(eq location c0()) && ([location <- ( add location c1() )]) -> X  ((lte location c1()) && (lte c0() location));
+(eq location c0()) && ([location <- ( add location c1() )]) -> X  !(eq location c0());
+(eq location c0()) && ([location <- ( add location c1() )] W !(eq location c0())) -> F !(eq location c0());
+(eq location c0()) && ([location <- ( sub location c1() )]) -> X  !(eq location c1());
+(eq location c0()) && ([location <- ( sub location c1() )] W !(eq location c1())) -> F !(eq location c1());
+(eq location c0()) && ([location <- ( sub location c1() )]) -> X  !((lte location c1()) && (lte c0() location));
+(eq location c1()) && ([location <- ( sub location c1() )]) -> X  (eq location c0());
+(eq location c1()) && ([location <- ( sub location c1() )] W (eq location c0())) -> F (eq location c0());
+(eq location c1()) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  (eq location c1());
+(eq location c1()) && ([location <- ( sub ( add location c1() ) c1() )] W (eq location c1())) -> F (eq location c1());
+(eq location c1()) && ([location <- ( sub location c1() )]) -> X  ((lte location c1()) && (lte c0() location));
+(eq location c1()) && ([location <- ( add location c1() )]) -> X  !(eq location c0());
+(eq location c1()) && ([location <- ( add location c1() )] W !(eq location c0())) -> F !(eq location c0());
+(eq location c1()) && ([location <- ( add location c1() )]) -> X  !(eq location c1());
+(eq location c1()) && ([location <- ( add location c1() )] W !(eq location c1())) -> F !(eq location c1());
+(eq location c1()) && ([location <- ( add location c1() )]) -> X  !((lte location c1()) && (lte c0() location));
+((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )] W (eq location c0())) -> F (eq location c0());
+((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )] W (eq location c1())) -> F (eq location c1());
+((lte location c1()) && (lte c0() location)) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  ((lte location c1()) && (lte c0() location));
+((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )]) -> X  !(eq location c0());
+((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )] W !(eq location c0())) -> F !(eq location c0());
+((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )]) -> X  !(eq location c1());
+((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )] W !(eq location c1())) -> F !(eq location c1());
+((lte location c1()) && (lte c0() location)) && ([location <- ( add ( add location c1() ) c1() )]) -> X  !((lte location c1()) && (lte c0() location));
+!(eq location c0()) && ([location <- ( add location c1() )] W (eq location c0())) -> F (eq location c0());
+!(eq location c0()) && ([location <- ( add location c1() )] W (eq location c1())) -> F (eq location c1());
+!(eq location c0()) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  !(eq location c0());
+!(eq location c0()) && ([location <- ( sub location c1() )] W !(eq location c0())) -> F !(eq location c0());
+!(eq location c0()) && ([location <- ( add location c1() )]) -> X  !(eq location c1());
+!(eq location c0()) && ([location <- ( add location c1() )] W !(eq location c1())) -> F !(eq location c1());
+!(eq location c1()) && ([location <- ( sub location c1() )] W (eq location c0())) -> F (eq location c0());
+!(eq location c1()) && ([location <- ( add location c1() )] W (eq location c1())) -> F (eq location c1());
+!(eq location c1()) && ([location <- ( sub location c1() )]) -> X  !(eq location c0());
+!(eq location c1()) && ([location <- ( add location c1() )] W !(eq location c0())) -> F !(eq location c0());
+!(eq location c1()) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  !(eq location c1());
+!(eq location c1()) && ([location <- ( sub location c1() )] W !(eq location c1())) -> F !(eq location c1());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )] W (eq location c0())) -> F (eq location c0());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )] W (eq location c1())) -> F (eq location c1());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( sub location c1() )]) -> X  !(eq location c0());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )] W !(eq location c0())) -> F !(eq location c0());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )]) -> X  !(eq location c1());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( add location c1() )] W !(eq location c1())) -> F !(eq location c1());
+!((lte location c1()) && (lte c0() location)) && ([location <- ( sub ( add location c1() ) c1() )]) -> X  !((lte location c1()) && (lte c0() location));
+
+}
+//#LIA#
+initially assume {
+	eq location c0();
+}
+
+always guarantee {
+	[location <- sub location c1()] -> [location <- sub location c1()] U (eq location c0());
+	[location <- add location c1()] -> [location <- add location c1()] U (eq location c1());
+	eq location c1() -> [location <- sub location c1()];
+	eq location c0()   -> [location <- add location c1()];
+	(lte c0() location && lte location c1());
+}
