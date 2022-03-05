@@ -28,6 +28,8 @@ if __name__ == "__main__":
                 try:
                     eval_df = eval_df.append(gen_csv(path))
                     break
+                except e:
+                    pass
 
             oracle = path + '/oracle.tsl'
             oracle_before = time.time()
