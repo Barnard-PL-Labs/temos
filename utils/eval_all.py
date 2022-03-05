@@ -2,6 +2,7 @@
 
 from csv_gen import gen_csv
 import os
+import subprocess
 import time
 import pandas as pd
 
@@ -24,7 +25,7 @@ if __name__ == "__main__":
 
             oracle = path + '/oracle.tsl'
             oracle_before = time.time()
-            os.subprocess.run(["/Strix/scripts/strix_tlsf.sh", oracle])
+            subprocess.run(["bin/tsl2js.sh", oracle])
             oracle_after = time.time() - oracle_before
             oracle_times.append(oracle_after)
 
