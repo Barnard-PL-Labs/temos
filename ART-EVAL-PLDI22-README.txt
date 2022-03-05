@@ -1,11 +1,14 @@
-** Setup and running the evaluation **
-
 The following artifact evaluation reproduces the experimental evaluation portion of Table 1.
 
 It uses the tool TeMoS (Temporal Stream Logic Modulo Theories Synthesis).
 
-First, to get started, please download the Docker image that already contains multiple dependencies installed, available either through the zenodo link, or if you have Docker installed, pullable through Docker Hub:
+** Setup and running the evaluation **
+
+
+First, to get started, please download the Docker image that already contains multiple dependencies installed, or if you have Docker installed, pullable through Docker Hub:
 `docker pull wonhyukchoi/tsl-strix-docker`
+
+A download from Zenodo is not currently available due to repeated failed upload attempts; a working Zenodo link will be available in the future.
 
 Afterwards, enter the docker image, e.g. by
 `docker run -it wonhyukchoi/tsl-strix-docker /bin/bash`
