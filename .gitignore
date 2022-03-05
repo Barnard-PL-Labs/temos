@@ -21,7 +21,6 @@ local_testing/
 dev/
 
 # Synthesis files
-*.json
 *.tlsf
 *.aag
 *.js

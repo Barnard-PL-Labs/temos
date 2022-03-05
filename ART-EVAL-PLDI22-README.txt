@@ -1,4 +1,4 @@
-The following artifact evaluation reproduces Table 1 
+The following artifact evaluation reproduces the experimental evaluation portion of Table 1.
 
 It uses the tool TeMoS (Temporal Stream Logic Modulo Theories Synthesis).
 
