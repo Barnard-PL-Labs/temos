@@ -1,6 +1,5 @@
 pub use Temporal::*;
-pub use Literal::*;
-pub use UpdateTerm::*;
+pub use Literal::*; pub use UpdateTerm::*;
 pub use Predicate::*;
 pub use LogicOp::*;
 pub use LiaOp::*;
@@ -626,7 +625,7 @@ impl SygusHoareTriple {
                 // while loops with PBE
                 else {
                     let mut num_ex = 3;
-                    // XXX: Handle edge case for now
+                    // Handle edge case for now
                     match &*self.precond {
                         And(left, _) => {
                             let left_rc = Rc::clone(left);

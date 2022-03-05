@@ -19,18 +19,21 @@ def run_spec(path):
     result = subprocess.run(["target/release/temos",
         "--time", json, tslmt], stdout=subprocess.PIPE)
     result = result.stdout.decode("utf-8") .strip().split('\n')
-    # if realizable == -1:
-    #     print(result[1])
-    #     sys.exit(1)
     result = [int(r) for r in result[-2:]]
+
+    assumptions = subprocess.run(["target/release/temos",
+        "--lia", json, tslmt], stdout=subprocess.PIPE).stdout.decode("utf-8") .strip().split('\n')
+    NUM_SURROUNDERS = 5
+
     return dict(type=dentries[-2],
             name=dentries[-1],
+            num_assumptions=len(assumptions)-NUM_SURROUNDERS,
             lia=result[0],
             tsl=result[1],
             sum=result[0]+result[1])
 
 def gen_csv(path):
-    columns = ["type", "name", "lia", "tsl", "sum"]
+    columns = ["type", "name", "num_assumptions", "lia", "tsl", "sum"]
     df = pd.DataFrame(columns=columns, data=run_spec(path), index=[0])
     return df
 
