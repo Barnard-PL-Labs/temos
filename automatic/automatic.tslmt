@@ -1,0 +1,12 @@
+//#LIA#
+initially assume {
+	eq loc c0();
+}
+
+always guarantee {
+	[loc <- sub loc c1()] -> [loc <- sub loc c1()] U (eq loc c0());
+	[loc <- add loc c1()] -> [loc <- add loc c1()] U (eq loc c1());
+	eq loc c1() -> [loc <- sub loc c1()];
+	eq loc c0()   -> [loc <- add loc c1()];
+	(lte c0() loc && lte loc c1());
+}

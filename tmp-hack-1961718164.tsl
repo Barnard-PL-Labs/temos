@@ -1,0 +1,9 @@
+always assume{
+!((gt bottom top) && !(gt bottom top));
+
+}
+//#LIA#
+always guarantee {
+	gt bottom top -> [up <- True()];
+	!(gt bottom top) -> [up <- False()];
+}

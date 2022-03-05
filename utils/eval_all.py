@@ -35,7 +35,7 @@ if __name__ == "__main__":
             oracle_before = time.time()
             subprocess.run(["bin/tsl2js.sh", oracle])
             oracle_after = time.time() - oracle_before
-            oracle_times.append(oracle_after)
+            oracle_times.append(int(oracle_after * 1000))
 
     eval_df["oracle"] = oracle_times
     print(eval_df)
