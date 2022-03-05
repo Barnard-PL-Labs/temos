@@ -625,7 +625,30 @@ impl SygusHoareTriple {
                 } 
                 // while loops with PBE
                 else {
-                    let pred_pbe_vec = (*self.precond).generate_pbe(2);
+                    let mut num_ex = 3;
+                    // XXX: Handle edge case for now
+                    match &*self.precond {
+                        And(left, right) => {
+                            let left_rc = Rc::clone(left);
+                            match &*left_rc {
+                                Bool(LTE, Var(var1), Const(1)) => {
+                                    let right_rc = Rc::clone(right);
+                                    match &*right_rc {
+                                        Bool(LTE, Const(0), Var(var2)) => {
+                                            let l_is_loc = var1.eq("loc");
+                                            if l_is_loc && var1.eq(var2) {
+                                                num_ex = 1;
+                                            }
+                                        }, 
+                                        _ => ()
+                                    }
+                                }
+                                _ => ()
+                            }
+                        }, 
+                        _ => ()
+                    };
+                    let pred_pbe_vec = (*self.precond).generate_pbe(num_ex);
                     let mut sygus_results = Vec::new();
                     let while_loop : Option<String>;
                     for pred_pbe in pred_pbe_vec {
@@ -638,6 +661,7 @@ impl SygusHoareTriple {
                         };
                         sygus_results.push(hoare_pbe.run_synthesis());
                     }
+                    println!("PRECOND: {:?}", self.precond);
                     while_loop = parser::get_while_loop(sygus_results);
                     match while_loop {
                         None => "".to_string(),

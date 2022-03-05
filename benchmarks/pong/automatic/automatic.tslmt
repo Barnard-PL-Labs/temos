@@ -1,12 +1,12 @@
 //#LIA#
 initially assume {
-	eq loc c0();
+	eq location c0();
 }
 
 always guarantee {
-	[loc <- sub loc c1()] -> [loc <- sub loc c1()] U (eq loc c0());
-	[loc <- add loc c1()] -> [loc <- add loc c1()] U (eq loc c1());
-	eq loc c1() -> [loc <- sub loc c1()];
-	eq loc c0()   -> [loc <- add loc c1()];
-	(lte c0() loc && lte loc c1());
+	[location <- sub location c1()] -> [location <- sub location c1()] U (eq location c0());
+	[location <- add location c1()] -> [location <- add location c1()] U (eq location c1());
+	eq location c1() -> [location <- sub location c1()];
+	eq location c0()   -> [location <- add location c1()];
+	(lte c0() location && lte location c1());
 }

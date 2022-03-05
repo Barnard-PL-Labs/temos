@@ -1,27 +1,27 @@
 {
 	"predicates": [
 		{
-			"pred": "eq loc 0",
+			"pred": "eq location 0",
 			"temporal": ["X", "F"]
 		},
 		{
-			"pred": "eq loc 1",
+			"pred": "eq location 1",
 			"temporal": ["X", "F"]
 		},
 		{
-			"pred": "and lte loc 1 lte 0 loc",
+			"pred": "and lte location 1 lte 0 location",
 			"temporal": ["X"]
 		}
 	],
 	"updates": [
 		{
-			"update_term": "add loc 1",
-			"var_name": "loc",
+			"update_term": "add location 1",
+			"var_name": "location",
 			"depends": []
 		},
 		{
-			"update_term": "sub loc 1",
-			"var_name": "loc",
+			"update_term": "sub location 1",
+			"var_name": "location",
 			"depends": []
 		}
 	]
