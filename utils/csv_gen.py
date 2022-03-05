@@ -18,7 +18,12 @@ def run_spec(path):
     json = path + dir_name + ".json"
     result = subprocess.run(["target/release/temos",
         "--time", json, tslmt], stdout=subprocess.PIPE)
+
     result = result.stdout.decode("utf-8") .strip().split('\n')
+
+    if "REALIZABLE" not in result:
+        raise Exception
+
     result = [int(r) for r in result[-2:]]
 
     assumptions = subprocess.run(["target/release/temos",
