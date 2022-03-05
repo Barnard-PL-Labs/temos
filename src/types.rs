@@ -625,7 +625,7 @@ impl SygusHoareTriple {
                 } 
                 // while loops with PBE
                 else {
-                    let pred_pbe_vec = (*self.precond).generate_pbe(3);
+                    let pred_pbe_vec = (*self.precond).generate_pbe(2);
                     let mut sygus_results = Vec::new();
                     let while_loop : Option<String>;
                     for pred_pbe in pred_pbe_vec {
