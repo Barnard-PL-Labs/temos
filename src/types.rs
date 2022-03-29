@@ -1,3 +1,4 @@
+use std::time::{Duration, Instant};
 pub use Temporal::*;
 pub use Literal::*; pub use UpdateTerm::*;
 pub use Predicate::*;
@@ -12,7 +13,7 @@ use crate::hoare;
 use crate::parser::smt_sygus as parser;
 use std::convert::TryInto;
 
-const TIMEOUT_DEPTH: u32 = 10;
+const TIMEOUT_DEPTH: u32 = 1;
 
 #[derive(Debug, Clone)]
 pub enum Temporal {
@@ -680,7 +681,9 @@ impl SygusHoareTriple {
     }
 
     fn to_assumption(&self) -> Option<String> {
+        let before = Instant::now();
         let sygus_result = parser::get_sygus_result(&self.run_synthesis());
+        let after = Instant::now().duration_since(before);
         if sygus_result.is_none() {
             return None;
         }
@@ -696,6 +699,7 @@ impl SygusHoareTriple {
                      update_ass,
                      timesteps,
                      self.postcond.to_tsl());
+        println!("{} TOOK {:?}", foo, after);
         Some(foo)
     }
 }

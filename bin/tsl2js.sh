@@ -16,7 +16,7 @@ BIN_PATH="bin"
 $BIN_PATH/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
-/Strix/scripts/strix_tlsf.sh $tlsf > $aag
+sudo docker run --rm -v $(pwd):/files wonhyukchoi/tsl-strix-docker /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
 # Change to unix format
 dos2unix $aag 2> /dev/null

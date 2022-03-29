@@ -28,14 +28,11 @@ def run_spec(path):
     result = [int(r) for r in result[-2:]]
 
     assumptions = subprocess.run(["target/release/temos",
-        "--lia", json, tslmt], stdout=subprocess.PIPE).stdout.decode("utf-8") .strip().split('\n')
-
-    guarantee_idx = assumptions.index("always assume{")
-    NUM_TAIL = 3
+        "--lia", json, tslmt], stdout=subprocess.PIPE).stdout.decode("utf-8") .strip()
 
     return {
         "TYPE": dentries[-2],
-        "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
+        "NUM ASSUMPTIONS": assumptions.count(";"),
         "SyGuS": result[0],
         "REACTIVE SYNTH": result[1],
         "SUM": result[0] + result[1]
