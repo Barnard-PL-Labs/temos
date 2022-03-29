@@ -36,4 +36,4 @@ tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 # Synthesize the resulting code
 $BIN_PATH/cfm2code $aag --webaudio > $js
 
-rm $tlsf $aag $js
+rm $tsl $tlsf $aag $js
