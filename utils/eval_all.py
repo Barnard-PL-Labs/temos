@@ -8,8 +8,7 @@ import pandas as pd
 
 RANDOM_ITERS = 0x2f
 
-# BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
-BENCHMARKS = ["scheduler"]
+BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
 BENCHMARK_DIR = "benchmarks"
 ORDER = {name: order for order,name in zip(range(16),
     [
