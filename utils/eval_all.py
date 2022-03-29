@@ -61,4 +61,5 @@ if __name__ == "__main__":
     eval_df["oracle"] = oracle_times
     eval_df["order"] = [ORDER[name] for name in eval_df["NAME"]]
     eval_df.sort_values(by="order", inplace=True)
+    eval_df.drop(columns=['order'], inplace=True)
     print(eval_df)

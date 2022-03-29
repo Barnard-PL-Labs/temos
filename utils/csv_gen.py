@@ -9,6 +9,8 @@ import subprocess
 import os
 import sys
 
+def format_duration(s):
+    return f"{float(s) / 1000:.3f}"
 
 def run_spec(path):
     if path[-1] != '/':
@@ -37,9 +39,9 @@ def run_spec(path):
         "TYPE": dentries[-2],
         "NAME": dir_name,
         "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
-        "SyGuS(ms)": result[0],
-        "REACTIVE SYNTH(ms)": result[1],
-        "SUM(ms)": result[0] + result[1]
+        "SyGuS(s)": format_duration(result[0]),
+        "REACTIVE SYNTH(s)": format_duration(result[1]),
+        "SUM(ms)": format_duration(result[0] + result[1])
     }
 
 def gen_csv(path):
