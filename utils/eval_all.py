@@ -8,7 +8,8 @@ import pandas as pd
 
 RANDOM_ITERS = 0x2f
 
-BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
+# BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
+BENCHMARKS = ["scheduler"]
 BENCHMARK_DIR = "benchmarks"
 ORDER = {name: order for order,name in zip(range(16),
     [
@@ -59,4 +60,6 @@ if __name__ == "__main__":
             oracle_times.append(int(oracle_after * 1000))
 
     eval_df["oracle"] = oracle_times
+    eval_df["order"] = [ORDER[name] for name in eval_df["NAME"]]
+    eval_df.sort_values(by="order", inplace=True)
     print(eval_df)
