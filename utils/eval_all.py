@@ -10,6 +10,26 @@ RANDOM_ITERS = 0x2f
 
 BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
 BENCHMARK_DIR = "benchmarks"
+ORDER = {name: order for order,name in zip(range(16),
+    [
+        "vibrato",
+        "modulation",
+        "intertwined",
+        "multieffect",
+        "single",
+        "two_player",
+        "bouncing",
+        "automatic",
+        "simple",
+        "counting",
+        "bidirectional",
+        "smart",
+        "rr",
+        "load_balancer",
+        "preemptive",
+        "cfs"
+    ]
+)}
 
 if __name__ == "__main__":
     eval_df = pd.DataFrame()
