@@ -41,7 +41,7 @@ def run_spec(path):
         "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
         "SyGuS(s)": format_duration(result[0]),
         "REACTIVE SYNTH(s)": format_duration(result[1]),
-        "SUM(ms)": format_duration(result[0] + result[1])
+        "SUM(s)": format_duration(result[0] + result[1])
     }
 
 def gen_csv(path):
