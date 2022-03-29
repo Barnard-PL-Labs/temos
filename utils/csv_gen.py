@@ -35,10 +35,11 @@ def run_spec(path):
 
     return {
         "TYPE": dentries[-2],
+        "NAME": dir_name,
         "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
-        "SyGuS": result[0],
-        "REACTIVE SYNTH": result[1],
-        "SUM": result[0] + result[1]
+        "SyGuS(ms)": result[0],
+        "REACTIVE SYNTH(ms)": result[1],
+        "SUM(ms)": result[0] + result[1]
     }
 
 def gen_csv(path):
