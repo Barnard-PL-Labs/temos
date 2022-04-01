@@ -1,3 +1,5 @@
+// An escalator that chooses the direction it will go, depending on the number of people waiting in queue at the bottom or at the top.
+
 //#LIA#
 always guarantee {
 	gt bottom top -> [up <- True()];

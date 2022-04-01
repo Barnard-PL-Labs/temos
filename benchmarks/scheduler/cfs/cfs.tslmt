@@ -1,3 +1,4 @@
+// A simplified version of the Linux Completely Fair Scheduler.
 //#LIA#
 
 always assume {

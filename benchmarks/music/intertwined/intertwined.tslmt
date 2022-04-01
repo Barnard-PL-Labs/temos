@@ -1,3 +1,5 @@
+// FM and LFO toggle on and off depending on each of their values
+//#LIA#
 always guarantee {
 	G F [fmSynthesis <- True()];
 	G F [fmSynthesis <- False()];

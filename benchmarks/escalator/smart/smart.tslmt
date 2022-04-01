@@ -1,3 +1,4 @@
+// A smart escalator, that guarantees that everybody waiting in the queue for the escalator will be able to take it. It also guarantees that it is democratic, moving in the direction where there are more people waiting.
 //#LIA#
 
 goDown = [ topQueue <- sub topQueue c1()];

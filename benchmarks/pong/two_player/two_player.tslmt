@@ -1,3 +1,4 @@
+// A two-player pong game where hitting the paddles guarantee that the ball bounces back and forth between players.
 //#LIA#
 always assume {
 	!(hit paddle1 && hit paddle2);

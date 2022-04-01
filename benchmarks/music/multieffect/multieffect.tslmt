@@ -1,3 +1,4 @@
+// Three separate effects: AM Synthesis, FM Synthesis, and LFO are intertwined with each other, creating a complex signal flow that reacts to users playing the keyboard.
 //#RA#
 always guarantee {
 	lte amFreq c500() -> [amSynthesis <- False()]  U gt  amFreq c500();

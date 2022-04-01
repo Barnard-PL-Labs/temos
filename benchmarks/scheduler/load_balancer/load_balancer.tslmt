@@ -1,3 +1,4 @@
+// A load-balancing CPU scheduling algorithm that determines which CPU to allocate tasks to. It will always apply tasks to a CPU with a lighter load.
 //#LIA#
 always guarantee {
 	enqueue && gt cpu0 cpu1 -> [cpu0 <- add cpu0 c1()];

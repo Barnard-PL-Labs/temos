@@ -1,3 +1,4 @@
+// A round robin scheduler that guarantees that queued jobs must run infinitely often.
 //#LIA#
 always guarantee {
 	[ptr <- add ptr c1()] || [ptr <- sub ptr c1()];

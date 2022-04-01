@@ -1,3 +1,4 @@
+//AM and FM Synthesis toggle interchangebly depending on their values.
 //#RA#
 always guarantee {
 	G F [amSynthesis <- True()];

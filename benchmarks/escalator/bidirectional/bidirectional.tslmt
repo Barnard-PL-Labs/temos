@@ -1,3 +1,4 @@
+// An "bidirectional" (i.e. "full duplex") escalator capable of moving up or down. Its direction is controlled by the number of people waiting to take the escalator; when there are none, the escalator stops.
 //#LIA#
 always assume {
 	[steps <- bottom()] <-> ![bottom <- add bottom c1()];

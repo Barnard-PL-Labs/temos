@@ -1,3 +1,4 @@
+// A simple single-player pong game that provides guarantees about the bounding of the game
 //#LIA#
 always assume {
 	!(hit paddle1 && eq loc c100());

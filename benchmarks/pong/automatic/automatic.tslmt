@@ -1,3 +1,4 @@
+// An "autoamtic" pong game where the ball bounces between the walls. It also guarantees that once the ball is flying in one direction, it will in fact hit the wall on the other direction.
 //#LIA#
 initially assume {
 	eq location c0();

@@ -1,3 +1,4 @@
+// A preemptive CPU scheduler that can interrupt tasks.
 //#LIA#
 preempt = run job1 || run job2;
 

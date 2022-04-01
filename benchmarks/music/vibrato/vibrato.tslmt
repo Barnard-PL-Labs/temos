@@ -1,3 +1,4 @@
+// LFO toggles on and off automatically based off user input.
 //#RA#
 always guarantee {
 	G F [lfo <- True()];
