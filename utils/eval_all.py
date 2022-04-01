@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-from csv_gen import gen_csv
 import os
 import subprocess
 import time
 import pandas as pd
+from colorama import Fore, Style
+from csv_gen import gen_csv
 
-RANDOM_ITERS = 0x2f
+ITERS = 0x2f
 
 BENCHMARKS = ["escalator", "pong", "music", "scheduler"]
 BENCHMARK_DIR = "benchmarks"
@@ -42,14 +43,14 @@ if __name__ == "__main__":
             path = benchmark_dir + '/' + benchmark_type
             if not os.path.isdir(path):
                 continue
-            print(path)
 
-            for _ in range(RANDOM_ITERS):
+            for _ in range(ITERS):
                 try:
                     eval_df = eval_df.append(gen_csv(path))
                     break
                 except Exception as e:
                     print(e)
+                    print(f"{Fore.GREEN}Refinement loop, trying again...{Style.RESET_ALL}")
                     pass
 
             oracle = path + '/oracle.tsl'

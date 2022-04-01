@@ -38,7 +38,7 @@ def run_spec(path):
     return {
         "TYPE": dentries[-2],
         "NAME": dir_name,
-        "NUM ASSUMPTIONS": len(assumptions) - guarantee_idx - NUM_TAIL,
+        "NUM ASSUMPTIONS": len([a for a in assumptions if ";" in a and "->" in a]),
         "SyGuS(s)": format_duration(result[0]),
         "REACTIVE SYNTH(s)": format_duration(result[1]),
         "SUM(s)": format_duration(result[0] + result[1])
