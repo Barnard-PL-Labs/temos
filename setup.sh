@@ -5,7 +5,7 @@ python3 -m pip install --upgrade pip
 python3 -m pip install pandas
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 source $HOME/.cargo/env
-git clone https://github.com/reactive-systems/tsltools.git tsltools && cd tsltools && make
+git clone https://github.com/wonhyukchoi/tsltools.git tsltools && cd tsltools && make
 mv cfm2code ../bin/
 mv tsl2tlsf ../bin/
 cd ..
