@@ -57,6 +57,7 @@ pub fn tsltools(path: &str) -> &str {
         .unwrap();
     let err = String::from_utf8_lossy(&output.stderr);
     print!("{}", (String::from_utf8_lossy(&output.stdout)));
+    fs::remove_file(path).unwrap();
     if err.eq("UNREALIZABLE\n") {
         return "UNREALIZABLE";
     }

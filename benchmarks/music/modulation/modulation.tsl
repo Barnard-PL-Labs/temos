@@ -1,0 +1,2366 @@
+(error "Parse Error: tmp-hack-609610513:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1865783186:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1178193794:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-296084866:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1186356355:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack242948304:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-321377752:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1161937962:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1741436847:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack456094751:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack529760626:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-702439944:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack546064192:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-864730151:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-971155332:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1407197498:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-197126077:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-88691480:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1684379185:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack477685063:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack513839111:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1791867180:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-742564039:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack108066873:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2137536353:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-693397964:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1282429563:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1011510778:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1129615567:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1463974651:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1023295997:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1491740330:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1345386805:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-34073900:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack640233327:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1067795439:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack9736898:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1408474790:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1901121481:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-654301823:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1872290714:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1840624148:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1029230347:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-158343566:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack197252680:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1556778147:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1869889013:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-2554007:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-461473807:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1992170992:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack92209713:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack930851977:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-68445957:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack817391107:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1271787532:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack728649561:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-44725504:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1918765782:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 501))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack506262502:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 502))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1831417061:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 503))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-267593350:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-219970260:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-902574113:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (<= fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-508532139:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-381372579:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1484677238:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (> fmFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1491342333:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-2031816675:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2085052016:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (not (<= fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1318373020:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq 0))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1368202231:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 1)))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1229465583:14.17: Symbol amFreq is not declared.
+
+  (assert (= amFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const fmFreq Int)
+(synth-fun function ((amFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(+ amFreq 100)
+				(+ I 100)
+				(- amFreq 100)
+				(- I 100)
+			)
+		)
+	)
+)
+(assert (= amFreq (- 2)))
+(constraint (not (> fmFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-670635564:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1536790866:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1215780231:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-2078130680:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1986493720:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2103982201:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack341909285:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1793453025:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1186498610:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack869719695:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 501))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 501))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2049282305:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 502))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 502))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-958650854:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 503))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 503))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-474645094:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-1132674721:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1827746879:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (<= amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-2109354761:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack-101680942:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1868626508:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (> amFreq 500))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack933005134:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1689856544:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2082586749:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (not (<= amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1143761982:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq 0))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq 0))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack2095866270:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 1)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 1)))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+CVC4 Error:
+(error "Parse Error: tmp-hack1944645496:14.17: Symbol fmFreq is not declared.
+
+  (assert (= fmFreq (- 2)))
+             ^
+")
+
+(set-logic LIA)
+(declare-const amFreq Int)
+(synth-fun function ((fmFreq Int)) Int
+	((I Int))(
+		(I Int (
+				(- fmFreq 100)
+				(- I 100)
+				(+ fmFreq 100)
+				(+ I 100)
+			)
+		)
+	)
+)
+(assert (= fmFreq (- 2)))
+(constraint (not (> amFreq 500)))
+(check-synth)
+
+Generated assumptions from specification.
+always assume{
+!((lte fmFreq c500()) && (gt fmFreq c500()));
+!((lte amFreq c500()) && !(lte amFreq c500()));
+!(!(lte amFreq c500()) && !(gt amFreq c500()));
+!((gt fmFreq c500()) && !(gt fmFreq c500()));
+!((gt amFreq c500()) && !(gt amFreq c500()));
+!((lte amFreq c500()) && (gt amFreq c500()));
+!((lte fmFreq c500()) && !(lte fmFreq c500()));
+!(!(lte fmFreq c500()) && !(gt fmFreq c500()));
+(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (lte amFreq c500())) -> F (lte amFreq c500());
+(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (gt amFreq c500())) -> F (gt amFreq c500());
+(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(lte amFreq c500())) -> F !(lte amFreq c500());
+(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(gt amFreq c500())) -> F !(gt amFreq c500());
+(gt amFreq c500()) && ([amFreq <- ( sub amFreq c100() )] W (lte amFreq c500())) -> F (lte amFreq c500());
+(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (gt amFreq c500())) -> F (gt amFreq c500());
+(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(lte amFreq c500())) -> F !(lte amFreq c500());
+(gt amFreq c500()) && ([amFreq <- ( sub amFreq c100() )] W !(gt amFreq c500())) -> F !(gt amFreq c500());
+(lte fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W !(lte fmFreq c500())) -> F !(lte fmFreq c500());
+(lte fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W !(gt fmFreq c500())) -> F !(gt fmFreq c500());
+(gt fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+(gt fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+(gt fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W !(lte fmFreq c500())) -> F !(lte fmFreq c500());
+(gt fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W !(gt fmFreq c500())) -> F !(gt fmFreq c500());
+!(lte amFreq c500()) && ([amFreq <- ( sub amFreq c100() )] W (lte amFreq c500())) -> F (lte amFreq c500());
+!(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (gt amFreq c500())) -> F (gt amFreq c500());
+!(lte amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(lte amFreq c500())) -> F !(lte amFreq c500());
+!(lte amFreq c500()) && ([amFreq <- ( sub amFreq c100() )] W !(gt amFreq c500())) -> F !(gt amFreq c500());
+!(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (lte amFreq c500())) -> F (lte amFreq c500());
+!(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W (gt amFreq c500())) -> F (gt amFreq c500());
+!(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(lte amFreq c500())) -> F !(lte amFreq c500());
+!(gt amFreq c500()) && ([amFreq <- ( add amFreq c100() )] W !(gt amFreq c500())) -> F !(gt amFreq c500());
+!(lte fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+!(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+!(lte fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W !(lte fmFreq c500())) -> F !(lte fmFreq c500());
+!(lte fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W !(gt fmFreq c500())) -> F !(gt fmFreq c500());
+!(gt fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W (lte fmFreq c500())) -> F (lte fmFreq c500());
+!(gt fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W (gt fmFreq c500())) -> F (gt fmFreq c500());
+!(gt fmFreq c500()) && ([fmFreq <- ( add fmFreq c100() )] W !(lte fmFreq c500())) -> F !(lte fmFreq c500());
+!(gt fmFreq c500()) && ([fmFreq <- ( sub fmFreq c100() )] W !(gt fmFreq c500())) -> F !(gt fmFreq c500());
+
+}
+//AM and FM Synthesis toggle interchangebly depending on their values.
+//#RA#
+always guarantee {
+	G F [amSynthesis <- True()];
+	G F [amSynthesis <- False()];
+	G F [fmSynthesis <- True()];
+	G F [fmSynthesis <- False()];
+
+	lte amFreq c500() -> [amSynthesis <- False()]  U gt  amFreq c500();
+	gt  amFreq c500() -> [amSynthesis <- True()] U lte amFreq c500();
+	[amSynthesis <- False()]  -> [amFreq <- add amFreq c100()];
+	[amSynthesis <- True()]   -> [amFreq <- sub amFreq c100()];
+
+	lte fmFreq c500()  -> [fmSynthesis <- False()] U gt  fmFreq c500();
+	gt  amFreq c500() -> [fmSynthesis <- True()]  U lte fmFreq c500();
+	[fmSynthesis <- False()] -> [fmFreq <- add fmFreq c100()];
+	[fmSynthesis <- True()]  -> [fmFreq <- sub fmFreq c100()];
+}
+

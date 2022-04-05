@@ -11,4 +11,5 @@ mv tsl2tlsf ../bin/
 cd ..
 chmod +x bin/tsl2js.sh
 chmod +x bin/cvc4
+chmod +x temos.sh
 cargo build --release

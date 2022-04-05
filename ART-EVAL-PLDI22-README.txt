@@ -39,3 +39,7 @@ The experimental evaluation in the paper focuses on the SyGuS and reactive synth
 Since runtime will vary depending on each system and its load, to check that the artficat is consisten with the paper, we suggest that the reviewers check the primary claim of the paper: SyGuS synthesis times are generally much smaller than the reactive synthesis times.
 
 For the number of assumptions, since we rely on CVC4 to make synthesis decisions for us, this may result in a non-deterministic number of assumptions generated.
+
+** Running a single benchmark **
+To create a single executable, you can use the temos.sh shell script to combine it with tsltools to generate a single executable code.
+For instance, `./temos.sh benchmarks/scheduler/cfs/cfs.tslmt --linux" generates a rudimentary linux CFS scheduler (which still needs to be connected to the kernel).

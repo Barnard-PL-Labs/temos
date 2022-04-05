@@ -60,4 +60,3 @@ if __name__ == "__main__":
         result = gen_csv(sys.argv[1])
         result.reset_index(drop=True, inplace=True)
         print(result)
-    subprocess.run(f'rm -rf tmp*', shell=True)
