@@ -17,8 +17,6 @@ target=$2
 
 target/release/temos --synth $json $file_name > $tsl
 tail -n +2 "$tsl" > "$tsl.tmp" && mv "$tsl.tmp" "$tsl"
-cat $tsl
-exit 0
 
 # Build TLSF
 $BIN_PATH/tsl2tlsf $tsl | cat > $tlsf
