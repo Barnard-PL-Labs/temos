@@ -53,6 +53,13 @@ if __name__ == "__main__":
                     print(f"{Fore.GREEN}Refinement loop, trying again...{Style.RESET_ALL}")
                     pass
 
+            oracle = path + '/oracle.tsl'
+            oracle_before = time.time()
+            subprocess.run(["bin/tsl2js.sh", oracle])
+            oracle_after = time.time() - oracle_before
+            oracle_times.append(int(oracle_after * 1000))
+
+    eval_df["oracle"] = oracle_times
     eval_df["order"] = [ORDER[name] for name in eval_df["NAME"]]
     eval_df.sort_values(by="order", inplace=True)
     eval_df.drop(columns=['order'], inplace=True)
