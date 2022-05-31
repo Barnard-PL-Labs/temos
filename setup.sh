@@ -5,7 +5,7 @@
 # python3 -m pip install pandas colorama
 # curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 # source $HOME/.cargo/env
-rm -rf bin tsltools
+rm -rf tsltools
 git clone https://github.com/wonhyukchoi/tsltools.git tsltools && cd tsltools && make
 mv cfm2code ../bin/
 mv tsl2tlsf ../bin/
