@@ -3,7 +3,9 @@
 Repository for TeMoS, **Te**mporal Stream Logic **Mo**dulo Theories **S**ynthesis.
 
 ## News
-A complete rewrite of `TeMoS` is underway, integrating it directly with [`tsltools`](https://github.com/Barnard-PL-Labs/tsltools).
+`TeMoS` has been rewritten, integrating it directly with [`tsltools`](https://github.com/Barnard-PL-Labs/tsltools).
+
+Documentation is available [here](https://github.com/Barnard-PL-Labs/tsltools/blob/master/docs/tool-docs/tslmt2tsl.md).
 
 ## Installation
 
